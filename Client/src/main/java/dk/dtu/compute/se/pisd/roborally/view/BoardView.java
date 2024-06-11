@@ -47,7 +47,7 @@ public class BoardView extends VBox implements ViewObserver {
     private GridPane mainBoardPane;
     private SpaceView[][] spaces;
 
-    private PlayersView playersView;
+    private PlayerView playerView;
 
     private Label statusLabel;
 
@@ -57,11 +57,11 @@ public class BoardView extends VBox implements ViewObserver {
         board = gameController.board;
 
         mainBoardPane = new GridPane();
-        playersView = new PlayersView(gameController);
+        playerView = new PlayerView(gameController, board.getCurrentPlayer());
         statusLabel = new Label("<no status>");
 
         this.getChildren().add(mainBoardPane);
-        this.getChildren().add(playersView);
+        this.getChildren().add(playerView);
         this.getChildren().add(statusLabel);
 
         spaces = new SpaceView[board.width][board.height];
