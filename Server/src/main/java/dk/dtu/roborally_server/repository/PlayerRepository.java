@@ -6,5 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PlayerRepository extends JpaRepository<Player, Long> {
 
-    public Player findPlayerByPlayerName(String playerName);
+
+    public Player findPlayerByName(String playerName);
 }
