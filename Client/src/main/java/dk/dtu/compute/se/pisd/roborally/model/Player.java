@@ -52,6 +52,12 @@ public class Player extends Subject {
     private Deck deck;
 
     @Expose
+    private long playerID;
+
+    @Expose
+    private long gameID;
+
+    @Expose
     private String name;
 
     @Expose
@@ -194,5 +200,13 @@ public class Player extends Subject {
 
     public DiscardPileField getDiscardedPile() {
         return discardedPile;
+    }
+
+    public long getPlayerID() {
+        return playerID;
+    }
+
+    public long getGameID() {
+        return gameID;
     }
 }

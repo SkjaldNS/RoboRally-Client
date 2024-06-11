@@ -29,6 +29,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,12 +39,13 @@ import org.jetbrains.annotations.NotNull;
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
-public class PlayerView extends Tab implements ViewObserver {
+public class PlayerView extends Pane implements ViewObserver {
 
     private Player player;
 
     private VBox top;
 
+    private Label playerLabel;
     private Label programLabel;
     private GridPane programPane;
     private Label cardsLabel;
@@ -63,14 +65,15 @@ public class PlayerView extends Tab implements ViewObserver {
     private GameController gameController;
 
     public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
-        super(player.getName());
         //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
 
         top = new VBox();
-        this.setContent(top);
+        this.getChildren().add(top);
 
         this.gameController = gameController;
         this.player = player;
+
+        playerLabel = new Label(Long.toString(player.getPlayerID()));
 
         programLabel = new Label("Program");
 
@@ -121,6 +124,7 @@ public class PlayerView extends Tab implements ViewObserver {
             }
         }
 
+        top.getChildren().add(playerLabel);
         top.getChildren().add(programLabel);
         top.getChildren().add(programPane);
         top.getChildren().add(cardsLabel);
