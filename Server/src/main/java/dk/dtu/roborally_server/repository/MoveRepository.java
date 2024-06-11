@@ -11,5 +11,4 @@ public interface MoveRepository extends JpaRepository<Move, Long> {
 
     public Move findMoveByGameIdAndTurnIdAndPlayerId(Long gameId, Long turnId, Long playerId);
 
-    public Move insertMoveByGameIdAndTurnIdAndPlayerId(Long gameId, Long turnId, Long playerId);
 }

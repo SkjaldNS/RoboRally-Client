@@ -7,5 +7,4 @@ public interface ChoiceRepository extends JpaRepository<Choice, Long> {
 
     public Choice findChoiceByGameIdAndTurnIdAndPlayerId(Long gameId, Long turnId, Long playerId);
 
-    public Choice insertChoiceByGameIdAndTurnIdAndPlayerId(Long gameId, Long turnId, Long playerId);
 }
