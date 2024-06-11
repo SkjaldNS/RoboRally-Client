@@ -1,7 +1,7 @@
 package dk.dtu.roborally_server.controller;
 
 import dk.dtu.roborally_server.model.Player;
-import dk.dtu.roborally_server.repository.PlayerReposity;
+import dk.dtu.roborally_server.repository.PlayerRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,15 +13,15 @@ import java.util.List;
 @RequestMapping("/players")
 public class PlayerController {
 
-    private PlayerReposity playerReposity;
+    private PlayerRepository playerRepository;
 
-    public PlayerController(PlayerReposity playerReposity) {
-        this.playerReposity = playerReposity;
+    public PlayerController(PlayerRepository playerReposity) {
+        this.playerRepository = playerRepository;
     }
     @GetMapping
     @RequestMapping(value = "")
     public ResponseEntity<List<Player>> getPlayers(){
-        List<Player> playerList = playerReposity.findAll();
+        List<Player> playerList = playerRepository.findAll();
         return ResponseEntity.ok(playerList);
     }
 }
