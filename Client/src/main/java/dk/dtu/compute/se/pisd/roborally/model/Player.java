@@ -52,10 +52,10 @@ public class Player extends Subject {
     private Deck deck;
 
     @Expose
-    private long playerID;
+    private int playerID;
 
     @Expose
-    private long gameID;
+    private int gameID;
 
     @Expose
     private String name;
