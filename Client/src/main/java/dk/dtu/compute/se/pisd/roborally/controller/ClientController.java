@@ -14,6 +14,8 @@ public class ClientController {
 
     private static final String BASE_URL = "http://localhost:8080";
 
+    private Gson gson = new GsonBuilder().create();
+
     private HttpClient httpClient;
     public ClientController() {
         httpClient = HttpClient.newHttpClient();
@@ -30,31 +32,11 @@ public class ClientController {
         System.out.println(response.body());
     }
 
-    public void putGameID(String oldGameID, String newGameID) throws Exception {
+    public void putGame(Game game) throws Exception {
+        String gameJson = gson.toJson(game);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + oldGameID))
-                .PUT(HttpRequest.BodyPublishers.ofString(newGameID))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-    }
-
-    public void putGameBoardID(String gameID, String boardID) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + gameID))
-                .PUT(HttpRequest.BodyPublishers.ofString(boardID))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-    }
-
-
-    public void putGameStatus(String gameID, String gameStatus) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + gameID))
-                .PUT(HttpRequest.BodyPublishers.ofString(gameStatus))
+                .uri(new URI(BASE_URL + "/games/" + game.getGameID()))
+                .PUT(HttpRequest.BodyPublishers.ofString(gameJson))
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
@@ -62,8 +44,6 @@ public class ClientController {
     }
 
     public void postMove(Command command) throws Exception {
-        Gson gson = new GsonBuilder()
-                .create();
         String commandJson = gson.toJson(command);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + "/moves"))
