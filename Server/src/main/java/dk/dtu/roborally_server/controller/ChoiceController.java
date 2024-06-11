@@ -1,14 +1,29 @@
 package dk.dtu.roborally_server.controller;
 
+import dk.dtu.roborally_server.model.Choice;
 import dk.dtu.roborally_server.repository.ChoiceRepository;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/choices")
+@RequestMapping("games/{gameId}/choices")
 public class ChoiceController {
 
     private ChoiceRepository choiceRepository;
 
     public ChoiceController(ChoiceRepository choiceRepository) {this.choiceRepository = choiceRepository;}
+
+    @GetMapping
+    @RequestMapping( "{turnId}/{playerId}")
+    public ResponseEntity<Choice> getChoices(@PathVariable("gameId") Long gameId, @PathVariable("turnId") Long turnId, @PathVariable("playerId") Long playerId){
+        Choice choice = choiceRepository.findChoiceByGameIdAndTurnIdAndPlayerId(gameId, turnId, playerId);
+        return ResponseEntity.ok(choice);
+    }
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "")
+    public void createChoice(@RequestBody Choice choice){
+        choiceRepository.save(choice);
+    }
 }
