@@ -24,6 +24,8 @@ public class ChoiceController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "")
     public ResponseEntity<String> createChoice(@RequestBody Choice choice){
+        if(choice.getGameId() == null || choice.getTurnId() == null || choice.getPlayerId() == null || choice.getChoiceType() == null)
+            return ResponseEntity.badRequest().body("GameId, TurnId, PlayerId and Choice must be provided");
         if(choiceRepository.findChoiceByGameIdAndTurnIdAndPlayerId(choice.getGameId(), choice.getTurnId(), choice.getPlayerId()) != null)
             return ResponseEntity.badRequest().body("Choice already exists");
         choiceRepository.save(choice);
