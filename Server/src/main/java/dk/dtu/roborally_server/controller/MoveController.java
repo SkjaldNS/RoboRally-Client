@@ -26,8 +26,9 @@ public class MoveController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "")
-    public ResponseEntity<String> createChoice(@RequestBody Move move) {
-        if (move.getGameId() == null || move.getTurnId() == null || move.getPlayerId() == null || move.getReg1() == null || move.getReg2() == null || move.getReg3() == null || move.getReg4() == null || move.getReg5() == null)
+    public ResponseEntity<String> createChoice(@RequestBody Move move, @PathVariable("gameId") Long gameId){
+        move.setGameId(gameId);
+        if (move.getTurnId() == null || move.getPlayerId() == null || move.getReg1() == null || move.getReg2() == null || move.getReg3() == null || move.getReg4() == null || move.getReg5() == null)
             return ResponseEntity.badRequest().body("GameId, TurnId, PlayerId, Reg1, Reg2, Reg3, Reg4 and Reg5 must be provided");
         if (moveRepository.findMoveByGameIdAndTurnIdAndPlayerId(move.getGameId(), move.getTurnId(), move.getPlayerId()) != null)
             return ResponseEntity.badRequest().body("Move already exists");
