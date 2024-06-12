@@ -16,7 +16,7 @@ public class PlayerListView extends ScrollPane {
     private List<PlayerItemView> playerItemViews;
     private final VBox playerListContainer;
     public PlayerListView() {
-        playerItemViews = List.of(new PlayerItemView(1), new PlayerItemView(2), new PlayerItemView(3), new PlayerItemView(4));
+        playerItemViews = new ArrayList<>();
         playerListContainer = new VBox();
         playerListContainer.getChildren().addAll(playerItemViews);
         this.setMinWidth(200);
