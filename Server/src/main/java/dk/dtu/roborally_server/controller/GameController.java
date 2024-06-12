@@ -19,13 +19,13 @@ public class GameController {
         this.gameRepository = gameRepository;
     }
     @GetMapping
-    @RequestMapping(value = "")
+    @RequestMapping(value = "/getGames")
     public ResponseEntity<List<Game>> getGames() {
         List<Game> gameList = gameRepository.findAll();
         return ResponseEntity.ok(gameList);
     }
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @RequestMapping(value = "")
+    @RequestMapping(value = "/createGame")
     public ResponseEntity<String> createGame(Game game) {
         if(game.getGameName() == null)
             return ResponseEntity.badRequest().body("Name must be provided");
@@ -35,7 +35,7 @@ public class GameController {
         return ResponseEntity.ok().build();
     }
     @PutMapping
-    @RequestMapping(value = "")
+    @RequestMapping(value = "/updateGame")
     public ResponseEntity<String> updateGame(Game game) {
         if(game.getGameName() == null)
             return ResponseEntity.badRequest().body("Name must be provided");
@@ -45,7 +45,7 @@ public class GameController {
         return ResponseEntity.ok().build();
     }
     @DeleteMapping
-    @RequestMapping(value = "")
+    @RequestMapping(value = "deleteGame")
     public ResponseEntity<String> deleteGame(Game game) {
         if(game.getGameName() == null)
             return ResponseEntity.badRequest().body("Name must be provided");
