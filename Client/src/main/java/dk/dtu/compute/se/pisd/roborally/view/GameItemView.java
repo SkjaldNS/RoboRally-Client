@@ -21,7 +21,7 @@ public class GameItemView extends HBox  {
     public GameItemView(Game game) {
         this.game = game;
         joinGameButton = new Button(JOIN_BUTTON_MESSAGE);
-        gameNameText = new Text("Game " + game.getId());
+        gameNameText = new Text("Game " + game.getGameId());
         HBox.setMargin(gameNameText, new Insets(0, 10, 0, 0));
         paddingProperty().set(new Insets(10, 10, 10, 10));
         this.getChildren().addAll(gameNameText, joinGameButton);
