@@ -22,4 +22,8 @@ public class Player {
     private String playerName;
     @Column(name = "ROBOTID")
     private int robotId;
+
+    public Long getPlayerId() {
+        return id;
+    }
 }
