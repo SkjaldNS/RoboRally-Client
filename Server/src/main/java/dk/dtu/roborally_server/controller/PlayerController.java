@@ -45,4 +45,14 @@ public class PlayerController {
         playerRepository.save(player);
         return ResponseEntity.ok().build();
     }
+    @PutMapping
+    @RequestMapping(value = "")
+    public ResponseEntity<String> updatePlayer(Player player) {
+        if(player.getPlayerName() == null)
+            return ResponseEntity.badRequest().body("Name must be provided");
+        if(playerRepository.findPlayerByName(player.getPlayerName()) == null)
+            return ResponseEntity.badRequest().body("Player does not exist");
+        playerRepository.save(player);
+        return ResponseEntity.ok().build();
+    }
 }
