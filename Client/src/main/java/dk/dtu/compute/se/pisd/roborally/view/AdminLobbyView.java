@@ -5,6 +5,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+/**
+ * Represents the view for the admin lobby screen
+ * containing the player list, map selection and the start game button.
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
+ */
 public class AdminLobbyView extends VBox {
 
     //call player Item View and Player List View.

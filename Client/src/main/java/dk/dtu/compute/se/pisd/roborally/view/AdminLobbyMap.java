@@ -9,6 +9,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+/**
+ * Represents the map selection part of the admin lobby view
+ * which includes a combobox for selecting a map and a preview of the selected map.
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
+ */
 public class AdminLobbyMap extends VBox {
     public AdminLobbyMap() {
         ComboBox<String> mapSelection = new ComboBox<>();

@@ -7,6 +7,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
+/**
+ * Represents the bottom part of the admin lobby view
+ * which includes the close and start game button.
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
+ */
 public class AdminLobbyBottom extends HBox {
     public AdminLobbyBottom() {
         Button closeButton = new Button("Close");

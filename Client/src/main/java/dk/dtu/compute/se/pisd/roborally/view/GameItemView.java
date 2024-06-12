@@ -8,8 +8,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 /**
- *
- * @author Daniel Overballe Lerche
+ * Represents a single game item in the game item list view.
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
  */
 public class GameItemView extends HBox  {
 

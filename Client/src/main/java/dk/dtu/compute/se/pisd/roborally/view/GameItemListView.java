@@ -10,7 +10,8 @@ import java.util.List;
 
 /**
  * Represents a list of game items fetched from the server.
- * @author Daniel Overballe Lerche
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
  */
 public class GameItemListView extends ScrollPane {
 

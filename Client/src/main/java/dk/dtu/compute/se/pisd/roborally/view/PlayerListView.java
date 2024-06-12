@@ -6,6 +6,11 @@ import javafx.scene.layout.VBox;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a list of player items fetched from the server.
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
+ */
 public class PlayerListView extends ScrollPane {
 
     private List<PlayerItemView> playerItemViews;
