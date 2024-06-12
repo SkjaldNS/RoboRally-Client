@@ -23,40 +23,6 @@ public class ClientController {
         httpClient = HttpClient.newHttpClient();
     }
 
-    //TODO change return type and return something
-    public void postPlayer() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/players"))
-                .POST(HttpRequest.BodyPublishers.noBody())
-                .build();
-
-        //Returns playerID
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-    }
-
-    public void putPlayer(Player player) throws Exception {
-        String playerJson = gson.toJson(player);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/players/" + player.getPlayerID()))
-                .PUT(HttpRequest.BodyPublishers.ofString(playerJson))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-    }
-
-    //TODO change return type and return something
-    public void getPlayers() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/players"))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-    }
-
 
     //TODO change return type and return something
     public void postGame() throws Exception {
@@ -92,13 +58,23 @@ public class ClientController {
         System.out.println(response.body());
     }
 
-
-    public void postMove(Command command) throws Exception {
-        String commandJson = gson.toJson(command);
+    //TODO change return type and return something
+    public void postPlayer(String gameID) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/moves"))
-                .POST(HttpRequest.BodyPublishers.ofString(commandJson))
-                .header("Content-Type", "application/json")
+                .uri(new URI(BASE_URL + "/games/" + gameID + "/players"))
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        //Returns playerID
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+
+    public void putPlayer(Player player) throws Exception {
+        String playerJson = gson.toJson(player);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + "/games/" + player.getGameID() + "/players/" + player.getPlayerID()))
+                .PUT(HttpRequest.BodyPublishers.ofString(playerJson))
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
@@ -106,9 +82,9 @@ public class ClientController {
     }
 
     //TODO change return type and return something
-    public void getMoves() throws Exception {
+    public void getPlayers(String gameID) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/moves"))
+                .uri(new URI(BASE_URL + "/games/" + gameID + "/players"))
                 .GET()
                 .build();
 
@@ -116,11 +92,12 @@ public class ClientController {
         System.out.println(response.body());
     }
 
-    public void postChoice(Command command) throws Exception {
-        String commandJson = gson.toJson(command);
+
+    public void postMove(Move move) throws Exception {
+        String moveJson = gson.toJson(move);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/choices"))
-                .POST(HttpRequest.BodyPublishers.ofString(commandJson))
+                .uri(new URI(BASE_URL + "/games/" + move.getGameID() + "/players" + move.getPlayerID() + "/moves"))
+                .POST(HttpRequest.BodyPublishers.ofString(moveJson))
                 .header("Content-Type", "application/json")
                 .build();
 
@@ -129,9 +106,32 @@ public class ClientController {
     }
 
     //TODO change return type and return something
-    public void getChoice() throws Exception {
+    public void getMoves(String gameID, String playerID) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/choices"))
+                .uri(new URI(BASE_URL + "/games/" + gameID + "/players" + playerID + "/moves"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+
+    public void postChoice(Move move) throws Exception {
+        String moveJson = gson.toJson(move);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + "/games/" + move.getGameID() + "/players" + move.getPlayerID() + "/moves" + "/choices"))
+                .POST(HttpRequest.BodyPublishers.ofString(moveJson))
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+
+    //TODO change return type and return something
+    public void getChoice(String gameID, String playerID) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + "/games/" + gameID + "/players" + playerID + "/moves" + "/choices"))
                 .GET()
                 .build();
 
