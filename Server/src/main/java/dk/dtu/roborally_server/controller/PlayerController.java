@@ -14,7 +14,7 @@ public class PlayerController {
 
     private PlayerRepository playerRepository;
 
-    public PlayerController(PlayerRepository playerReposity) {
+    public PlayerController(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
     @GetMapping
@@ -36,8 +36,8 @@ public class PlayerController {
     }
     */
     @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
-    @RequestMapping(value = "/createPlayer")
-    public ResponseEntity<String> createPlayer(@RequestBody String playerName) {
+    @RequestMapping(value = "/createPlayer/{playerName}")
+    public ResponseEntity<String> createPlayer(@PathVariable String playerName) {
         if(playerName == null || playerName.isEmpty())
             return ResponseEntity.badRequest().body("Name must be provided");
         Player player = playerRepository.findPlayerByPlayerName(playerName);
@@ -49,13 +49,16 @@ public class PlayerController {
         return ResponseEntity.ok(player.getPlayerId().toString());
     }
     @PutMapping
-    @RequestMapping(value = "/updatePlayer")
-    public ResponseEntity<String> updatePlayer(Player player) {
-        if(player.getPlayerName() == null)
-            return ResponseEntity.badRequest().body("Name must be provided");
-        if(playerRepository.findPlayerByPlayerName(player.getPlayerName()) == null)
+    @RequestMapping(value = "/updatePlayer/{playerId}")
+    public ResponseEntity<String> updatePlayer(@PathVariable Long playerId,@RequestBody Player updatedPlayer) {
+        Player existingPlayer = playerRepository.findPlayerById(playerId).orElse(null);
+        if(updatedPlayer == null){
+            return ResponseEntity.badRequest().body("updated player data must be provided");
+        }
+        if(existingPlayer == null)
             return ResponseEntity.badRequest().body("Player does not exist");
-        playerRepository.save(player);
+        updatedPlayer.setId(playerId);
+        playerRepository.save(updatedPlayer);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping
