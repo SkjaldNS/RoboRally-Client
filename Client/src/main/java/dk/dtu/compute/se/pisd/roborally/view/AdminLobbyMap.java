@@ -18,7 +18,7 @@ import javafx.scene.shape.Rectangle;
 public class AdminLobbyMap extends VBox {
     public AdminLobbyMap() {
         ComboBox<String> mapSelection = new ComboBox<>();
-        mapSelection.getItems().addAll("Map 1", "Map 2", "Map 3");
+        mapSelection.getItems().addAll("Map 1");
         mapSelection.setPromptText("Select Map");
 
         // Placeholder for map preview
