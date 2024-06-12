@@ -44,5 +44,15 @@ public class GameController {
         gameRepository.save(game);
         return ResponseEntity.ok().build();
     }
+    @DeleteMapping
+    @RequestMapping(value = "")
+    public ResponseEntity<String> deleteGame(Game game) {
+        if(game.getGameName() == null)
+            return ResponseEntity.badRequest().body("Name must be provided");
+        if(gameRepository.findGameByGameName(game.getGameName()) == null)
+            return ResponseEntity.badRequest().body("Game does not exist");
+        gameRepository.delete(game);
+        return ResponseEntity.ok().build();
+    }
 
 }
