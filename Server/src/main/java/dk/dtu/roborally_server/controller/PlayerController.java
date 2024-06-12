@@ -35,15 +35,18 @@ public class PlayerController {
         return ResponseEntity.ok().build();
     }
     */
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
     @RequestMapping(value = "")
-    public ResponseEntity<String> createPlayer(@RequestBody Player player) {
-        if(player.getPlayerName() == null)
-            return ResponseEntity.badRequest().body("Name and GameId must be provided");
-        if(playerRepository.findPlayerByName(player.getPlayerName())!= null)
+    public ResponseEntity<String> createPlayer(@RequestBody String playerName) {
+        if(playerName == null || playerName.isEmpty())
+            return ResponseEntity.badRequest().body("Name must be provided");
+        Player player = playerRepository.findPlayerByName(playerName);
+        if(player != null)
             return ResponseEntity.badRequest().body("Player already exists");
+        player = new Player();
+        player.setPlayerName(playerName);
         playerRepository.save(player);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(player.getPlayerId().toString());
     }
     @PutMapping
     @RequestMapping(value = "")
