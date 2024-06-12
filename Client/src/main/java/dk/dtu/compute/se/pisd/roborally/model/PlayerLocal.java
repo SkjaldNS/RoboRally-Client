@@ -1,6 +1,5 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
-import com.google.gson.annotations.Expose;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -17,6 +16,7 @@ public class PlayerLocal extends Player {
     final public static int NO_CARDS = 8;
 
     public PlayerLocal(@NotNull Board board, int robotId, @NotNull String name) {
+
         super(board, robotId, name);
 
         cards = new CommandCardField[NO_CARDS];
@@ -36,7 +36,5 @@ public class PlayerLocal extends Player {
     public CommandCardField getCardField(int i) {return cards[i];}
 
     @Override
-    public boolean isLocalPlayer() {
-        return true;
-    }
+    public boolean isLocalPlayer() {return true;}
 }
