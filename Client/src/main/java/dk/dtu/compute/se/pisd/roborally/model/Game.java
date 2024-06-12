@@ -11,12 +11,14 @@ public class Game extends Subject {
     private final int boardId;
     private final GameStatus status;
     private final int turnId;
+    private final int numberOfPlayers;
 
     public Game(int gameId, int boardId, GameStatus status, int turnId) {
         this.gameId = gameId;
         this.boardId = boardId;
         this.status = status;
         this.turnId = turnId;
+        this.numberOfPlayers = 0;
     }
 
     public int getGameId() {
@@ -33,5 +35,9 @@ public class Game extends Subject {
 
     public int getTurnId() {
         return turnId;
+    }
+
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
     }
 }
