@@ -241,6 +241,10 @@ public class AppController implements Observer {
         }
     }
 
+    public void refreshGameList() {
+
+    }
+
     public boolean isGameRunning() {
         return gameController != null;
     }

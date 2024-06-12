@@ -23,8 +23,7 @@ package dk.dtu.compute.se.pisd.roborally;
 
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.view.BoardView;
-import dk.dtu.compute.se.pisd.roborally.view.RoboRallyMenuBar;
+import dk.dtu.compute.se.pisd.roborally.view.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -66,6 +65,7 @@ public class RoboRally extends Application {
         vbox.setMinWidth(MIN_APP_WIDTH);
         Scene primaryScene = new Scene(vbox);
 
+        boardRoot.setCenter(new PreLobbyView(boardRoot));
         stage.setScene(primaryScene);
         stage.setTitle("RoboRally");
         stage.setOnCloseRequest(
