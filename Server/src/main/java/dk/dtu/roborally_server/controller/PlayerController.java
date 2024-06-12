@@ -8,15 +8,30 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+/**
+ * PlayerController is a REST controller that handles HTTP requests related to players.
+ * It provides endpoints for creating, updating, deleting, and retrieving players.
+ * It uses PlayerRepository to interact with the database.
+ * @author : Marcus Langkilde (s195080)
+ */
 @RestController
 @RequestMapping("/players")
 public class PlayerController {
 
     private PlayerRepository playerRepository;
 
+    /**
+     * Constructs a new PlayerController with the given PlayerRepository.
+     * @param playerRepository the PlayerRepository to use for database interaction
+     */
     public PlayerController(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
     }
+    /**
+     * Handles GET requests to retrieve all players.
+     * @return a ResponseEntity containing a list of all players and an HTTP status code
+     */
     @GetMapping
     @RequestMapping(value = "/getPlayers")
     public ResponseEntity<List<Player>> getPlayers(){
@@ -35,6 +50,11 @@ public class PlayerController {
         return ResponseEntity.ok().build();
     }
     */
+    /**
+     * Handles POST requests to create a new player with the given name.
+     * @param playerName the name of the player to create
+     * @return a ResponseEntity containing the player's ID and an HTTP status code
+     */
     @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
     @RequestMapping(value = "/createPlayer/{playerName}")
     public ResponseEntity<String> createPlayer(@PathVariable String playerName) {
@@ -48,6 +68,12 @@ public class PlayerController {
         playerRepository.save(player);
         return ResponseEntity.ok(player.getPlayerId().toString());
     }
+    /**
+     * Handles PUT requests to update the player with the given ID.
+     * @param playerId the ID of the player to update
+     * @param updatedPlayer the new data for the player
+     * @return a ResponseEntity containing an HTTP status code
+     */
     @PutMapping
     @RequestMapping(value = "/updatePlayer/{playerId}")
     public ResponseEntity<String> updatePlayer(@PathVariable Long playerId,@RequestBody Player updatedPlayer) {
@@ -61,6 +87,12 @@ public class PlayerController {
         playerRepository.save(updatedPlayer);
         return ResponseEntity.ok().build();
     }
+
+    /**
+     * Handles DELETE requests to delete the player with the given ID.
+     * @param playerId the ID of the player to delete
+     * @return a ResponseEntity containing an HTTP status code
+     */
     @DeleteMapping
     @RequestMapping(value = "/deletePlayer/{playerId}")
     public ResponseEntity<String> deletePlayer(@PathVariable Long playerId) {
