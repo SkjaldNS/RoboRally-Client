@@ -55,4 +55,14 @@ public class PlayerController {
         playerRepository.save(player);
         return ResponseEntity.ok().build();
     }
+    @DeleteMapping
+    @RequestMapping(value = "")
+    public ResponseEntity<String> deletePlayer(Player player) {
+        if(player.getPlayerName() == null)
+            return ResponseEntity.badRequest().body("Name must be provided");
+        if(playerRepository.findPlayerByName(player.getPlayerName()) == null)
+            return ResponseEntity.badRequest().body("Player does not exist");
+        playerRepository.delete(player);
+        return ResponseEntity.ok().build();
+    }
 }
