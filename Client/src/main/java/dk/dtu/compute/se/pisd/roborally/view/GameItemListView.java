@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Represents a list of game items fetched from the server.
  * @author Daniel Overballe Lerche
  */
 public class GameItemListView extends ScrollPane {
@@ -20,12 +20,16 @@ public class GameItemListView extends ScrollPane {
     public GameItemListView() {
         gameItemContainer = new VBox();
         gameItemContainer.alignmentProperty().set(Pos.CENTER_RIGHT);
-        this.setMaxWidth(200);
-        this.setMaxHeight(200);
+        this.setMinWidth(200);
+        this.setMinHeight(400);
         gameItems = new ArrayList<>();
         this.setContent(gameItemContainer);
     }
 
+    /**
+     * Sets the game items to be displayed in the list.
+     * @param gameItems the game items to be displayed
+     */
     public void setGameItems(List<GameItemView> gameItems) {
         this.gameItems = gameItems;
         updateGameItems();
@@ -37,5 +41,4 @@ public class GameItemListView extends ScrollPane {
             gameItemContainer.getChildren().add(gameItem);
         }
     }
-
 }
