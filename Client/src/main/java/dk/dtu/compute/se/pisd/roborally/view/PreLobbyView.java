@@ -16,7 +16,8 @@ import java.util.List;
 /**
  * Represents the view for the pre-lobby screen
  * containing the game item list and the create game button.
- * @author Daniel Overballe Lerche
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
  */
 public class PreLobbyView extends HBox {
 
