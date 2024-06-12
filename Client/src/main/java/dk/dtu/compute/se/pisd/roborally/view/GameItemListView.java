@@ -22,7 +22,7 @@ public class GameItemListView extends ScrollPane {
         gameItemContainer = new VBox();
         gameItemContainer.alignmentProperty().set(Pos.CENTER_RIGHT);
         this.setMinWidth(200);
-        this.setMinHeight(400);
+        this.setMinHeight(200);
         gameItems = new ArrayList<>();
         this.setContent(gameItemContainer);
     }
