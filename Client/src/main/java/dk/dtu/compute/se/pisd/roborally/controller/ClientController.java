@@ -128,4 +128,41 @@ public class ClientController {
         System.out.println(response.body());
     }
 
+    public void postChoice(Command command) throws Exception {
+        String commandJson = gson.toJson(command);
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + "/choices"))
+                .POST(HttpRequest.BodyPublishers.ofString(commandJson))
+                .header("Content-Type", "application/json")
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+
+    //TODO How is a choice identified? How can we check if it has been made? Check if this is correct
+    public void putChoice(Move move) throws Exception {
+        String gameJson = gson.toJson(move);
+        HttpRequest request = HttpRequest.newBuilder().uri(new URI(BASE_URL + "/choices/" + move.getGameID() + move.getPlayerID() + move.getTurnID()))
+                .PUT(HttpRequest.BodyPublishers.ofString(gameJson))
+                .build();
+
+        if(move.isChoice(move.getReg1()) || move.isChoice(move.getReg2()) || move.isChoice(move.getReg3())
+                        || move.isChoice(move.getReg4()) || move.isChoice(move.getReg5())){
+            HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+            System.out.println(response.body());
+        }
+    }
+
+    //TODO change return type and return something
+    public void getChoice() throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + "/choices"))
+                .GET()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+
 }
