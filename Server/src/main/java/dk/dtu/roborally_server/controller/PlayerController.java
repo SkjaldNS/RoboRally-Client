@@ -18,7 +18,7 @@ public class PlayerController {
         this.playerRepository = playerRepository;
     }
     @GetMapping
-    @RequestMapping(value = "")
+    @RequestMapping(value = "/getPlayers")
     public ResponseEntity<List<Player>> getPlayers(){
         List<Player> playerList = playerRepository.findAll();
         return ResponseEntity.ok(playerList);
@@ -36,11 +36,11 @@ public class PlayerController {
     }
     */
     @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
-    @RequestMapping(value = "")
+    @RequestMapping(value = "/createPlayer")
     public ResponseEntity<String> createPlayer(@RequestBody String playerName) {
         if(playerName == null || playerName.isEmpty())
             return ResponseEntity.badRequest().body("Name must be provided");
-        Player player = playerRepository.findPlayerByName(playerName);
+        Player player = playerRepository.findPlayerByPlayerName(playerName);
         if(player != null)
             return ResponseEntity.badRequest().body("Player already exists");
         player = new Player();
@@ -49,21 +49,21 @@ public class PlayerController {
         return ResponseEntity.ok(player.getPlayerId().toString());
     }
     @PutMapping
-    @RequestMapping(value = "")
+    @RequestMapping(value = "/updatePlayer")
     public ResponseEntity<String> updatePlayer(Player player) {
         if(player.getPlayerName() == null)
             return ResponseEntity.badRequest().body("Name must be provided");
-        if(playerRepository.findPlayerByName(player.getPlayerName()) == null)
+        if(playerRepository.findPlayerByPlayerName(player.getPlayerName()) == null)
             return ResponseEntity.badRequest().body("Player does not exist");
         playerRepository.save(player);
         return ResponseEntity.ok().build();
     }
     @DeleteMapping
-    @RequestMapping(value = "")
+    @RequestMapping(value = "/deletePlayer")
     public ResponseEntity<String> deletePlayer(Player player) {
         if(player.getPlayerName() == null)
             return ResponseEntity.badRequest().body("Name must be provided");
-        if(playerRepository.findPlayerByName(player.getPlayerName()) == null)
+        if(playerRepository.findPlayerByPlayerName(player.getPlayerName()) == null)
             return ResponseEntity.badRequest().body("Player does not exist");
         playerRepository.delete(player);
         return ResponseEntity.ok().build();
