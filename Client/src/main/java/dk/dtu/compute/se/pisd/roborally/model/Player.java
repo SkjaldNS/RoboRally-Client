@@ -21,7 +21,6 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
-import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,53 +34,20 @@ import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
  */
 public class Player extends Subject {
 
-    @Expose
     final public static int NO_REGISTERS = 5;
-    @Expose
-    final public static int NO_CARDS = 8;
-
     public Board board;
-
-    @Expose
-    private DiscardPileField discardedPile;
-
-    @Expose
     private Command lastCommand = null;
-
-    @Expose
     private Deck deck;
-
-    @Expose
     private int playerID;
-
-    @Expose
     private int gameID;
-
-    @Expose
     private String name;
-
-    @Expose
     private int robotId;
-
-    @Expose
     private int powerUpCnt = 0;
-
-    @Expose
     private Command currentCommand;
-
-    @Expose
     private int checkpointCollected = 0;
-
-    @Expose
     private Space space;
-    @Expose
     private Heading heading = SOUTH;
-
-
-    @Expose
     private CommandCardField[] program;
-    @Expose
-    private CommandCardField[] cards;
 
     public Player(){}
 
@@ -97,52 +63,28 @@ public class Player extends Subject {
             program[i] = new CommandCardField(this);
         }
 
-        cards = new CommandCardField[NO_CARDS];
-        for (int i = 0; i < cards.length; i++) {
-            cards[i] = new CommandCardField(this);
-        }
-
-        discardedPile = new DiscardPileField(this);
-
-        this.deck = new Deck();
-        deck.shuffleDeck();
-
     }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() {return name;}
 
-    public Deck getDeck() {
-        return deck;
-    }
-    public Command getCurrentCommand() {
-        return currentCommand;
-    }
-    public void setCurrentCommand(Command command){
-        this.currentCommand = command;
-    }
-    public void oneUpPowerUpCnt() {
-        this.powerUpCnt++;
-    }
-    public int getPowerUpCnt() {
-        return powerUpCnt;
-    }
+    public Command getCurrentCommand() {return currentCommand;}
+
+    public void setCurrentCommand(Command command){this.currentCommand = command;}
+
+    public void oneUpPowerUpCnt() {this.powerUpCnt++;}
+
+    public int getPowerUpCnt() {return powerUpCnt;}
+
     public void setLastCommand(Command lastCommand) {
         if(lastCommand != Command.AGAIN){
             this.lastCommand = lastCommand;}
     }
-    public Command getLastCommand() {
-        return lastCommand;
-    }
 
-    public int getRobotId() {
-        return robotId;
-    }
+    public Command getLastCommand() {return lastCommand;}
 
-    public Space getSpace() {
-        return space;
-    }
+    public int getRobotId() {return robotId;}
+
+    public Space getSpace() {return space;}
 
     public void setSpace(Space space) {
         Space oldSpace = this.space;
@@ -159,9 +101,7 @@ public class Player extends Subject {
         }
     }
 
-    public Heading getHeading() {
-        return heading;
-    }
+    public Heading getHeading() {return heading;}
 
     public void setHeading(@NotNull Heading heading) {
         if (heading != this.heading) {
@@ -178,35 +118,17 @@ public class Player extends Subject {
         notifyChange();
     }
 
-    public int getCheckpointCollected() {
-        return checkpointCollected;
-    }
+    public int getCheckpointCollected() {return checkpointCollected;}
 
-    public CommandCardField[] getProgram() {
-        return program;
-    }
+    public CommandCardField[] getProgram() {return program;}
 
-    public CommandCardField[] getCards() {
-        return cards;
-    }
+    public CommandCardField getProgramField(int i) {return program[i];}
 
-    public CommandCardField getProgramField(int i) {
-        return program[i];
-    }
+    public long getPlayerID() {return playerID;}
 
-    public CommandCardField getCardField(int i) {
-        return cards[i];
-    }
+    public long getGameID() {return gameID;}
 
-    public DiscardPileField getDiscardedPile() {
-        return discardedPile;
-    }
+    public void setGameID(int gameID) {this.gameID = gameID;}
 
-    public long getPlayerID() {
-        return playerID;
-    }
-
-    public long getGameID() {
-        return gameID;
-    }
+    public boolean isLocalPlayer() {return false;}
 }
