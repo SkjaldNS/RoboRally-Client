@@ -5,10 +5,7 @@ import dk.dtu.roborally_server.model.Game;
 import dk.dtu.roborally_server.repository.GameRepository;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -34,6 +31,16 @@ public class GameController {
             return ResponseEntity.badRequest().body("Name must be provided");
         if(gameRepository.findGameByGameName(game.getGameName()) != null)
             return ResponseEntity.badRequest().body("Game already exists");
+        gameRepository.save(game);
+        return ResponseEntity.ok().build();
+    }
+    @PutMapping
+    @RequestMapping(value = "")
+    public ResponseEntity<String> updateGame(Game game) {
+        if(game.getGameName() == null)
+            return ResponseEntity.badRequest().body("Name must be provided");
+        if(gameRepository.findGameByGameName(game.getGameName()) == null)
+            return ResponseEntity.badRequest().body("Game does not exist");
         gameRepository.save(game);
         return ResponseEntity.ok().build();
     }
