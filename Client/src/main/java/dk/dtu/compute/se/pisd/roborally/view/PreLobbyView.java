@@ -1,5 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
+import dk.dtu.compute.se.pisd.roborally.controller.AbstractRestController;
 import dk.dtu.compute.se.pisd.roborally.model.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -30,7 +31,7 @@ public class PreLobbyView extends HBox {
     private final Text gameItemListTitle;
 
     // TODO - Give a controller to the view that handles game fetching
-    public PreLobbyView(BorderPane boardRoot) {
+    public PreLobbyView(BorderPane boardRoot, AbstractRestController restController) {
         gameItemListView = new GameItemListView();
 
         // Title for the game item list
@@ -53,14 +54,21 @@ public class PreLobbyView extends HBox {
         this.getChildren().addAll(gameItemListViewContainer, filler, createGameButton);
 
         createGameButton.setOnAction(e -> {
-            boardRoot.setCenter(new AdminLobbyView(this, boardRoot));
+            switchToAdminLobbyView(boardRoot, restController);
         });
 
         refreshGameListButton.setOnAction(e -> {
             gameItemListView.setGameItems(
-                    new ArrayList<>()
-                 // TODO - Implement fetching of games
+                    restController.getGames()
+                            .stream()
+                            .map(game -> new GameItemView(game, restController))
+                            .toList()
             );
+            switchToAdminLobbyView(boardRoot, restController);
         });
+    }
+
+    private void switchToAdminLobbyView(BorderPane boardRoot, AbstractRestController restController) {
+        boardRoot.setCenter(new AdminLobbyView(this, boardRoot, restController));
     }
 }
