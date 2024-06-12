@@ -62,13 +62,13 @@ public class PlayerController {
         return ResponseEntity.ok().build();
     }
     @DeleteMapping
-    @RequestMapping(value = "/deletePlayer")
-    public ResponseEntity<String> deletePlayer(Player player) {
-        if(player.getPlayerName() == null)
-            return ResponseEntity.badRequest().body("Name must be provided");
-        if(playerRepository.findPlayerByPlayerName(player.getPlayerName()) == null)
+    @RequestMapping(value = "/deletePlayer/{playerId}")
+    public ResponseEntity<String> deletePlayer(@PathVariable Long playerId) {
+        if(playerId == null)
+            return ResponseEntity.badRequest().body("player id be provided");
+        if(playerRepository.findPlayerById(playerId).isEmpty())
             return ResponseEntity.badRequest().body("Player does not exist");
-        playerRepository.delete(player);
+        playerRepository.delete(playerRepository.findPlayerById(playerId).get());
         return ResponseEntity.ok().build();
     }
 }
