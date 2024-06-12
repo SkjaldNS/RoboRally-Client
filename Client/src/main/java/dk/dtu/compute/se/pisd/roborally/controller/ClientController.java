@@ -105,18 +105,6 @@ public class ClientController {
         System.out.println(response.body());
     }
 
-    //TODO How is a move identified? Check if this is correct
-    public void putMove(Move move) throws Exception {
-        String gameJson = gson.toJson(move);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/moves/" + move.getGameID() + move.getPlayerID() + move.getTurnID()))
-                .PUT(HttpRequest.BodyPublishers.ofString(gameJson))
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
-    }
-
     //TODO change return type and return something
     public void getMoves() throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
@@ -138,20 +126,6 @@ public class ClientController {
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
-    }
-
-    //TODO How is a choice identified? How can we check if it has been made? Check if this is correct
-    public void putChoice(Move move) throws Exception {
-        String gameJson = gson.toJson(move);
-        HttpRequest request = HttpRequest.newBuilder().uri(new URI(BASE_URL + "/choices/" + move.getGameID() + move.getPlayerID() + move.getTurnID()))
-                .PUT(HttpRequest.BodyPublishers.ofString(gameJson))
-                .build();
-
-        if(move.isChoice(move.getReg1()) || move.isChoice(move.getReg2()) || move.isChoice(move.getReg3())
-                        || move.isChoice(move.getReg4()) || move.isChoice(move.getReg5())){
-            HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-        }
     }
 
     //TODO change return type and return something
