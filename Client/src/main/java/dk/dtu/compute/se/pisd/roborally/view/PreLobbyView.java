@@ -53,7 +53,7 @@ public class PreLobbyView extends HBox {
         this.getChildren().addAll(gameItemListViewContainer, filler, createGameButton);
 
         createGameButton.setOnAction(e -> {
-            boardRoot.setCenter(new AdminLobbyView());
+            boardRoot.setCenter(new AdminLobbyView(this, boardRoot));
         });
 
         refreshGameListButton.setOnAction(e -> {

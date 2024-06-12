@@ -14,10 +14,10 @@ import javafx.scene.layout.VBox;
 public class AdminLobbyView extends VBox {
 
     //call player Item View and Player List View.
-    public AdminLobbyView() {
+    public AdminLobbyView(PreLobbyView preLobbyView, BorderPane boardroot) {
         AdminLobbyMap adminLobbyMap = new AdminLobbyMap();
         PlayerListView playerListView = new PlayerListView();
-        AdminLobbyBottom adminLobbyBottom = new AdminLobbyBottom();
+        AdminLobbyBottom adminLobbyBottom = new AdminLobbyBottom(preLobbyView, boardroot);
         HBox filler = new HBox();
         HBox.setHgrow(filler, Priority.ALWAYS);
         HBox content = new HBox(playerListView, filler, adminLobbyMap);
