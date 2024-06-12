@@ -26,7 +26,7 @@ public class Game {
     @Column(name = "GAMESTATUS")
     private String gameStatus;
     @Column(name = "TURNID")
-    private Long TurnID;
+    private Long turnID;
     @Column(name = "MAXPLAYERS")
     private Long maxPlayers;
 
