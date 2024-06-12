@@ -2,7 +2,6 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import dk.dtu.compute.se.pisd.roborally.model.Command;
 import dk.dtu.compute.se.pisd.roborally.model.Game;
 import dk.dtu.compute.se.pisd.roborally.model.Move;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
@@ -41,6 +40,7 @@ public class ClientController {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + "/games/" + game.getGameID()))
                 .PUT(HttpRequest.BodyPublishers.ofString(gameJson))
+                .header("Content-Type", "application/json")
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
@@ -75,6 +75,7 @@ public class ClientController {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + "/games/" + player.getGameID() + "/players/" + player.getPlayerID()))
                 .PUT(HttpRequest.BodyPublishers.ofString(playerJson))
+                .header("Content-Type", "application/json")
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
