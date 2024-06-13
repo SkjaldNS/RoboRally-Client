@@ -38,18 +38,6 @@ public class PlayerController {
         List<Player> playerList = playerRepository.findAll();
         return ResponseEntity.ok(playerList);
     }
-    /*
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @RequestMapping(value = "")
-    public ResponseEntity<String> createPlayer(@RequestBody Player player) {
-        if(player.getPlayerName() == null || player.getGameId() == null)
-            return ResponseEntity.badRequest().body("Name and GameId must be provided");
-        if(playerRepository.findPlayerByNameAndGameId(player.getPlayerName(), player.getGameId()) != null)
-            return ResponseEntity.badRequest().body("Player already exists");
-        playerRepository.save(player);
-        return ResponseEntity.ok().build();
-    }
-    */
     /**
      * Handles POST requests to create a new player with the given name.
      * @param playerName the name of the player to create
