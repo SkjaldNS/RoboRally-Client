@@ -120,7 +120,7 @@ public class ClientController {
     public void postChoice(Move move) throws Exception {
         String moveJson = gson.toJson(move);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + move.getGameID() + "/players" + move.getPlayerID() + "/moves" + "/choices"))
+                .uri(new URI(BASE_URL + "/games/" + move.getGameID() + "/players" + move.getPlayerID() + "/moves" + move.getTurnID() + "/choices"))
                 .POST(HttpRequest.BodyPublishers.ofString(moveJson))
                 .header("Content-Type", "application/json")
                 .build();
@@ -130,9 +130,9 @@ public class ClientController {
     }
 
     //TODO change return type and return something
-    public void getChoice(String gameID, String playerID) throws Exception {
+    public void getChoice(String gameID, String playerID, String turnID) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + gameID + "/players" + playerID + "/moves" + "/choices"))
+                .uri(new URI(BASE_URL + "/games/" + gameID + "/players" + playerID + "/moves" + turnID + "/choices"))
                 .GET()
                 .build();
 
