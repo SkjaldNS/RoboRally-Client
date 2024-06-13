@@ -23,10 +23,7 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
-import dk.dtu.compute.se.pisd.roborally.model.Phase;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -100,8 +97,8 @@ public class CardFieldView extends GridPane implements ViewObserver {
         update(field);
     }
 
-    private String cardFieldRepresentation(CommandCardField cardField) {
-        if (cardField.player != null) {
+    private String cardFieldRepresentation(CommandCardField cardField, CommandCardHandField handField) {
+        if (cardField.player != null && cardField.player.isLocalPlayer()) {
 
             for (int i = 0; i < Player.NO_REGISTERS; i++) {
                 CommandCardField other = cardField.player.getProgramField(i);
@@ -110,8 +107,8 @@ public class CardFieldView extends GridPane implements ViewObserver {
                 }
             }
 
-            for (int i = 0; i < Player.NO_CARDS; i++) {
-                CommandCardField other = cardField.player.getCardField(i);
+            for (int i = 0; i < PlayerLocal.NO_CARDS; i++) {
+                CommandCardField other = handField.player.getCardField(i);
                 if (other == cardField) {
                     return "C," + i;
                 }
