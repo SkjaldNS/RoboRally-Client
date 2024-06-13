@@ -3,7 +3,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
-public class CommandCardHandField extends Subject {
+public class CommandCardHandField extends Subject implements CommandCardInterface{
 
     public PlayerLocal player;
 
@@ -44,5 +44,8 @@ public class CommandCardHandField extends Subject {
         }
     }
 
-
+    @Override
+    public int getType() {
+        return 2;
+    }
 }
