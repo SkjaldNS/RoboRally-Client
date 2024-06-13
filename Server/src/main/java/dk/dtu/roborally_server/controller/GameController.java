@@ -24,6 +24,16 @@ public class GameController {
         List<Game> gameList = gameRepository.findAll();
         return ResponseEntity.ok(gameList);
     }
+
+
+    @GetMapping
+    @RequestMapping(value = "/getGame/{gameId}")
+    public ResponseEntity<Game> getGame(@PathVariable("gameId") Long gameId) {
+        Game game = gameRepository.findGameByGameId(gameId);
+        return ResponseEntity.ok(game);
+    }
+
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "/createGame")
     public ResponseEntity<String> createGame(Game game) {
@@ -45,11 +55,12 @@ public class GameController {
         return ResponseEntity.ok().build();
     }
     @DeleteMapping
-    @RequestMapping(value = "deleteGame")
-    public ResponseEntity<String> deleteGame(Game game) {
-        if(game.getGameName() == null)
-            return ResponseEntity.badRequest().body("Name must be provided");
-        if(gameRepository.findGameByGameName(game.getGameName()) == null)
+    @RequestMapping(value = "deleteGame/{gameId}")
+    public ResponseEntity<String> deleteGame(@PathVariable("gameId") Long gameId) {
+        if(gameId == null)
+            return ResponseEntity.badRequest().body("Game Id must be provided");
+        Game game = gameRepository.findGameByGameId(gameId);
+        if(game == null)
             return ResponseEntity.badRequest().body("Game does not exist");
         gameRepository.delete(game);
         return ResponseEntity.ok().build();
