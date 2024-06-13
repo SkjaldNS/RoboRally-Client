@@ -16,14 +16,14 @@ public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long playerId;
 
     @Column(name = "PLAYERNAME")
     private String playerName;
     @Column(name = "ROBOTID")
     private int robotId;
 
-    public Long getPlayerId() {
-        return id;
+    public void setId(Long playerId) {
+        this.playerId = playerId;
     }
 }
