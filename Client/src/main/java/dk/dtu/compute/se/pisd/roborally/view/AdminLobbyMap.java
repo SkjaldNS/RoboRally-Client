@@ -2,9 +2,9 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -18,7 +18,6 @@ public class AdminLobbyMap extends VBox {
 
     private ImageView mapPreview;
     private Rectangle mapPreviewBackground;
-
     public AdminLobbyMap() {
         ComboBox<String> mapSelection = new ComboBox<>();
         mapSelection.getItems().addAll("Map 1");
@@ -32,8 +31,7 @@ public class AdminLobbyMap extends VBox {
 
         mapPreviewBackground = new Rectangle(200, 200);
         mapPreviewBackground.setFill(Color.LIGHTGRAY);
-
-        getChildren().addAll(mapSelection, mapPreviewBackground, mapPreview);
+        getChildren().addAll(mapSelection, mapPreviewBackground);
         this.alignmentProperty().set(Pos.CENTER_RIGHT);
 
         // Add event handler for ComboBox selection changes
@@ -44,21 +42,17 @@ public class AdminLobbyMap extends VBox {
             }
         });
     }
-
     private void updateMapPreview(String imagePath) {
         try {
             // Correctly load the image from the resources folder
             Image mapImage = new Image(getClass().getClassLoader().getResourceAsStream(imagePath));
-            if (mapImage == null) {
-                throw new IllegalArgumentException("Image not found: " + imagePath);
-            }
 
             // Remove the placeholder and set the image
             getChildren().remove(mapPreviewBackground);
+            getChildren().add(mapPreview);
             mapPreview.setImage(mapImage);
         } catch (Exception e) {
             System.err.println("Could not load image: " + imagePath);
-            e.printStackTrace();
         }
     }
 }
