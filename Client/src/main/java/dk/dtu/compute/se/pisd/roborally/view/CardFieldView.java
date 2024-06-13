@@ -66,7 +66,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     private GameController gameController;
 
-    public CardFieldView(@NotNull GameController gameController, @NotNull CommandCardField field, CommandCardHandField hand) {
+    public CardFieldView(@NotNull GameController gameController, /*@NotNull*/ CommandCardField field, CommandCardHandField hand) {
         this.gameController = gameController;
         this.field = field;
         this.hand = hand;
@@ -267,6 +267,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
         public void handle(DragEvent event) {
             Object t = event.getTarget();
             if (t instanceof CardFieldView) {
+
                 CardFieldView target = (CardFieldView) t;
                 CommandCardField cardField = target.field;
 

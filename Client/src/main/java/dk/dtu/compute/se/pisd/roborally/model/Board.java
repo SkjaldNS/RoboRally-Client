@@ -81,6 +81,9 @@ public class Board extends Subject {
     @Expose
     private boolean stepMode;
 
+    @Expose
+    private PlayerLocal local;
+
     // Empty constructor for GSON since it will give errors without it
     public Board() {}
 
@@ -190,6 +193,8 @@ public class Board extends Subject {
             notifyChange();
         }
     }
+
+    public PlayerLocal getLocalPlayer() { return local; }
 
     public Phase getPhase() {
         return phase;
