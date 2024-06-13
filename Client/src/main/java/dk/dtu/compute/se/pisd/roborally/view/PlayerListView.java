@@ -1,6 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.roborally.controller.AbstractRestController;
+import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
@@ -19,8 +20,10 @@ public class PlayerListView extends ScrollPane {
     public PlayerListView(AbstractRestController restController) {
         playerItemViews = new ArrayList<>();
         playerListContainer = new VBox();
+        playerListContainer.alignmentProperty().set(Pos.CENTER_RIGHT);
         playerListContainer.getChildren().addAll(playerItemViews);
         this.setMinWidth(200);
+        this.setMinHeight(200);
         setContent(playerListContainer);
     }
 
