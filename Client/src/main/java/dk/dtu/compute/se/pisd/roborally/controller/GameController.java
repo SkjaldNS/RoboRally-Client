@@ -407,7 +407,7 @@ public class GameController {
             }
 
             for (int j = 0; j < PlayerLocal.NO_CARDS; j++) {
-                CommandCardField field = player.getCardField(j);
+                CommandCardHandField field = player.getCardField(j);
                 field.setCard(new CommandCard(currentDeck.initDeck.get(0)));
                 currentDeck.initDeck.remove(0);
                 field.setVisible(true);

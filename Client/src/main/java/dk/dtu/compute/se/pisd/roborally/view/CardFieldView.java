@@ -111,8 +111,8 @@ public class CardFieldView extends GridPane implements ViewObserver {
             }
 
             for (int i = 0; i < PlayerLocal.NO_CARDS; i++) {
-                CommandCardField other = handField.player.getCardField(i);
-                if (other == cardField) {
+                CommandCardHandField other = handField.player.getCardField(i);
+                if (other == handField) {
                     return "C," + i;
                 }
             }
@@ -130,7 +130,18 @@ public class CardFieldView extends GridPane implements ViewObserver {
                     if (i < Player.NO_REGISTERS) {
                         return field.player.getProgramField(i);
                     }
-                } else if ("C".equals(strings[0])) {
+                }
+            }
+        }
+        return null;
+    }
+
+    private CommandCardHandField handFieldFromRepresentation(String rep){
+        if (rep != null && field.player != null && hand.player.isLocalPlayer()) {
+            String[] strings = rep.split(",");
+            if (strings.length == 2) {
+                int i = Integer.parseInt(strings[1]);
+                if ("C".equals(strings[0])) {
                     if (i < PlayerLocal.NO_CARDS) {
                         return hand.player.getCardField(i);
                     }
