@@ -428,11 +428,10 @@ public class GameController {
 
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
-            Player blankPlayer = board.getPlayer(i);
 
-            if (blankPlayer != null) {
+            if (board.getPlayer(i) != null) {
                 for (int j = 0; j < Player.NO_REGISTERS; j++) {
-                    CommandCardField field = player.getProgramField(j);
+                    CommandCardField field = board.getPlayer(i).getProgramField(j);
                     field.setCard(null);
                     field.setVisible(true);
                 }
