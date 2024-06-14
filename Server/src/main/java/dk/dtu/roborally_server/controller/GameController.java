@@ -42,7 +42,7 @@ public class GameController {
         if(gameRepository.findGameByGameName(game.getGameName()) != null)
             return ResponseEntity.badRequest().body("Game already exists");
         gameRepository.save(game);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(game.getGameId().toString());
     }
     @PutMapping
     @RequestMapping(value = "/updateGame")
