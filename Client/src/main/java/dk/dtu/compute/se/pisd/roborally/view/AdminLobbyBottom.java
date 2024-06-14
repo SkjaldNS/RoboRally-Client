@@ -19,10 +19,8 @@ public class AdminLobbyBottom extends HBox {
     public AdminLobbyBottom(PreLobbyView preLobbyView, BorderPane boardroot) {
         Button closeButton = new Button("Close");
         Button startGameButton = new Button("Start Game");
-        HBox test = new HBox();
-        test.setVisible(false);
-        HBox.setHgrow(test, Priority.ALWAYS);
-        getChildren().addAll(closeButton, test, startGameButton);
+
+        getChildren().addAll(closeButton, startGameButton);
 
         closeButton.setOnAction(e -> switchToPreLobby(boardroot, preLobbyView));
     }
