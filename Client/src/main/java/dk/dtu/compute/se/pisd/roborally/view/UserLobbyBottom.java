@@ -8,6 +8,8 @@ import javafx.scene.layout.Priority;
 /**
  * Represents the bottom part of the user lobby view
  * which includes the close button.
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
  */
 public class UserLobbyBottom extends HBox {
 

@@ -11,6 +11,8 @@ import javafx.scene.text.Text;
 /**
  * Represents the view for the user lobby screen
  * containing the player list and the map image.
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
  */
 public class UserLobbyView extends VBox {
 

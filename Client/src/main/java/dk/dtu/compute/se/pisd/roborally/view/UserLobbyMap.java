@@ -9,6 +9,8 @@ import javafx.scene.shape.Rectangle;
 
 /**
  * Represents the map display part of the user lobby view.
+ * @author Daniel Overballe Lerche, s235095
+ * @author Asma Maryam, s230716
  */
 public class UserLobbyMap extends VBox {
 
