@@ -1,29 +1,9 @@
-/*
- *  This file is part of the initial project provided for the
- *  course "Project in Software Development (02362)" held at
- *  DTU Compute at the Technical University of Denmark.
- *
- *  Copyright (C) 2019, 2020: Ekkart Kindler, ekki@dtu.dk
- *
- *  This software is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; version 2 of the License.
- *
- *  This project is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this project; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- */
 package dk.dtu.compute.se.pisd.roborally;
 
 import dk.dtu.compute.se.pisd.roborally.controller.AbstractRestController;
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.controller.RestControllerImpl;
 import dk.dtu.compute.se.pisd.roborally.view.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -36,7 +16,7 @@ import java.io.IOException;
 /**
  * ...
  *
- * @author Ekkart Kindler, ekki@dtu.dk
+ * @authork Ekkart Kindler, ekki@dtu.dk
  *
  */
 public class RoboRally extends Application {
@@ -65,8 +45,10 @@ public class RoboRally extends Application {
         VBox vbox = new VBox(menuBar, boardRoot);
         vbox.setMinWidth(MIN_APP_WIDTH);
         Scene primaryScene = new Scene(vbox);
-        AbstractRestController restController = null;
+
+        AbstractRestController restController = new RestControllerImpl();
         boardRoot.setCenter(new PreLobbyView(boardRoot, restController));
+
         stage.setScene(primaryScene);
         stage.setTitle("RoboRally");
         stage.setOnCloseRequest(
@@ -77,7 +59,7 @@ public class RoboRally extends Application {
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                } );
+                });
         stage.setResizable(false);
         stage.sizeToScene();
         stage.show();
@@ -109,5 +91,4 @@ public class RoboRally extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 }

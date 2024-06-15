@@ -10,25 +10,27 @@ import javafx.scene.text.Text;
 
 /**
  * Represents a single game item in the game item list view.
- * @author Daniel Overballe Lerche, s235095
- * @author Asma Maryam, s230716
+ *
  */
-public class GameItemView extends HBox  {
+public class GameItemView extends HBox {
 
     private static final String JOIN_BUTTON_MESSAGE = "Join Game";
     private final Button joinGameButton;
     private final Text gameNameText;
 
-    public GameItemView(Game game, AbstractRestController restController) {
+    public GameItemView(Game game, AbstractRestController restController, Runnable onClickAction) {
         joinGameButton = new Button(JOIN_BUTTON_MESSAGE);
         gameNameText = new Text("Game " + game.getGameId());
         HBox.setMargin(gameNameText, new Insets(0, 10, 0, 0));
         paddingProperty().set(new Insets(10, 10, 10, 10));
         this.getChildren().addAll(gameNameText, joinGameButton);
-        this.alignmentProperty().set(Pos.CENTER_RIGHT);
+        this.setAlignment(Pos.CENTER_RIGHT);
 
         joinGameButton.setOnAction(e -> {
             restController.joinGame(game.getGameId());
+            onClickAction.run();
         });
+
+        this.setOnMouseClicked(e -> onClickAction.run());
     }
 }
