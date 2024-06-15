@@ -1,6 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
-import dk.dtu.compute.se.pisd.roborally.controller.AbstractRestController;
+import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -15,11 +15,15 @@ import javafx.scene.text.Text;
  */
 public class AdminLobbyView extends VBox {
 
+    private final AdminLobbyMap adminLobbyMap;
+    private final PlayerListView playerListView;
+    private final AdminLobbyBottom adminLobbyBottom;
+
     //call player Item View and Player List View.
-    public AdminLobbyView(PreLobbyView preLobbyView, BorderPane boardRoot, AbstractRestController restController) {
-        AdminLobbyMap adminLobbyMap = new AdminLobbyMap();
-        PlayerListView playerListView = new PlayerListView(restController);
-        AdminLobbyBottom adminLobbyBottom = new AdminLobbyBottom(preLobbyView, boardRoot);
+    public AdminLobbyView(PreLobbyView preLobbyView) {
+        adminLobbyMap = new AdminLobbyMap();
+        playerListView = new PlayerListView();
+        adminLobbyBottom = new AdminLobbyBottom(preLobbyView);
         HBox filler = new HBox();
         HBox.setHgrow(filler, Priority.ALWAYS);
         Text playerListTitle = new Text("Players");
@@ -27,6 +31,18 @@ public class AdminLobbyView extends VBox {
         VBox playerListContainer = new VBox(playerListTitle, playerListView);
         HBox content = new HBox(playerListContainer, filler, adminLobbyMap);
         getChildren().addAll(content, adminLobbyBottom);
+    }
+
+    public AdminLobbyMap getAdminLobbyMap() {
+        return adminLobbyMap;
+    }
+
+    public PlayerListView getPlayerListView() {
+        return playerListView;
+    }
+
+    public AdminLobbyBottom getAdminLobbyBottom() {
+        return adminLobbyBottom;
     }
 
 }

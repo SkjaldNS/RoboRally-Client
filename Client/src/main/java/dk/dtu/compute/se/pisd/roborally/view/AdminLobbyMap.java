@@ -16,8 +16,8 @@ import javafx.scene.shape.Rectangle;
  */
 public class AdminLobbyMap extends VBox {
 
-    private ImageView mapPreview;
-    private Rectangle mapPreviewBackground;
+    private final ImageView mapPreview;
+    private final Rectangle mapPreviewBackground;
     public AdminLobbyMap() {
         ComboBox<String> mapSelection = new ComboBox<>();
         mapSelection.getItems().addAll("Map 1");
@@ -54,5 +54,9 @@ public class AdminLobbyMap extends VBox {
         } catch (Exception e) {
             System.err.println("Could not load image: " + imagePath);
         }
+    }
+
+    public ImageView getMapPreview() {
+        return mapPreview;
     }
 }

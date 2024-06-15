@@ -4,7 +4,7 @@ import dk.dtu.compute.se.pisd.roborally.model.Game;
 
 import java.util.List;
 
-public interface AbstractRestController {
+public interface RestController {
 
     List<Integer> getPlayerIds();
 
@@ -13,4 +13,6 @@ public interface AbstractRestController {
     void createGame();
 
     void joinGame(int gameId);
+
+    void startGame(int gameId);
 }

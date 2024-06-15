@@ -1,7 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
-import dk.dtu.compute.se.pisd.roborally.controller.AbstractRestController;
-import dk.dtu.compute.se.pisd.roborally.model.Game;
+import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -10,9 +9,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Represents the view for the pre-lobby screen
@@ -31,9 +27,8 @@ public class PreLobbyView extends HBox {
     private final Text gameItemListTitle;
 
     // TODO - Give a controller to the view that handles game fetching
-    public PreLobbyView(BorderPane boardRoot, AbstractRestController restController) {
-        gameItemListView = new GameItemListView();
-
+    public PreLobbyView(GameItemListView gameItemListView) {
+        this.gameItemListView = gameItemListView;
         // Title for the game item list
         gameItemListTitle = new Text(GAME_ITEM_LIST_TITLE);
         gameItemListTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
@@ -52,23 +47,17 @@ public class PreLobbyView extends HBox {
         HBox filler = new HBox();
         HBox.setHgrow(filler, Priority.ALWAYS);
         this.getChildren().addAll(gameItemListViewContainer, filler, createGameButton);
-
-        createGameButton.setOnAction(e -> {
-            switchToAdminLobbyView(boardRoot, restController);
-        });
-
-        refreshGameListButton.setOnAction(e -> {
-            gameItemListView.setGameItems(
-                    restController.getGames()
-                            .stream()
-                            .map(game -> new GameItemView(game, restController))
-                            .toList()
-            );
-            switchToAdminLobbyView(boardRoot, restController);
-        });
     }
 
-    private void switchToAdminLobbyView(BorderPane boardRoot, AbstractRestController restController) {
-        boardRoot.setCenter(new AdminLobbyView(this, boardRoot, restController));
+    public Button getCreateGameButton() {
+        return createGameButton;
+    }
+
+    public Button getRefreshGameListButton() {
+        return refreshGameListButton;
+    }
+
+    public GameItemListView getGameItemListView() {
+        return gameItemListView;
     }
 }

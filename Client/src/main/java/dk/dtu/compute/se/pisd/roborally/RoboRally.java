@@ -21,9 +21,12 @@
  */
 package dk.dtu.compute.se.pisd.roborally;
 
-import dk.dtu.compute.se.pisd.roborally.controller.AbstractRestController;
+import dk.dtu.compute.se.pisd.roborally.controller.FakeRestController;
+import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
+import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.view.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -65,8 +68,39 @@ public class RoboRally extends Application {
         VBox vbox = new VBox(menuBar, boardRoot);
         vbox.setMinWidth(MIN_APP_WIDTH);
         Scene primaryScene = new Scene(vbox);
-        AbstractRestController restController = null;
-        boardRoot.setCenter(new PreLobbyView(boardRoot, restController));
+
+        RestController restController = new FakeRestController();
+        GameItemListView gameItemListView = new GameItemListView();
+        PreLobbyView preLobbyView = new PreLobbyView(gameItemListView);
+        boardRoot.setCenter(preLobbyView);
+
+        preLobbyView.getCreateGameButton().setOnAction(e -> {
+
+            AdminLobbyView adminLobbyView = new AdminLobbyView(preLobbyView);
+
+            adminLobbyView.getAdminLobbyBottom().getCloseButton().setOnAction(e1 -> {
+                boardRoot.setCenter(preLobbyView);
+            });
+
+            adminLobbyView.getAdminLobbyBottom().getStartGameButton().setOnAction(e1 -> {
+                try {
+                    appController.newGame();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            });
+            boardRoot.setCenter(adminLobbyView);
+        });
+
+        preLobbyView.getRefreshGameListButton().setOnAction(e -> {
+            gameItemListView.setGameItems(
+                    restController.getGames()
+                            .stream()
+                            .map(game -> new GameItemView(game, restController))
+                            .toList()
+            );
+        });
+
         stage.setScene(primaryScene);
         stage.setTitle("RoboRally");
         stage.setOnCloseRequest(

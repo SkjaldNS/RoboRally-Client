@@ -1,5 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
+import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
@@ -16,18 +17,23 @@ import javafx.scene.layout.VBox;
  */
 public class AdminLobbyBottom extends HBox {
 
-    public AdminLobbyBottom(PreLobbyView preLobbyView, BorderPane boardroot) {
-        Button closeButton = new Button("Close");
-        Button startGameButton = new Button("Start Game");
+    private final Button closeButton;
+    private final Button startGameButton;
+
+    public AdminLobbyBottom(PreLobbyView preLobbyView) {
+        closeButton = new Button("Close");
+        startGameButton = new Button("Start Game");
         HBox test = new HBox();
         test.setVisible(false);
         HBox.setHgrow(test, Priority.ALWAYS);
         getChildren().addAll(closeButton, test, startGameButton);
-
-        closeButton.setOnAction(e -> switchToPreLobby(boardroot, preLobbyView));
     }
 
-    private void switchToPreLobby(BorderPane boardRoot, PreLobbyView preLobbyView) {
-        boardRoot.setCenter(preLobbyView);
+    public Button getCloseButton() {
+        return closeButton;
+    }
+
+    public Button getStartGameButton() {
+        return startGameButton;
     }
 }
