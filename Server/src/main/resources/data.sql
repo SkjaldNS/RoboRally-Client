@@ -5,4 +5,4 @@ insert into move(gameId, turnId, playerId, reg1, reg2, reg3, reg4, reg5) values 
 insert into move(gameId, turnId, playerId, reg1, reg2, reg3, reg4, reg5) values (1, 1, 2, 5, 4, 3, 2, 1);
 
 
-insert into games(gameName, boardId, gameStatus, turnId, maxPlayers) values ('Game1', 1, 'gameStatus', 1, 6), ('Game2', 2, 'gameStatus', 1, 6), ('Game3', 3, 'gameStatus', 1, 6);
+insert into games(gameName, boardId, gameStatus, turnId, maxPlayers) values ('Game1', 1, 0, 1, 6), ('Game2', 2, 0, 1, 6), ('Game3', 3, 0, 1, 6);
