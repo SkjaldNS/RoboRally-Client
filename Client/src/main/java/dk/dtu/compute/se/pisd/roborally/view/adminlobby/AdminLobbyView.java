@@ -1,5 +1,7 @@
-package dk.dtu.compute.se.pisd.roborally.view;
+package dk.dtu.compute.se.pisd.roborally.view.adminlobby;
 
+import dk.dtu.compute.se.pisd.roborally.view.playeritem.PlayerListView;
+import dk.dtu.compute.se.pisd.roborally.view.PreLobbyView;
 import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -14,15 +16,8 @@ import javafx.scene.text.Text;
  */
 public class AdminLobbyView extends VBox {
 
-    private final AdminLobbyMap adminLobbyMap;
-    private final PlayerListView playerListView;
-    private final AdminLobbyBottom adminLobbyBottom;
-
     //call player Item View and Player List View.
-    public AdminLobbyView(PreLobbyView preLobbyView) {
-        adminLobbyMap = new AdminLobbyMap();
-        playerListView = new PlayerListView();
-        adminLobbyBottom = new AdminLobbyBottom(preLobbyView);
+    public AdminLobbyView(PlayerListView playerListView, AdminLobbyMap adminLobbyMap, AdminLobbyBottom adminLobbyBottom) {
         HBox filler = new HBox();
         this.paddingProperty().set(new Insets(10, 10, 10, 10));
         HBox.setHgrow(filler, Priority.ALWAYS);
@@ -32,19 +27,6 @@ public class AdminLobbyView extends VBox {
         HBox content = new HBox(playerListContainer, filler, adminLobbyMap);
         getChildren().addAll(content, adminLobbyBottom);
     }
-
-    public AdminLobbyMap getAdminLobbyMap() {
-        return adminLobbyMap;
-    }
-
-    public PlayerListView getPlayerListView() {
-        return playerListView;
-    }
-
-    public AdminLobbyBottom getAdminLobbyBottom() {
-        return adminLobbyBottom;
-    }
-
 }
 
 

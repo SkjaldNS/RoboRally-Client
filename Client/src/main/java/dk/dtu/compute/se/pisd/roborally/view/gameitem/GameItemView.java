@@ -1,6 +1,5 @@
-package dk.dtu.compute.se.pisd.roborally.view;
+package dk.dtu.compute.se.pisd.roborally.view.gameitem;
 
-import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import dk.dtu.compute.se.pisd.roborally.model.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,7 +27,7 @@ public class GameItemView extends HBox {
         this.setAlignment(Pos.CENTER_RIGHT);
     }
 
-    public Button getJoinGameButton() {
-        return joinGameButton;
+    public void setJoinGameButtonAction(Runnable action) {
+        this.joinGameButton.setOnAction(e -> action.run());
     }
 }

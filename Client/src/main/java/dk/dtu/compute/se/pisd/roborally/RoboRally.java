@@ -26,6 +26,15 @@ import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.view.*;
+import dk.dtu.compute.se.pisd.roborally.view.adminlobby.AdminLobbyBottom;
+import dk.dtu.compute.se.pisd.roborally.view.adminlobby.AdminLobbyMap;
+import dk.dtu.compute.se.pisd.roborally.view.adminlobby.AdminLobbyView;
+import dk.dtu.compute.se.pisd.roborally.view.gameitem.GameItemListView;
+import dk.dtu.compute.se.pisd.roborally.view.gameitem.GameItemView;
+import dk.dtu.compute.se.pisd.roborally.view.playeritem.PlayerListView;
+import dk.dtu.compute.se.pisd.roborally.view.userlobby.UserLobbyBottom;
+import dk.dtu.compute.se.pisd.roborally.view.userlobby.UserLobbyMap;
+import dk.dtu.compute.se.pisd.roborally.view.userlobby.UserLobbyView;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -33,6 +42,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ...
@@ -68,36 +80,8 @@ public class RoboRally extends Application {
         Scene primaryScene = new Scene(vbox);
 
         RestController restController = new FakeRestController();
-        GameItemListView gameItemListView = new GameItemListView();
-        PreLobbyView preLobbyView = new PreLobbyView(gameItemListView);
+        PreLobbyView preLobbyView = createPreLobbyView(appController, restController);
         boardRoot.setCenter(preLobbyView);
-
-        preLobbyView.getCreateGameButton().setOnAction(e -> {
-
-            AdminLobbyView adminLobbyView = new AdminLobbyView(preLobbyView);
-
-            adminLobbyView.getAdminLobbyBottom().getCloseButton().setOnAction(e1 -> {
-                boardRoot.setCenter(preLobbyView);
-            });
-
-            adminLobbyView.getAdminLobbyBottom().getStartGameButton().setOnAction(e1 -> {
-                try {
-                    appController.newGame();
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-            });
-            boardRoot.setCenter(adminLobbyView);
-        });
-
-        preLobbyView.getRefreshGameListButton().setOnAction(e -> {
-            gameItemListView.setGameItems(
-                    restController.getGames()
-                            .stream()
-                            .map(GameItemView::new)
-                            .toList()
-            );
-        });
 
         stage.setScene(primaryScene);
         stage.setTitle("RoboRally");
@@ -113,6 +97,66 @@ public class RoboRally extends Application {
         stage.setResizable(false);
         stage.sizeToScene();
         stage.show();
+    }
+
+    private AdminLobbyView createAdminLobbyView(AppController appController, PreLobbyView preLobbyView){
+        AdminLobbyBottom adminLobbyBottom = new AdminLobbyBottom();
+        AdminLobbyMap adminLobbyMap = new AdminLobbyMap();
+        PlayerListView playerListView = new PlayerListView();
+
+        AdminLobbyView adminLobbyView = new AdminLobbyView(playerListView, adminLobbyMap, adminLobbyBottom);
+
+        adminLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(preLobbyView));
+
+        adminLobbyBottom.setStartGameButtonAction(() -> {
+            try {
+                appController.newGame();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        return adminLobbyView;
+    }
+
+    private PreLobbyView createPreLobbyView(AppController appController, RestController restController) {
+        GameItemListView gameItemListView = new GameItemListView();
+        PreLobbyView preLobbyView = new PreLobbyView(gameItemListView);
+
+        preLobbyView.setCreateGameButtonAction(() -> {
+            AdminLobbyView adminLobbyView = createAdminLobbyView(appController, preLobbyView);
+            boardRoot.setCenter(adminLobbyView);
+        });
+
+        preLobbyView.setRefreshGameListButtonAction(() -> {
+            List<GameItemView> gameItemViews = restController.getGames()
+                    .stream()
+                    .map(GameItemView::new)
+                    .toList();
+
+            for (GameItemView gameItemView : gameItemViews) {
+                gameItemView.setJoinGameButtonAction(() -> {
+                    UserLobbyView userLobbyView = createUserLobbyView(preLobbyView, restController);
+                    boardRoot.setCenter(userLobbyView);
+                });
+            }
+
+            gameItemListView.setGameItems(gameItemViews);
+        });
+
+        return preLobbyView;
+    }
+
+    private UserLobbyView createUserLobbyView(PreLobbyView preLobbyView, RestController restController) {
+        UserLobbyMap userLobbyMap = new UserLobbyMap();
+        PlayerListView playerListView = new PlayerListView();
+        UserLobbyBottom userLobbyBottom = new UserLobbyBottom(preLobbyView);
+
+        UserLobbyView userLobbyView = new UserLobbyView(userLobbyBottom, userLobbyMap, playerListView);
+
+        userLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(preLobbyView));
+
+        return userLobbyView;
     }
 
     public void createBoardView(GameController gameController) {

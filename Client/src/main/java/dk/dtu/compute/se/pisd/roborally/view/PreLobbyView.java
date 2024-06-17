@@ -1,18 +1,13 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
-import dk.dtu.compute.se.pisd.roborally.controller.RestController;
-import dk.dtu.compute.se.pisd.roborally.model.Game;
+import dk.dtu.compute.se.pisd.roborally.view.gameitem.GameItemListView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Represents the view for the pre-lobby screen
@@ -54,15 +49,11 @@ public class PreLobbyView extends HBox {
         this.getChildren().addAll(gameItemListViewContainer, filler, createGameButton);
     }
 
-    public Button getCreateGameButton() {
-        return createGameButton;
+    public void setCreateGameButtonAction(Runnable action) {
+        this.createGameButton.setOnAction(e -> action.run());
     }
 
-    public Button getRefreshGameListButton() {
-        return refreshGameListButton;
-    }
-
-    public GameItemListView getGameItemListView() {
-        return gameItemListView;
+    public void setRefreshGameListButtonAction(Runnable action) {
+        this.refreshGameListButton.setOnAction(e -> action.run());
     }
 }

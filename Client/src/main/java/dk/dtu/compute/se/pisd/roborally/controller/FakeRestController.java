@@ -1,11 +1,14 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import dk.dtu.compute.se.pisd.designpatterns.observer.Observer;
+import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.Game;
 import dk.dtu.compute.se.pisd.roborally.model.GameStatus;
+import dk.dtu.compute.se.pisd.roborally.model.Player;
 
 import java.util.List;
 
-public class FakeRestController implements RestController {
+public class FakeRestController implements RestController, Observer {
 
     @Override
     public List<Integer> getPlayerIds() {
@@ -37,5 +40,15 @@ public class FakeRestController implements RestController {
     @Override
     public void startGame(int gameId) {
         System.out.println("Started game " + gameId);
+    }
+
+    @Override
+    public void update(Subject subject) {
+        if(subject instanceof Game game) {
+            System.out.println("Game " + game.getGameId() + " updated");
+        }
+        if(subject instanceof Player player) {
+            System.out.println("Player " + player.getPlayerID() + " updated");
+        }
     }
 }

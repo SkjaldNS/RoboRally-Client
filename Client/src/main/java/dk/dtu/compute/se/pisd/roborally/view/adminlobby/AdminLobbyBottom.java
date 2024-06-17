@@ -1,13 +1,8 @@
-package dk.dtu.compute.se.pisd.roborally.view;
+package dk.dtu.compute.se.pisd.roborally.view.adminlobby;
 
-import dk.dtu.compute.se.pisd.roborally.controller.RestController;
-import javafx.geometry.Pos;
+import dk.dtu.compute.se.pisd.roborally.view.PreLobbyView;
 import javafx.scene.control.Button;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 
 /**
  * Represents the bottom part of the admin lobby view
@@ -20,17 +15,17 @@ public class AdminLobbyBottom extends HBox {
     private final Button closeButton;
     private final Button startGameButton;
 
-    public AdminLobbyBottom(PreLobbyView preLobbyView) {
+    public AdminLobbyBottom() {
         closeButton = new Button("Close");
         startGameButton = new Button("Start Game");
         getChildren().addAll(closeButton, startGameButton);
     }
 
-    public Button getCloseButton() {
-        return closeButton;
+    public void setCloseButtonAction(Runnable action) {
+        this.closeButton.setOnAction(e -> action.run());
     }
 
-    public Button getStartGameButton() {
-        return startGameButton;
+    public void setStartGameButtonAction(Runnable action) {
+        this.startGameButton.setOnAction(e -> action.run());
     }
 }

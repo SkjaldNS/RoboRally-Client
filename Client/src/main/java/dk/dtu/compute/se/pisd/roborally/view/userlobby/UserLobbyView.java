@@ -1,6 +1,8 @@
-package dk.dtu.compute.se.pisd.roborally.view;
+package dk.dtu.compute.se.pisd.roborally.view.userlobby;
 
 import dk.dtu.compute.se.pisd.roborally.controller.RestController;
+import dk.dtu.compute.se.pisd.roborally.view.playeritem.PlayerListView;
+import dk.dtu.compute.se.pisd.roborally.view.PreLobbyView;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -16,10 +18,7 @@ import javafx.scene.text.Text;
  */
 public class UserLobbyView extends VBox {
 
-    public UserLobbyView(PreLobbyView preLobbyView, BorderPane boardRoot, RestController restController) {
-        UserLobbyMap userLobbyMap = new UserLobbyMap();
-        PlayerListView playerListView = new PlayerListView();
-        UserLobbyBottom userLobbyBottom = new UserLobbyBottom(preLobbyView, boardRoot);
+    public UserLobbyView(UserLobbyBottom userLobbyBottom, UserLobbyMap userLobbyMap, PlayerListView playerListView) {
         HBox filler = new HBox();
         this.paddingProperty().set(new Insets(10, 10, 10, 10));
         HBox.setHgrow(filler, Priority.ALWAYS);

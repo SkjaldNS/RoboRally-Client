@@ -1,4 +1,4 @@
-package dk.dtu.compute.se.pisd.roborally.view;
+package dk.dtu.compute.se.pisd.roborally.view.adminlobby;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
