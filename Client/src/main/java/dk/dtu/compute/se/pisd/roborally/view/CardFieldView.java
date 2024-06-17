@@ -23,10 +23,7 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
-import dk.dtu.compute.se.pisd.roborally.model.Phase;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -63,13 +60,16 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     private CommandCardField field;
 
+    private CommandCardHandField hand;
+
     private Label label;
 
     private GameController gameController;
 
-    public CardFieldView(@NotNull GameController gameController, @NotNull CommandCardField field) {
+    public CardFieldView(@NotNull GameController gameController, /*@NotNull*/ CommandCardField field, CommandCardHandField hand) {
         this.gameController = gameController;
         this.field = field;
+        this.hand = hand;
 
         this.setAlignment(Pos.CENTER);
         this.setPadding(new Insets(5, 5, 5, 5));
@@ -100,8 +100,8 @@ public class CardFieldView extends GridPane implements ViewObserver {
         update(field);
     }
 
-    private String cardFieldRepresentation(CommandCardField cardField) {
-        if (cardField.player != null) {
+    private String cardFieldRepresentation(CommandCardField cardField, CommandCardHandField handField) {
+        if (cardField.player != null && cardField.player.isLocalPlayer()) {
 
             for (int i = 0; i < Player.NO_REGISTERS; i++) {
                 CommandCardField other = cardField.player.getProgramField(i);
@@ -110,9 +110,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
                 }
             }
 
-            for (int i = 0; i < Player.NO_CARDS; i++) {
-                CommandCardField other = cardField.player.getCardField(i);
-                if (other == cardField) {
+            for (int i = 0; i < PlayerLocal.NO_CARDS; i++) {
+                CommandCardHandField other = handField.player.getCardField(i);
+                if (other == handField) {
                     return "C," + i;
                 }
             }
@@ -122,7 +122,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
     }
 
     private CommandCardField cardFieldFromRepresentation(String rep) {
-        if (rep != null && field.player != null) {
+        if (rep != null && field.player != null && hand.player.isLocalPlayer()) {
             String[] strings = rep.split(",");
             if (strings.length == 2) {
                 int i = Integer.parseInt(strings[1]);
@@ -130,9 +130,20 @@ public class CardFieldView extends GridPane implements ViewObserver {
                     if (i < Player.NO_REGISTERS) {
                         return field.player.getProgramField(i);
                     }
-                } else if ("C".equals(strings[0])) {
-                    if (i < Player.NO_CARDS) {
-                        return field.player.getCardField(i);
+                }
+            }
+        }
+        return null;
+    }
+
+    private CommandCardHandField handFieldFromRepresentation(String rep){
+        if (rep != null && field.player != null && hand.player.isLocalPlayer()) {
+            String[] strings = rep.split(",");
+            if (strings.length == 2) {
+                int i = Integer.parseInt(strings[1]);
+                if ("C".equals(strings[0])) {
+                    if (i < PlayerLocal.NO_CARDS) {
+                        return hand.player.getCardField(i);
                     }
                 }
             }
@@ -159,18 +170,19 @@ public class CardFieldView extends GridPane implements ViewObserver {
             Object t = event.getTarget();
             if (t instanceof CardFieldView) {
                 CardFieldView source = (CardFieldView) t;
-                CommandCardField cardField = source.field;
-                if (cardField != null &&
-                        cardField.getCard() != null &&
-                        cardField.player != null &&
-                        cardField.player.board != null &&
-                        cardField.player.board.getPhase().equals(Phase.PROGRAMMING)) {
+                CommandCardField register = source.field;
+                CommandCardHandField hand = source.hand;
+                if (register != null &&
+                        register.getCard() != null &&
+                        register.player != null &&
+                        register.player.board != null &&
+                        register.player.board.getPhase().equals(Phase.PROGRAMMING)) {
                     Dragboard db = source.startDragAndDrop(TransferMode.MOVE);
                     Image image = source.snapshot(null, null);
                     db.setDragView(image);
 
                     ClipboardContent content = new ClipboardContent();
-                    content.put(ROBO_RALLY_CARD, cardFieldRepresentation(cardField));
+                    content.put(ROBO_RALLY_CARD, cardFieldRepresentation(register, hand));
 
                     db.setContent(content);
                     source.setBackground(BG_DRAG);
@@ -255,6 +267,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
         public void handle(DragEvent event) {
             Object t = event.getTarget();
             if (t instanceof CardFieldView) {
+
                 CardFieldView target = (CardFieldView) t;
                 CommandCardField cardField = target.field;
 

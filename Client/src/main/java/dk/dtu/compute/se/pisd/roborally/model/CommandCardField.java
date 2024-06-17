@@ -30,7 +30,7 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
-public class CommandCardField extends Subject {
+public class CommandCardField extends Subject implements CommandCardInterface{
 
     public Player player;
 
@@ -69,5 +69,10 @@ public class CommandCardField extends Subject {
             this.visible = visible;
             notifyChange();
         }
+    }
+
+    @Override
+    public int getType() {
+        return 1;
     }
 }

@@ -24,13 +24,13 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
+
 import java.util.List;
 
 /**
- *
  * Controls the game logic.
- * @author Ekkart Kindler, ekki@dtu.dk
  *
+ * @author Ekkart Kindler, ekki@dtu.dk
  */
 public class GameController {
 
@@ -68,6 +68,7 @@ public class GameController {
             }
         }
     }
+
     /**
      * Moves the given player forward two spaces on the board, if possible.
      *
@@ -88,7 +89,7 @@ public class GameController {
      * @author Marcus Langkilde, s195080@DTU.dk
      * @author Haleef Abu Talib, s224523@dtu.dk
      */
-   public void backup(@NotNull Player player) {
+    public void backup(@NotNull Player player) {
         Space space = player.getSpace();
         Heading heading = player.getHeading();
         Space target = board.getNeighbour(space, heading.opposite());
@@ -100,6 +101,7 @@ public class GameController {
             }
         }
     }
+
     /**
      * Turns the given player's heading to the right.
      *
@@ -121,21 +123,22 @@ public class GameController {
     public void turnLeft(@NotNull Player player) {
         player.setHeading(player.getHeading().prev());
     }
+
     /**
      * Moves the given player to the specified space with the provided heading.
      *
-     * @param player The player to move.
-     * @param space The space to move the player to.
+     * @param player  The player to move.
+     * @param space   The space to move the player to.
      * @param heading The heading in which the player will move.
      * @throws ImpossibleMoveException if the move cannot be completed.
-     * @throws NullPointerException if {@code player}, {@code space}, or {@code heading} is null.
+     * @throws NullPointerException    if {@code player}, {@code space}, or {@code heading} is null.
      */
     void moveToSpace(@NotNull Player player, @NotNull Space space, @NotNull Heading heading) throws ImpossibleMoveException {
         assert board.getNeighbour(player.getSpace(), heading) == space; // make sure the move to here is possible in principle
         Player other = space.getPlayer();
-        if (other != null){
+        if (other != null) {
             Space target = board.getNeighbour(space, heading);
-            if (target != null ) {
+            if (target != null) {
                 moveToSpace(other, target, heading);
                 assert target.getPlayer() == null : target; // make sure target is free now
             } else {
@@ -152,7 +155,7 @@ public class GameController {
      * @author Marcus Langkilde, s195080@DTU.dk
      * @author Haleef Abu Talib, s224523@dtu.dk
      */
-    public void powerUp(Player player){
+    public void powerUp(Player player) {
         player.oneUpPowerUpCnt();
     }
 
@@ -163,14 +166,14 @@ public class GameController {
      */
     public void moveCurrentPlayerToSpace(Space space) {
         Player currentPlayer = board.getCurrentPlayer();
-        if(space.getPlayer() == null){
+        if (space.getPlayer() == null) {
             currentPlayer.setSpace(space);
             space.setPlayer(currentPlayer);
             board.setTotalMoves(board.getTotalMoves() + 1);
 
             int nextPlayerNum;
 
-            if(board.getPlayersNumber() != board.getPlayerNumber(currentPlayer) + 1){
+            if (board.getPlayersNumber() != board.getPlayerNumber(currentPlayer) + 1) {
                 nextPlayerNum = board.getPlayerNumber(currentPlayer) + 1;
             } else {
                 nextPlayerNum = (board.getPlayerNumber(currentPlayer) + 1) - board.getPlayersNumber();
@@ -180,6 +183,7 @@ public class GameController {
         }
 
     }
+
     /**
      * Makes the program fields at the specified register visible for all players on the board.
      *
@@ -207,6 +211,7 @@ public class GameController {
             }
         }
     }
+
     /**
      * Finishes the programming phase by making program fields
      * invisible, making the first program field visible,
@@ -259,6 +264,7 @@ public class GameController {
 
     /**
      * Executes the next step of the program of the current player during the activation phase.
+     *
      * @author Marcus Langkilde, s195080@DTU.dk
      * @author Haleef Abu Talib, s224523@dtu.dk
      */
@@ -271,7 +277,7 @@ public class GameController {
                 if (card != null) {
                     Command command = card.command;
                     executeCommand(currentPlayer, command);
-                    if(command == Command.OPTION_LEFT_RIGHT) return;
+                    if (command == Command.OPTION_LEFT_RIGHT) return;
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
                 if (nextPlayerNumber < board.getPlayersNumber()) {
@@ -300,7 +306,7 @@ public class GameController {
     /**
      * Executes the given command for the specified player.
      *
-     * @param player The player for whom the command will be executed.
+     * @param player  The player for whom the command will be executed.
      * @param command The command to execute.
      * @author Marcus Langkilde, s195080@DTU.dk
      * @author Haleef Abu Talib, s224523@dtu.dk
@@ -373,6 +379,7 @@ public class GameController {
     /**
      * Starts the programming phase by initializing player decks,
      * setting up program and card fields, and shuffling decks if needed.
+     *
      * @author Marcus Langkilde, s195080@DTU.dk
      * @author Haleef Abu Talib, s224523@dtu.dk
      */
@@ -380,69 +387,59 @@ public class GameController {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
-
-        if(board.getCurrentNumberOfCards() <= 0){
-            for(int i = 0; i < board.getPlayersNumber(); i++){
-                Player player = board.getPlayer(i);
-                Deck currentDeck = player.getDeck();
-/*
-
-
-                if(currentDeck.initDeck.size() < 9){
-                    for(int j = 0; j < player.getDiscardedPile().getPile().pile.size(); j++){
-                        currentDeck.initDeck.add(player.getDiscardedPile().getPile().pile.get(j));
-                    }
-                    player.getDiscardedPile().getPile().pile.clear();
-                }
-                */
-
-            }
-            //board.resetCards();
-        }
+        PlayerLocal player = null;
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
-            Player player = board.getPlayer(i);
+            if (board.getPlayer(i).isLocalPlayer()) {
+                player = (PlayerLocal) board.getPlayer(i);
+            }
+        }
+
+
+        if (board.getCurrentNumberOfCards() <= 0 && player != null) {
+
             Deck currentDeck = player.getDeck();
-            //ArrayList<Command> twentySeven = init.initDeck;
-            if(currentDeck.initDeck.size() < 9){
+
+            if (currentDeck.initDeck.size() < 9) {
                 currentDeck.initDeck.addAll(player.getDiscardedPile().getPile().pile);
                 player.getDiscardedPile().getPile().pile.clear();
                 currentDeck.shuffleDeck();
             }
-            // when discard pile is added currentDeck.shuffleDeck();
 
-            if (player != null) {
-                for (int j = 0; j < Player.NO_REGISTERS; j++) {
-                    CommandCardField field = player.getProgramField(j);
-                    field.setCard(null);
-                    field.setVisible(true);
-                }
-                for (int j = 0; j < Player.NO_CARDS; j++) {
-                    CommandCardField field = player.getCardField(j);
-                    field.setCard(new CommandCard(currentDeck.initDeck.get(0)));
-                    currentDeck.initDeck.remove(0);
-                    field.setVisible(true);
-                }
-                for(int j = 0; j <= player.getDiscardedPile().getPile().pile.size(); j++){
-                    DiscardPileField pile = player.getDiscardedPile();
-                    pile.setPile(player.getDiscardedPile().getPile());
-                    pile.setVisible(true);
+            for (int j = 0; j < PlayerLocal.NO_CARDS; j++) {
+                CommandCardHandField field = player.getCardField(j);
+                field.setCard(new CommandCard(currentDeck.initDeck.get(0)));
+                currentDeck.initDeck.remove(0);
+                field.setVisible(true);
+            }
+            for (int j = 0; j <= player.getDiscardedPile().getPile().pile.size(); j++) {
+                DiscardPileField pile = player.getDiscardedPile();
+                pile.setPile(player.getDiscardedPile().getPile());
+                pile.setVisible(true);
+            }
+
+            for (int j = 0; j < player.NO_CARDS; j++) {
+                if (player.getCardField(j) != null) {
+                    player.getDiscardedPile().getPile().pile.add(player.getCardField(j).getCard().command);
                 }
             }
 
         }
 
 
+        for (int i = 0; i < board.getPlayersNumber(); i++) {
 
-        for(int i = 0; i < board.getPlayersNumber(); i++){
-            for(int j =0; j < board.getPlayer(0).NO_CARDS; j++){
-                if(board.getPlayer(i).getCardField(j) != null){
-                    board.getPlayer(i).getDiscardedPile().getPile().pile.add(board.getPlayer(i).getCardField(j).getCard().command);
+            if (board.getPlayer(i) != null) {
+                for (int j = 0; j < Player.NO_REGISTERS; j++) {
+                    CommandCardField field = board.getPlayer(i).getProgramField(j);
+                    field.setCard(null);
+                    field.setVisible(true);
                 }
             }
         }
 
     }
+
     /**
      * Generates a random command card.
      *
@@ -456,6 +453,7 @@ public class GameController {
 
     /**
      * Execute the command option and continue with the next player.
+     *
      * @param command the command option to be executed
      * @author Daniel Overballe Lerche, s235095@dtu.dk
      * @author Marcus Langkilde, s195080@DTU.dk
@@ -504,8 +502,8 @@ public class GameController {
         /**
          * Constructs a new ImpossibleMoveException with the specified player, space, and heading.
          *
-         * @param player The player attempting the impossible move.
-         * @param space The space where the move was attempted.
+         * @param player  The player attempting the impossible move.
+         * @param space   The space where the move was attempted.
          * @param heading The heading in which the move was attempted.
          */
         public ImpossibleMoveException(Player player, Space space, Heading heading) {

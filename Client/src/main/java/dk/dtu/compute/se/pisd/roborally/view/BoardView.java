@@ -57,7 +57,7 @@ public class BoardView extends VBox implements ViewObserver {
         board = gameController.board;
 
         mainBoardPane = new GridPane();
-        playerView = new PlayerView(gameController, board.getCurrentPlayer());
+        playerView = new PlayerView(gameController, board.getLocalPlayer());
         statusLabel = new Label("<no status>");
 
         this.getChildren().add(mainBoardPane);

@@ -144,7 +144,7 @@ public class AppController implements Observer {
      * sequence is read from the file.
      * @see Gson
      */
-    public void loadGame(String path) throws IOException {
+    /*public void loadGame(String path) throws IOException {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(FieldAction.class, new Adapter<FieldAction>())
                 .excludeFieldsWithoutExposeAnnotation()
@@ -198,7 +198,7 @@ public class AppController implements Observer {
 
         gameController = new GameController(board);
         roboRally.createBoardView(gameController);
-    }
+    }*/
 
     /**
      * Stop playing the current game, giving the user the option to save

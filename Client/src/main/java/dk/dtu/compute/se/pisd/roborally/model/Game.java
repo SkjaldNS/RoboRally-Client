@@ -1,43 +1,56 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
-import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import com.google.gson.annotations.Expose;
 
-/**
- * Represents a game in the RoboRally game.
- */
-public class Game extends Subject {
+public class Game {
+    @Expose
+    private int gameID;
+    @Expose
+    private int boardID;
+    @Expose
+    private int gameStatus;
+    @Expose
+    private int turnID;
+    @Expose
+    private int numPlayers;
 
-    private final int gameId;
-    private final int boardId;
-    private final GameStatus status;
-    private final int turnId;
-    private final int numberOfPlayers;
-
-    public Game(int gameId, int boardId, GameStatus status, int turnId) {
-        this.gameId = gameId;
-        this.boardId = boardId;
-        this.status = status;
-        this.turnId = turnId;
-        this.numberOfPlayers = 0;
+    public int getGameID() {
+        return gameID;
     }
 
-    public int getGameId() {
-        return gameId;
+    public void setGameID(int gameID) {
+        this.gameID = gameID;
     }
 
-    public int getBoardId() {
-        return boardId;
+    public int getBoardID() {
+        return boardID;
     }
 
-    public GameStatus getStatus() {
-        return status;
+    public void setBoardID(int boardID) {
+        this.boardID = boardID;
     }
 
-    public int getTurnId() {
-        return turnId;
+    public int getGameStatus() {
+        return gameStatus;
     }
 
-    public int getNumberOfPlayers() {
-        return numberOfPlayers;
+    public void setGameStatus(int gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public int getTurnID() {
+        return turnID;
+    }
+
+    public void setTurnID(int turnID) {
+        this.turnID = turnID;
+    }
+
+    public int getNumPlayers() {
+        return numPlayers;
+    }
+
+    public void setNumPlayers(int numPlayers) {
+        this.numPlayers = numPlayers;
     }
 }

@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PlayerView extends Pane implements ViewObserver {
 
-    private Player player;
+    private PlayerLocal player;
 
     private VBox top;
 
@@ -64,7 +64,7 @@ public class PlayerView extends Pane implements ViewObserver {
 
     private GameController gameController;
 
-    public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
+    public PlayerView(@NotNull GameController gameController, @NotNull PlayerLocal player) {
         //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
 
         top = new VBox();
@@ -81,11 +81,14 @@ public class PlayerView extends Pane implements ViewObserver {
         programPane.setVgap(2.0);
         programPane.setHgap(2.0);
         programCardViews = new CardFieldView[Player.NO_REGISTERS];
-        for (int i = 0; i < Player.NO_REGISTERS; i++) {
-            CommandCardField cardField = player.getProgramField(i);
-            if (cardField != null) {
-                programCardViews[i] = new CardFieldView(gameController, cardField);
-                programPane.add(programCardViews[i], i, 0);
+        for(int j = 0; j < PlayerLocal.NO_CARDS; j++) {
+            for (int i = 0; i < Player.NO_REGISTERS; i++) {
+                CommandCardField cardField = player.getProgramField(i);
+                CommandCardHandField hand = player.getCardField(j);
+                if (cardField != null) {
+                    programCardViews[i] = new CardFieldView(gameController, cardField, hand);
+                    programPane.add(programCardViews[i], i, 0);
+                }
             }
         }
 
@@ -115,11 +118,11 @@ public class PlayerView extends Pane implements ViewObserver {
         cardsPane = new GridPane();
         cardsPane.setVgap(2.0);
         cardsPane.setHgap(2.0);
-        cardViews = new CardFieldView[Player.NO_CARDS];
-        for (int i = 0; i < Player.NO_CARDS; i++) {
-            CommandCardField cardField = player.getCardField(i);
+        cardViews = new CardFieldView[PlayerLocal.NO_CARDS];
+        for (int i = 0; i < PlayerLocal.NO_CARDS; i++) {
+            CommandCardHandField cardField = player.getCardField(i);
             if (cardField != null) {
-                cardViews[i] = new CardFieldView(gameController, cardField);
+                cardViews[i] = new CardFieldView(gameController, null, cardField);
                 cardsPane.add(cardViews[i], i, 0);
             }
         }

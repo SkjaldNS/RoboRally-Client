@@ -75,7 +75,7 @@ public class RoboRallyMenuBar extends MenuBar {
         });
         controlMenu.getItems().add(stopGame);
 
-        saveGame = new MenuItem("Save Game");
+        /* saveGame = new MenuItem("Save Game");
         saveGame.setOnAction(e -> {
             try {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -116,7 +116,7 @@ public class RoboRallyMenuBar extends MenuBar {
             }
         });
         controlMenu.getItems().add(loadGame);
-
+*/
         exitApp = new MenuItem("Exit");
         exitApp.setOnAction(e -> {
             try {
@@ -136,13 +136,13 @@ public class RoboRallyMenuBar extends MenuBar {
         if (appController.isGameRunning()) {
             newGame.setVisible(false);
             stopGame.setVisible(true);
-            saveGame.setVisible(true);
-            loadGame.setVisible(false);
+            //saveGame.setVisible(true);
+            //loadGame.setVisible(false);
         } else {
             newGame.setVisible(true);
             stopGame.setVisible(false);
-            saveGame.setVisible(false);
-            loadGame.setVisible(true);
+            //saveGame.setVisible(false);
+            //loadGame.setVisible(true);
         }
     }
 
