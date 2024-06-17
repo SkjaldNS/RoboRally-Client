@@ -18,15 +18,14 @@ public class GameController {
     public GameController(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
-    @GetMapping
+    @GetMapping("")
     public ResponseEntity<List<Game>> getGames() {
         List<Game> gameList = gameRepository.findAll();
         return ResponseEntity.ok(gameList);
     }
 
 
-    @GetMapping
-    @RequestMapping(value = "/getGame/{gameId}")
+    @GetMapping("/{gameId}")
     public ResponseEntity<Game> getGame(@PathVariable("gameId") Long gameId) {
         Game game = gameRepository.findGameByGameId(gameId);
         return ResponseEntity.ok(game);
@@ -34,16 +33,22 @@ public class GameController {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "")
     public ResponseEntity<String> createGame(@RequestBody Game game) {
-        if(game.getGameName() == null)
+        if(game.getGameId() != null) {
+            if(gameRepository.findGameByGameId(game.getGameId()) != null) {
+                return ResponseEntity.badRequest().body("Game already exists");
+            }
+        }
+        if(game.getGameName() == null) {
             return ResponseEntity.badRequest().body("Name must be provided");
-        if(gameRepository.findGameByGameName(game.getGameName()) != null)
-            return ResponseEntity.badRequest().body("Game already exists");
+        }
+
         gameRepository.save(game);
         return ResponseEntity.ok(game.getGameId().toString());
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value = "")
     public ResponseEntity<String> updateGame(@RequestBody Game game) {
         if(game.getGameId() == null) {
             return ResponseEntity.badRequest().body("Game Id must be provided");
@@ -57,8 +62,7 @@ public class GameController {
         gameRepository.save(game);
         return ResponseEntity.ok().build();
     }
-    @DeleteMapping
-    @RequestMapping(value = "/{gameId}")
+    @DeleteMapping("/{gameId}")
     public ResponseEntity<String> deleteGame(@PathVariable("gameId") Long gameId) {
         if(gameId == null)
             return ResponseEntity.badRequest().body("Game Id must be provided");
