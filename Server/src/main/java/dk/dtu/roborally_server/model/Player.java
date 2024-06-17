@@ -17,12 +17,12 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long playerId;
-
+    @Column(name = "GAMEID")
+    private Long gameId;
     @Column(name = "PLAYERNAME")
     private String playerName;
     @Column(name = "ROBOTID")
     private int robotId;
-
     public void setId(Long playerId) {
         this.playerId = playerId;
     }
