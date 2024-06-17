@@ -106,7 +106,7 @@ public class RoboRally extends Application {
 
         AdminLobbyView adminLobbyView = new AdminLobbyView(playerListView, adminLobbyMap, adminLobbyBottom);
 
-        adminLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(preLobbyView));
+        adminLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(createPreLobbyView(appController, new FakeRestController())));
 
         adminLobbyBottom.setStartGameButtonAction(() -> {
             try {
@@ -154,7 +154,7 @@ public class RoboRally extends Application {
 
         UserLobbyView userLobbyView = new UserLobbyView(userLobbyBottom, userLobbyMap, playerListView);
 
-        userLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(preLobbyView));
+        userLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(createPreLobbyView(new AppController(this), new FakeRestController())));
 
         return userLobbyView;
     }
