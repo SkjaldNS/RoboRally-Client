@@ -1,6 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.roborally.controller.RestController;
+import dk.dtu.compute.se.pisd.roborally.model.Game;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -9,6 +10,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Represents the view for the pre-lobby screen
@@ -41,9 +45,10 @@ public class PreLobbyView extends HBox {
         createGameButton.setMaxSize(400, 100);
         createGameButton.setAlignment(Pos.CENTER_RIGHT);
 
-        VBox gameItemListViewContainer = new VBox(refreshGameListButton, gameItemListTitle, gameItemListView);
+        VBox gameItemListViewContainer = new VBox(10, refreshGameListButton, gameItemListTitle, gameItemListView);
+        gameItemListViewContainer.setPadding(new Insets(10));
 
-        this.paddingProperty().set(new Insets(10, 10, 10, 10));
+        this.setPadding(new Insets(10, 10, 10, 10));
         HBox filler = new HBox();
         HBox.setHgrow(filler, Priority.ALWAYS);
         this.getChildren().addAll(gameItemListViewContainer, filler, createGameButton);

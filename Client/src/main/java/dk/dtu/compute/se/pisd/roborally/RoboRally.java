@@ -25,8 +25,6 @@ import dk.dtu.compute.se.pisd.roborally.controller.FakeRestController;
 import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.fileaccess.LoadBoard;
-import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.view.*;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -39,7 +37,7 @@ import java.io.IOException;
 /**
  * ...
  *
- * @author Ekkart Kindler, ekki@dtu.dk
+ * @authork Ekkart Kindler, ekki@dtu.dk
  *
  */
 public class RoboRally extends Application {
@@ -96,7 +94,7 @@ public class RoboRally extends Application {
             gameItemListView.setGameItems(
                     restController.getGames()
                             .stream()
-                            .map(game -> new GameItemView(game, restController))
+                            .map(GameItemView::new)
                             .toList()
             );
         });
@@ -111,7 +109,7 @@ public class RoboRally extends Application {
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
-                } );
+                });
         stage.setResizable(false);
         stage.sizeToScene();
         stage.show();
@@ -143,5 +141,4 @@ public class RoboRally extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
 }

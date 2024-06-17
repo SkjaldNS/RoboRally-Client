@@ -1,5 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
+import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 

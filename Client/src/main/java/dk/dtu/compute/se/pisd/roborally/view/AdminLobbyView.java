@@ -1,7 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
-import dk.dtu.compute.se.pisd.roborally.controller.RestController;
-import javafx.scene.layout.BorderPane;
+import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -25,6 +24,7 @@ public class AdminLobbyView extends VBox {
         playerListView = new PlayerListView();
         adminLobbyBottom = new AdminLobbyBottom(preLobbyView);
         HBox filler = new HBox();
+        this.paddingProperty().set(new Insets(10, 10, 10, 10));
         HBox.setHgrow(filler, Priority.ALWAYS);
         Text playerListTitle = new Text("Players");
         playerListTitle.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");

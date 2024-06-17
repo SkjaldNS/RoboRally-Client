@@ -23,10 +23,7 @@ public class AdminLobbyBottom extends HBox {
     public AdminLobbyBottom(PreLobbyView preLobbyView) {
         closeButton = new Button("Close");
         startGameButton = new Button("Start Game");
-        HBox test = new HBox();
-        test.setVisible(false);
-        HBox.setHgrow(test, Priority.ALWAYS);
-        getChildren().addAll(closeButton, test, startGameButton);
+        getChildren().addAll(closeButton, startGameButton);
     }
 
     public Button getCloseButton() {
