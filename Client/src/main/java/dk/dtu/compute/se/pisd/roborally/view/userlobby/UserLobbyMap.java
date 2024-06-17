@@ -1,28 +1,23 @@
-package dk.dtu.compute.se.pisd.roborally.view;
+package dk.dtu.compute.se.pisd.roborally.view.userlobby;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 /**
- * Represents the map selection part of the admin lobby view
- * which includes a combobox for selecting a map and a preview of the selected map.
+ * Represents the map display part of the user lobby view.
  * @author Daniel Overballe Lerche, s235095
  * @author Asma Maryam, s230716
  */
-public class AdminLobbyMap extends VBox {
+public class UserLobbyMap extends VBox {
 
     private ImageView mapPreview;
     private Rectangle mapPreviewBackground;
-    public AdminLobbyMap() {
-        ComboBox<String> mapSelection = new ComboBox<>();
-        mapSelection.getItems().addAll("Map 1");
-        mapSelection.setPromptText("Select Map");
 
+    public UserLobbyMap() {
         // Placeholder for map preview
         mapPreview = new ImageView();
         mapPreview.setFitWidth(200);
@@ -31,17 +26,13 @@ public class AdminLobbyMap extends VBox {
 
         mapPreviewBackground = new Rectangle(200, 200);
         mapPreviewBackground.setFill(Color.LIGHTGRAY);
-        getChildren().addAll(mapSelection, mapPreviewBackground);
+        getChildren().addAll(mapPreviewBackground);
         this.alignmentProperty().set(Pos.CENTER_RIGHT);
 
-        // Add event handler for ComboBox selection changes
-        mapSelection.setOnAction(event -> {
-            String selectedMap = mapSelection.getValue();
-            if ("Map 1".equals(selectedMap)) {
-                updateMapPreview("map_image/map_1.png");
-            }
-        });
+        // Load the initial map image
+        updateMapPreview("map_image/map_1.png");
     }
+
     private void updateMapPreview(String imagePath) {
         try {
             // Correctly load the image from the resources folder

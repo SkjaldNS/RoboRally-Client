@@ -1,9 +1,10 @@
-package dk.dtu.compute.se.pisd.roborally.view;
+package dk.dtu.compute.se.pisd.roborally.view.gameitem;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,23 +17,20 @@ import java.util.List;
 public class GameItemListView extends ScrollPane {
 
     private final VBox gameItemContainer;
-    private List<GameItemView> gameItems;
+    private final List<GameItemView> gameItems;
 
     public GameItemListView() {
         gameItemContainer = new VBox();
         gameItemContainer.alignmentProperty().set(Pos.CENTER_RIGHT);
         this.setMinWidth(200);
         this.setMinHeight(200);
-        gameItems = new ArrayList<>();
         this.setContent(gameItemContainer);
+        gameItems = new ArrayList<>();
     }
 
-    /**
-     * Sets the game items to be displayed in the list.
-     * @param gameItems the game items to be displayed
-     */
     public void setGameItems(List<GameItemView> gameItems) {
-        this.gameItems = gameItems;
+        this.gameItems.clear();
+        this.gameItems.addAll(gameItems);
         updateGameItems();
     }
 
