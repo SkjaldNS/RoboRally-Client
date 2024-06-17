@@ -12,14 +12,18 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-
-
 public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long playerId;
+
+    @Column(name = "PLAYERNAME")
     private String playerName;
-    private Long robotId;
+    @Column(name = "ROBOTID")
+    private int robotId;
+
+    public void setId(Long playerId) {
+        this.playerId = playerId;
+    }
 }
