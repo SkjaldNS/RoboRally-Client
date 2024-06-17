@@ -25,7 +25,6 @@ public class PreLobbyView extends HBox {
     private final Button refreshGameListButton;
     private final Text gameItemListTitle;
 
-    // TODO - Give a controller to the view that handles game fetching
     public PreLobbyView(GameItemListView gameItemListView) {
         this.gameItemListView = gameItemListView;
         // Title for the game item list
