@@ -55,7 +55,7 @@ public class DataUpdater extends Subject {
         return restController.getGame(game.getGameID());
     }
 
-    private void stopUpdater() {
+    public void stopUpdater() {
         worker.interrupt();
     }
 }

@@ -82,6 +82,10 @@ public class Space extends Subject {
     public List<Heading> getWalls() {
         return walls;
     }
+    public void setWalls(List<Heading> walls) {
+        this.walls = walls;
+        notifyChange();
+    }
 
     public List<FieldAction> getActions() {
         return actions;
