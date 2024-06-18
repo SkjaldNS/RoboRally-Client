@@ -18,16 +18,14 @@ public class GameController {
     public GameController(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
-    @GetMapping
-    @RequestMapping(value = "/getGames")
+    @GetMapping("")
     public ResponseEntity<List<Game>> getGames() {
         List<Game> gameList = gameRepository.findAll();
         return ResponseEntity.ok(gameList);
     }
 
 
-    @GetMapping
-    @RequestMapping(value = "/getGame/{gameId}")
+    @GetMapping("/{gameId}")
     public ResponseEntity<Game> getGame(@PathVariable("gameId") Long gameId) {
         Game game = gameRepository.findGameByGameId(gameId);
         return ResponseEntity.ok(game);
@@ -35,27 +33,36 @@ public class GameController {
 
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    @RequestMapping(value = "/createGame")
-    public ResponseEntity<String> createGame(Game game) {
-        if(game.getGameName() == null)
+    @RequestMapping(value = "")
+    public ResponseEntity<String> createGame(@RequestBody Game game) {
+        if(game.getGameId() != null) {
+            if(gameRepository.findGameByGameId(game.getGameId()) != null) {
+                return ResponseEntity.badRequest().body("Game already exists");
+            }
+        }
+        if(game.getGameName() == null) {
             return ResponseEntity.badRequest().body("Name must be provided");
-        if(gameRepository.findGameByGameName(game.getGameName()) != null)
-            return ResponseEntity.badRequest().body("Game already exists");
+        }
+
         gameRepository.save(game);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(game.getGameId().toString());
     }
-    @PutMapping
-    @RequestMapping(value = "/updateGame")
-    public ResponseEntity<String> updateGame(Game game) {
-        if(game.getGameName() == null)
+
+    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE, value = "")
+    public ResponseEntity<String> updateGame(@RequestBody Game game) {
+        if(game.getGameId() == null) {
+            return ResponseEntity.badRequest().body("Game Id must be provided");
+        }
+        if(game.getGameName() == null) {
             return ResponseEntity.badRequest().body("Name must be provided");
-        if(gameRepository.findGameByGameName(game.getGameName()) == null)
+        }
+        if(gameRepository.findGameByGameId(game.getGameId()) == null) {
             return ResponseEntity.badRequest().body("Game does not exist");
+        }
         gameRepository.save(game);
         return ResponseEntity.ok().build();
     }
-    @DeleteMapping
-    @RequestMapping(value = "deleteGame/{gameId}")
+    @DeleteMapping("/{gameId}")
     public ResponseEntity<String> deleteGame(@PathVariable("gameId") Long gameId) {
         if(gameId == null)
             return ResponseEntity.badRequest().body("Game Id must be provided");
@@ -67,3 +74,11 @@ public class GameController {
     }
 
 }
+// Create json for game
+// {
+//     "gameName": "game1",
+//     "boardId": 1,
+//     "gameStatus": "WAITING",
+//     "turnID": 1,
+//     "maxPlayers": 4
+// }

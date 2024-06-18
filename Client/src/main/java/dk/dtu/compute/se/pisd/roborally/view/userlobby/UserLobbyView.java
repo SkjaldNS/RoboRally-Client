@@ -1,6 +1,8 @@
 package dk.dtu.compute.se.pisd.roborally.view.userlobby;
 
+import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.RestController;
+import dk.dtu.compute.se.pisd.roborally.view.ViewObserver;
 import dk.dtu.compute.se.pisd.roborally.view.playeritem.PlayerListView;
 import dk.dtu.compute.se.pisd.roborally.view.PreLobbyView;
 import javafx.geometry.Insets;
@@ -18,7 +20,11 @@ import javafx.scene.text.Text;
  */
 public class UserLobbyView extends VBox {
 
+    private final PlayerListView playerListView;
+
     public UserLobbyView(UserLobbyBottom userLobbyBottom, UserLobbyMap userLobbyMap, PlayerListView playerListView) {
+        this.playerListView = playerListView;
+
         HBox filler = new HBox();
         this.paddingProperty().set(new Insets(10, 10, 10, 10));
         HBox.setHgrow(filler, Priority.ALWAYS);
@@ -27,5 +33,9 @@ public class UserLobbyView extends VBox {
         VBox playerListContainer = new VBox(playerListTitle, playerListView);
         HBox content = new HBox(playerListContainer, filler, userLobbyMap);
         getChildren().addAll(content, userLobbyBottom);
+    }
+
+    public PlayerListView getPlayerListView() {
+        return playerListView;
     }
 }
