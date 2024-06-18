@@ -1,4 +1,4 @@
-
+package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.controller.field.Antenna;
@@ -14,13 +14,13 @@ class AntennaTest {
 
     private Antenna antenna;
     private GameController gameController;
-    private Board board;
+    private Deck.Board board;
     private Space antennaSpace;
     private Player player1, player2, player3;
 
     @BeforeEach
     void setUp() {
-        board = new Board(10, 10);
+        board = new Deck.Board(10, 10);
         gameController = new GameController(board);
 
         antenna = new Antenna();

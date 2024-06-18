@@ -1,19 +1,20 @@
+package dk.dtu.compute.se.pisd.roborally.model;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.*;
 
 import java.lang.reflect.Method;
 
 class GameControllerTest {
 
     private GameController gameController;
-    private Board board;
+    private Deck.Board board;
 
     @BeforeEach
     void setUp() {
-      this.board = new Board(10, 10); // Create a 10x10 board
+      this.board = new Deck.Board(10, 10); // Create a 10x10 board
         this.gameController = new GameController(board);
     }
     /**

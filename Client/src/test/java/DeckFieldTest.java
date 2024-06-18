@@ -1,3 +1,5 @@
+package dk.dtu.compute.se.pisd.roborally.model;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +13,7 @@ class DeckFieldTest {
 
     @BeforeEach
     void setUp() {
-        Board board = new Board(10, 10); // Create a 10x10 board
+        Deck.Board board = new Deck.Board(10, 10); // Create a 10x10 board
         this.player = new Player(board, 1, "Alice");
         this.deckField = new DeckField(player);
     }

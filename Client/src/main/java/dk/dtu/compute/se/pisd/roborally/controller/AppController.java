@@ -40,9 +40,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -79,9 +76,9 @@ public class AppController implements Observer {
 
             // XXX the board should eventually be created programmatically or loaded from a file
             //     here we just create an empty board with the required number of players.
-            Board board = LoadBoard.loadBoard("risky_crossing");
+            Deck.Board board = LoadBoard.loadBoard("risky_crossing");
             if(board == null) {
-                board = new Board(8, 8);
+                board = new Deck.Board(8, 8);
 
             }
             gameController = new GameController(board);
@@ -110,7 +107,7 @@ public class AppController implements Observer {
      */
 
     public void saveGame() throws IOException {
-        Board board = gameController.board;
+        Deck.Board board = gameController.board;
 
         // gson object to serialize the board to a JSON string
         Gson gson = new GsonBuilder()

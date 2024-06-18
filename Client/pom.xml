@@ -23,13 +23,23 @@
         <maven.compiler.target>17</maven.compiler.target>
 
     </properties>
-
     <dependencies>
         <!-- Note that the dependencies here include some more dependencies
              than are necessary right now; dependencies that might need to
              be included later in the course of the project are added
              already now, just to avoid missing these later. This applies
              for example to mysql, gson, guava, ...  -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.12.0</version>
+            <scope>test</scope>
+        </dependency>
+
+
+
+
+
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>

@@ -1,3 +1,5 @@
+package dk.dtu.compute.se.pisd.roborally.model;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import dk.dtu.compute.se.pisd.roborally.model.Command;

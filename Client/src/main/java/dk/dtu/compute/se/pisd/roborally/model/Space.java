@@ -43,7 +43,7 @@ public class Space extends Subject {
     @Expose
     private List<FieldAction> actions = new ArrayList<>();
 
-    public Board board;
+    public Deck.Board board;
 
     @Expose
     public int x;
@@ -52,7 +52,7 @@ public class Space extends Subject {
 
     public Space(){}
 
-    public Space(Board board, int x, int y) {
+    public Space(Deck.Board board, int x, int y) {
         this.board = board;
         this.x = x;
         this.y = y;

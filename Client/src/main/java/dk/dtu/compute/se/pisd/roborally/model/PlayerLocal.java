@@ -15,7 +15,7 @@ public class PlayerLocal extends Player {
     private CommandCardHandField[] cards;
     final public static int NO_CARDS = 8;
 
-    public PlayerLocal(@NotNull Board board, int robotId, @NotNull String name) {
+    public PlayerLocal(@NotNull Deck.Board board, int robotId, @NotNull String name) {
 
         super(board, robotId, name);
 

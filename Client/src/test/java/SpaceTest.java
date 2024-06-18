@@ -1,22 +1,19 @@
+package dk.dtu.compute.se.pisd.roborally.model;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-import dk.dtu.compute.se.pisd.roborally.controller.field.FieldAction;
-import dk.dtu.compute.se.pisd.roborally.model.Board;
-import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.Arrays;
 
 class SpaceTest {
 
-    private Board board;
+    private Deck.Board board;
     private Space space;
 
     @BeforeEach
     void setUp() {
-        board = new Board(10, 10); // Assuming this creates a 10x10 board
+        board = new Deck.Board(10, 10); // Assuming this creates a 10x10 board
         space = new Space(board, 5, 5); // Place the space at position (5, 5)
     }
     /**

@@ -35,7 +35,7 @@ import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 public class Player extends Subject {
 
     final public static int NO_REGISTERS = 5;
-    public Board board;
+    public Deck.Board board;
     private Command lastCommand = null;
     private Deck deck;
     private int playerID;
@@ -51,7 +51,7 @@ public class Player extends Subject {
 
     public Player(){}
 
-    public Player(@NotNull Board board, int robotId, @NotNull String name) {
+    public Player(@NotNull Deck.Board board, int robotId, @NotNull String name) {
         this.board = board;
         this.name = name;
         this.robotId = robotId;

@@ -25,8 +25,6 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
-import java.util.List;
-
 /**
  * Controls the game logic.
  *
@@ -34,12 +32,12 @@ import java.util.List;
  */
 public class GameController {
 
-    final public Board board;
+    final public Deck.Board board;
 
 
     //private DiscardPile discardPile = new DiscardPile();
 
-    public GameController(Board board) {
+    public GameController(Deck.Board board) {
         this.board = board;
     }
 

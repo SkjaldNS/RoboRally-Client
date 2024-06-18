@@ -1,3 +1,5 @@
+package dk.dtu.compute.se.pisd.roborally.model;
+
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 class BoardTest {
-    private Board board;
+    private Deck.Board board;
     private Player player;
 
     @BeforeEach
     void setUp() {
-        board = new Board(8, 8);
+        board = new Deck.Board(8, 8);
         player = new Player(board, 1, "Alice");
         board.addPlayer(player);
     }
