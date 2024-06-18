@@ -107,8 +107,11 @@ public class RoboRally extends Application {
 
         AdminLobbyView adminLobbyView = new AdminLobbyView(playerListView, adminLobbyMap, adminLobbyBottom);
 
-        adminLobbyBottom.setCloseButtonAction(
-                () -> boardRoot.setCenter(createPreLobbyView(appController, new ClientController())));
+        adminLobbyBottom.setCloseButtonAction( () -> {
+            boardRoot.setCenter(createPreLobbyView(appController, new ClientController()));
+            DataUpdater.getInstance().stopLobbyPolling();
+        });
+
 
         adminLobbyBottom.setStartGameButtonAction(() -> {
             try {
@@ -148,16 +151,15 @@ public class RoboRally extends Application {
                         System.out.println("Game ID: " + gameId);
                         int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
                         gameSession = new GameSession(gameId, playerId);
-                        DataUpdater.getInstance().pollPlayerList(() -> {
+                        DataUpdater.getInstance().startLobbyPolling(() -> {
                             try {
                                 List<PlayerItemView> playerItemViews = restController.getPlayers(gameId).stream().map(
                                         player -> new PlayerItemView(player.getPlayerID())).toList();
                                 Platform.runLater(() -> userLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews));
-                                System.out.println("Player list updated");
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
-                        });
+                        }, () -> System.out.println("Jubi"));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -179,7 +181,7 @@ public class RoboRally extends Application {
                 Player player = new Player(null, 0, "Placeholder... Niko is a btich");
                 player.setPlayerID(playerId);
                 gameSession = new GameSession(gameId, playerId);
-                DataUpdater.getInstance().pollPlayerList(() -> {
+                DataUpdater.getInstance().startLobbyPolling(() -> {
                     try {
                         List<PlayerItemView> playerItemViews = restController.getPlayers(gameId)
                                 .stream()
@@ -189,7 +191,7 @@ public class RoboRally extends Application {
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                });
+                }, () -> System.out.println("Game stuff"));
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -205,7 +207,10 @@ public class RoboRally extends Application {
 
         UserLobbyView userLobbyView = new UserLobbyView(userLobbyBottom, userLobbyMap, playerListView);
 
-        userLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(createPreLobbyView(new AppController(this), new ClientController())));
+        userLobbyBottom.setCloseButtonAction(() -> {
+            boardRoot.setCenter(createPreLobbyView(new AppController(this), new ClientController()));
+            DataUpdater.getInstance().stopLobbyPolling();
+        });
 
         return userLobbyView;
     }

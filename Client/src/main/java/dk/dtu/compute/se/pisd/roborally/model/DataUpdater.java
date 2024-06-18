@@ -34,16 +34,16 @@ public class DataUpdater {
         timer.cancel(false);
     }
 
-    private void startPlayerList() {
-        //playerListFuture = executorService.scheduleAtFixedRate(this::pollPlayerList, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+    private void startPlayerList(Runnable task) {
+        playerListFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
-    public void startLobbyPolling() {
-        startPlayerList();
-        startGamePolling();
+    public void startLobbyPolling(Runnable playerListTask, Runnable gameListTask) {
+        startPlayerList(playerListTask);
+        startGamePolling(gameListTask);
     }
 
-    public void startGamePolling() {
+    public void startGamePolling(Runnable task) {
         gameStateFuture = executorService.scheduleAtFixedRate(this::pollGameState, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
@@ -54,11 +54,6 @@ public class DataUpdater {
 
     private void pollGameState() {
 
-    }
-
-    public void pollPlayerList(Runnable task) {
-        System.out.println("Polling player list");
-        playerListFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
     public void stopPlayerListPolling() {
