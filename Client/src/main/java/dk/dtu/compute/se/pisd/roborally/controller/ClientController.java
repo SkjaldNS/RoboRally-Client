@@ -3,10 +3,7 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import dk.dtu.compute.se.pisd.roborally.model.Choice;
-import dk.dtu.compute.se.pisd.roborally.model.Game;
-import dk.dtu.compute.se.pisd.roborally.model.Move;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 
 import java.lang.reflect.Type;
 import java.net.URI;
@@ -84,9 +81,8 @@ public class ClientController implements RestController {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + "/games/" + gameID + "/players"))
                 .POST(HttpRequest.BodyPublishers.ofString(playerName))
-                .header("Content-Type", "application/json")
+                .header("Content-Type", "text/plain")
                 .build();
-
         //Returns playerID
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
@@ -116,7 +112,7 @@ public class ClientController implements RestController {
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
         Type listType = new TypeToken<List<Player>>() {}.getType();
-        return gson.fromJson(response.body(),listType);
+        return gson.fromJson(response.body(), listType);
     }
 
     @Override

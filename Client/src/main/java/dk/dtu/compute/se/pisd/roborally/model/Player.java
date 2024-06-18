@@ -37,9 +37,8 @@ public class Player extends Subject {
     final public static int NO_REGISTERS = 5;
     public Board board;
     private Command lastCommand = null;
-    private Deck deck;
-    private int playerID;
-    private int gameID;
+    private int playerId;
+    private int gameId;
     private String name;
     private int robotId;
     private int powerUpCnt = 0;
@@ -51,7 +50,7 @@ public class Player extends Subject {
 
     public Player(){}
 
-    public Player(@NotNull Board board, int robotId, @NotNull String name) {
+    public Player(Board board, int robotId, @NotNull String name) {
         this.board = board;
         this.name = name;
         this.robotId = robotId;
@@ -66,6 +65,8 @@ public class Player extends Subject {
     }
 
     public String getName() {return name;}
+
+    public void setName(String name) {this.name = name;}
 
     public Command getCurrentCommand() {return currentCommand;}
 
@@ -124,11 +125,13 @@ public class Player extends Subject {
 
     public CommandCardField getProgramField(int i) {return program[i];}
 
-    public long getPlayerID() {return playerID;}
+    public void setPlayerID(int playerID) {this.playerId = playerID;}
 
-    public long getGameID() {return gameID;}
+    public long getPlayerID() {return playerId;}
 
-    public void setGameID(int gameID) {this.gameID = gameID;}
+    public long getGameID() {return gameId;}
+
+    public void setGameID(int gameID) {this.gameId = gameID;}
 
     public boolean isLocalPlayer() {return false;}
 }

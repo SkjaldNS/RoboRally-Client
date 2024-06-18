@@ -1,6 +1,8 @@
 package dk.dtu.compute.se.pisd.roborally.view.playeritem;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.RestController;
+import dk.dtu.compute.se.pisd.roborally.model.DataUpdater;
 import dk.dtu.compute.se.pisd.roborally.view.ViewObserver;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
@@ -14,7 +16,7 @@ import java.util.List;
  * @author Daniel Overballe Lerche, s235095
  * @author Asma Maryam, s230716
  */
-public class PlayerListView extends ScrollPane implements ViewObserver {
+public class PlayerListView extends ScrollPane {
 
     private List<PlayerItemView> playerItemViews;
     private final VBox playerListContainer;
@@ -36,10 +38,5 @@ public class PlayerListView extends ScrollPane implements ViewObserver {
     private void updatePlayerList() {
         playerListContainer.getChildren().clear();
         playerListContainer.getChildren().addAll(playerItemViews);
-    }
-
-    @Override
-    public void updateView(Subject subject) {
-        updatePlayerList();
     }
 }

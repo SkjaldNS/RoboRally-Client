@@ -32,11 +32,13 @@ import dk.dtu.compute.se.pisd.roborally.view.adminlobby.AdminLobbyMap;
 import dk.dtu.compute.se.pisd.roborally.view.adminlobby.AdminLobbyView;
 import dk.dtu.compute.se.pisd.roborally.view.gameitem.GameItemListView;
 import dk.dtu.compute.se.pisd.roborally.view.gameitem.GameItemView;
+import dk.dtu.compute.se.pisd.roborally.view.playeritem.PlayerItemView;
 import dk.dtu.compute.se.pisd.roborally.view.playeritem.PlayerListView;
 import dk.dtu.compute.se.pisd.roborally.view.userlobby.UserLobbyBottom;
 import dk.dtu.compute.se.pisd.roborally.view.userlobby.UserLobbyMap;
 import dk.dtu.compute.se.pisd.roborally.view.userlobby.UserLobbyView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -105,7 +107,8 @@ public class RoboRally extends Application {
 
         AdminLobbyView adminLobbyView = new AdminLobbyView(playerListView, adminLobbyMap, adminLobbyBottom);
 
-        adminLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(createPreLobbyView(appController, new ClientController())));
+        adminLobbyBottom.setCloseButtonAction(
+                () -> boardRoot.setCenter(createPreLobbyView(appController, new ClientController())));
 
         adminLobbyBottom.setStartGameButtonAction(() -> {
             try {
@@ -142,10 +145,19 @@ public class RoboRally extends Application {
                     boardRoot.setCenter(userLobbyView);
                     try {
                         int gameId = gameItemView.getGame().getGameID();
+                        System.out.println("Game ID: " + gameId);
                         int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
                         gameSession = new GameSession(gameId, playerId);
-                        DataUpdater dataUpdater = new DataUpdater(gameId, restController);
-                        dataUpdater.attach(userLobbyView.getPlayerListView());
+                        DataUpdater.getInstance().pollPlayerList(() -> {
+                            try {
+                                List<PlayerItemView> playerItemViews = restController.getPlayers(gameId).stream().map(
+                                        player -> new PlayerItemView(player.getPlayerID())).toList();
+                                Platform.runLater(() -> userLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews));
+                                System.out.println("Player list updated");
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -158,12 +170,26 @@ public class RoboRally extends Application {
         preLobbyView.setCreateGameButtonAction(() -> {
             AdminLobbyView adminLobbyView = createAdminLobbyView(appController, preLobbyView);
             boardRoot.setCenter(adminLobbyView);
-            Game game = new Game();
-            game.setGameName("Placeholder... bitch");
+            Game game = new Game("Placeholder... bitch");
+            System.out.println(game.getGameID());
             try {
                 int gameId = restController.postGame(game);
+                game.setGameId(gameId);
                 int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
+                Player player = new Player(null, 0, "Placeholder... Niko is a btich");
+                player.setPlayerID(playerId);
                 gameSession = new GameSession(gameId, playerId);
+                DataUpdater.getInstance().pollPlayerList(() -> {
+                    try {
+                        List<PlayerItemView> playerItemViews = restController.getPlayers(gameId)
+                                .stream()
+                                .map(player1 -> new PlayerItemView(player1.getPlayerID()))
+                                        .toList();
+                        Platform.runLater(() -> adminLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

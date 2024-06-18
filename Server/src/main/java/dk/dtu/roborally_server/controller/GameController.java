@@ -36,6 +36,7 @@ public class GameController {
     @RequestMapping(value = "")
     public ResponseEntity<String> createGame(@RequestBody Game game) {
         if(game.getGameId() != null) {
+            System.out.println(game.getGameId());
             if(gameRepository.findGameByGameId(game.getGameId()) != null) {
                 return ResponseEntity.badRequest().body("Game already exists");
             }
@@ -44,7 +45,8 @@ public class GameController {
             return ResponseEntity.badRequest().body("Name must be provided");
         }
 
-        gameRepository.save(game);
+        game = gameRepository.save(game);
+
         return ResponseEntity.ok(game.getGameId().toString());
     }
 

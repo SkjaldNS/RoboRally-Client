@@ -4,58 +4,68 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 
 import java.util.List;
+import java.util.concurrent.*;
 
-public class DataUpdater extends Subject {
+public class DataUpdater {
 
-    private List<Player> players;
-    private Game game;
-    private final RestController restController;
-    private Thread worker;
+    private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
-    public DataUpdater(int gameId, RestController restController) throws Exception {
-        this.game = restController.getGame(gameId);
-        this.players = restController.getPlayers(gameId);
-        this.restController = restController;
-        startUpdater(5);
+    private static final int POLLING_INTERVAL_SECONDS = 1;
+
+    private ScheduledFuture<?> timer;
+
+    private ScheduledFuture<?> playerListFuture;
+    private ScheduledFuture<?> gameStateFuture;
+
+    private static DataUpdater instance;
+
+    public static DataUpdater getInstance() {
+        if (instance == null) {
+            instance = new DataUpdater();
+        }
+        return instance;
     }
 
-    public void updatePlayers(List<Player> players) {
-        this.players = players;
-        notifyChange();
+    public void startTimer(int seconds, Runnable task) {
+        timer = executorService.schedule(task, seconds, TimeUnit.SECONDS);
     }
 
-    public void updateGame(Game game) {
-        this.game = game;
-        notifyChange();
+    public void stopTimer() {
+        timer.cancel(false);
     }
 
-    private void startUpdater(int seconds) {
-        worker = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(seconds * 1000L);
-                    players = fetchPlayers();
-                    game = fetchGame();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-                notifyChange();
-            }
-        });
-        worker.start();
+    private void startPlayerList() {
+        //playerListFuture = executorService.scheduleAtFixedRate(this::pollPlayerList, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
-    private List<Player> fetchPlayers() throws Exception {
-        return restController.getPlayers(game.getGameID());
+    public void startLobbyPolling() {
+        startPlayerList();
+        startGamePolling();
     }
 
-    private Game fetchGame() throws Exception {
-        return restController.getGame(game.getGameID());
+    public void startGamePolling() {
+        gameStateFuture = executorService.scheduleAtFixedRate(this::pollGameState, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
-    private void stopUpdater() {
-        worker.interrupt();
+    public void stopLobbyPolling() {
+        playerListFuture.cancel(false);
+        gameStateFuture.cancel(false);
+    }
+
+    private void pollGameState() {
+
+    }
+
+    public void pollPlayerList(Runnable task) {
+        System.out.println("Polling player list");
+        playerListFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+    }
+
+    public void stopPlayerListPolling() {
+        playerListFuture.cancel(false);
+    }
+
+    private void stopGamePolling() {
+        gameStateFuture.cancel(false);
     }
 }

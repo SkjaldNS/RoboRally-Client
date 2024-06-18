@@ -44,15 +44,10 @@ public class PlayerController {
      */
     @PostMapping(value = "", consumes = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> createPlayer(@PathVariable Long gameId, @RequestBody String playerName) {
-        Player player = playerRepository.findPlayerByPlayerName(playerName);
-        if(player != null) {
-            return ResponseEntity.badRequest().build();
-        }
-        player = new Player();
+        Player player = new Player();
         player.setGameId(gameId);
         player.setPlayerName(playerName);
-        playerRepository.save(player);
-
+        player = playerRepository.save(player);
         return ResponseEntity.ok(player.getPlayerId().toString());
     }
     /**

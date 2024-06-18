@@ -16,6 +16,13 @@ public class Game {
     @Expose
     private int numPlayers;
 
+    public Game(String gameName) {
+        this.gameName = gameName;
+        this.gameStatus = 0;
+        this.numPlayers = 0;
+        this.turnId = 0;
+    }
+
     public int getGameID() {
         return gameId;
     }

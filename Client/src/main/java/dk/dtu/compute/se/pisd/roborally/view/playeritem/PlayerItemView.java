@@ -10,10 +10,19 @@ import javafx.scene.text.Text;
  */
 public class PlayerItemView extends HBox {
 
-    private Text playerName;
-    public PlayerItemView(int playerId) {
+    private final long playerId;
+    private final Text playerName;
+    public PlayerItemView(long playerId) {
+        this.playerId = playerId;
         playerName = new Text("Player " + playerId);
         getChildren().add(playerName);
     }
 
+    public long getPlayerId() {
+        return playerId;
+    }
+
+    public Text getPlayerName() {
+        return playerName;
+    }
 }
