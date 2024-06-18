@@ -100,7 +100,7 @@ public class RoboRally extends Application {
         stage.show();
     }
 
-    private AdminLobbyView createAdminLobbyView(AppController appController, PreLobbyView preLobbyView){
+    private AdminLobbyView createAdminLobbyView(AppController appController, RestController restController){
         AdminLobbyBottom adminLobbyBottom = new AdminLobbyBottom();
         AdminLobbyMap adminLobbyMap = new AdminLobbyMap();
         PlayerListView playerListView = new PlayerListView();
@@ -115,9 +115,15 @@ public class RoboRally extends Application {
 
         adminLobbyBottom.setStartGameButtonAction(() -> {
             try {
+                DataUpdater.getInstance().stopLobbyPolling();
+                Game game = restController.getGame(gameSession.getGameId());
+                game.setGameStatus(1);
+                restController.putGame(game);
                 appController.newGame();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
         });
 
@@ -159,7 +165,17 @@ public class RoboRally extends Application {
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
-                        }, () -> System.out.println("Jubi"));
+                        }, () -> {
+                            try {
+                                Game game = restController.getGame(gameId);
+                                if(game.getGameStatus() == 1) {
+                                    DataUpdater.getInstance().stopLobbyPolling();
+                                    appController.newGame();
+                                }
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
@@ -170,7 +186,7 @@ public class RoboRally extends Application {
         });
 
         preLobbyView.setCreateGameButtonAction(() -> {
-            AdminLobbyView adminLobbyView = createAdminLobbyView(appController, preLobbyView);
+            AdminLobbyView adminLobbyView = createAdminLobbyView(appController, restController);
             boardRoot.setCenter(adminLobbyView);
             Game game = new Game("Placeholder... bitch");
             System.out.println(game.getGameID());
