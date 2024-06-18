@@ -42,18 +42,18 @@ public class PlayerController {
      * @param playerName the name of the player to create
      * @return a ResponseEntity containing the player's ID and an HTTP status code
      */
-    @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, value = "")
-    public ResponseEntity<Player> createPlayer(@PathVariable Long gameId) {
-        List<Player> players = playerRepository.findPlayersByGameId(gameId);
-        if(players != null) {
-            return ResponseEntity.badRequest().body(null);
+    @PostMapping(value = "", consumes = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> createPlayer(@PathVariable Long gameId, @RequestBody String playerName) {
+        Player player = playerRepository.findPlayerByPlayerName(playerName);
+        if(player != null) {
+            return ResponseEntity.badRequest().build();
         }
-
-        Player player = new Player();
+        player = new Player();
         player.setGameId(gameId);
+        player.setPlayerName(playerName);
         playerRepository.save(player);
 
-        return ResponseEntity.ok(player);
+        return ResponseEntity.ok(player.getPlayerId().toString());
     }
     /**
      * Handles PUT requests to update the player with the given ID.
