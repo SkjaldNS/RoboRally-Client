@@ -4,30 +4,40 @@ import com.google.gson.annotations.Expose;
 
 public class Game {
     @Expose
-    private int gameID;
+    private int gameId;
     @Expose
-    private int boardID;
+    private String gameName;
+    @Expose
+    private int boardId;
     @Expose
     private int gameStatus;
     @Expose
-    private int turnID;
+    private int turnId;
     @Expose
     private int numPlayers;
 
     public int getGameID() {
-        return gameID;
+        return gameId;
     }
 
-    public void setGameID(int gameID) {
-        this.gameID = gameID;
+    public String getGameName() {
+        return gameName;
     }
 
-    public int getBoardID() {
-        return boardID;
+    public void setGameName(String gameName) {
+        this.gameName = gameName;
     }
 
-    public void setBoardID(int boardID) {
-        this.boardID = boardID;
+    public void setGameId(int gameID) {
+        this.gameId = gameID;
+    }
+
+    public int getBoardId() {
+        return boardId;
+    }
+
+    public void setBoardId(int boardID) {
+        this.boardId = boardID;
     }
 
     public int getGameStatus() {
@@ -38,12 +48,12 @@ public class Game {
         this.gameStatus = gameStatus;
     }
 
-    public int getTurnID() {
-        return turnID;
+    public int getTurnId() {
+        return turnId;
     }
 
-    public void setTurnID(int turnID) {
-        this.turnID = turnID;
+    public void setTurnId(int turnID) {
+        this.turnId = turnID;
     }
 
     public int getNumPlayers() {

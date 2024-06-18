@@ -16,7 +16,7 @@ import java.util.List;
  * @author : Marcus Langkilde (s195080)
  */
 @RestController
-@RequestMapping("/players")
+@RequestMapping("/games/{gameId}/players")
 public class PlayerController {
 
     private PlayerRepository playerRepository;
@@ -32,10 +32,9 @@ public class PlayerController {
      * Handles GET requests to retrieve all players.
      * @return a ResponseEntity containing a list of all players and an HTTP status code
      */
-    @GetMapping
-    @RequestMapping(value = "/getPlayers")
-    public ResponseEntity<List<Player>> getPlayers(){
-        List<Player> playerList = playerRepository.findAll();
+    @GetMapping("")
+    public ResponseEntity<List<Player>> getPlayers(@PathVariable Long gameId){
+        List<Player> playerList = playerRepository.findPlayersByGameId(gameId);
         return ResponseEntity.ok(playerList);
     }
     /**
@@ -43,18 +42,18 @@ public class PlayerController {
      * @param playerName the name of the player to create
      * @return a ResponseEntity containing the player's ID and an HTTP status code
      */
-    @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE)
-    @RequestMapping(value = "/createPlayer/{playerName}")
-    public ResponseEntity<String> createPlayer(@PathVariable String playerName) {
-        if(playerName == null || playerName.isEmpty())
-            return ResponseEntity.badRequest().body("Name must be provided");
-        Player player = playerRepository.findPlayerByPlayerName(playerName);
-        if(player != null)
-            return ResponseEntity.badRequest().body("Player already exists");
-        player = new Player();
-        player.setPlayerName(playerName);
+    @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, value = "")
+    public ResponseEntity<Player> createPlayer(@PathVariable Long gameId) {
+        List<Player> players = playerRepository.findPlayersByGameId(gameId);
+        if(players != null) {
+            return ResponseEntity.badRequest().body(null);
+        }
+
+        Player player = new Player();
+        player.setGameId(gameId);
         playerRepository.save(player);
-        return ResponseEntity.ok(player.getPlayerId().toString());
+
+        return ResponseEntity.ok(player);
     }
     /**
      * Handles PUT requests to update the player with the given ID.
@@ -62,15 +61,12 @@ public class PlayerController {
      * @param updatedPlayer the new data for the player
      * @return a ResponseEntity containing an HTTP status code
      */
-    @PutMapping
-    @RequestMapping(value = "/updatePlayer/{playerId}")
-    public ResponseEntity<String> updatePlayer(@PathVariable Long playerId,@RequestBody Player updatedPlayer) {
-        Player existingPlayer = playerRepository.findPlayerById(playerId).orElse(null);
-        if(updatedPlayer == null){
-            return ResponseEntity.badRequest().body("updated player data must be provided");
-        }
-        if(existingPlayer == null)
+    @PutMapping(value = "/{playerId}")
+    public ResponseEntity<String> updatePlayer(@PathVariable Long gameId, @PathVariable Long playerId, @RequestBody Player updatedPlayer) {
+        Player player = playerRepository.findPlayerByIdAndGameId(playerId, gameId);
+        if(player == null) {
             return ResponseEntity.badRequest().body("Player does not exist");
+        }
         updatedPlayer.setId(playerId);
         playerRepository.save(updatedPlayer);
         return ResponseEntity.ok().build();
@@ -81,14 +77,12 @@ public class PlayerController {
      * @param playerId the ID of the player to delete
      * @return a ResponseEntity containing an HTTP status code
      */
-    @DeleteMapping
-    @RequestMapping(value = "/deletePlayer/{playerId}")
-    public ResponseEntity<String> deletePlayer(@PathVariable Long playerId) {
-        if(playerId == null)
-            return ResponseEntity.badRequest().body("player id be provided");
-        if(playerRepository.findPlayerById(playerId).isEmpty())
-            return ResponseEntity.badRequest().body("Player does not exist");
-        playerRepository.delete(playerRepository.findPlayerById(playerId).get());
+    @DeleteMapping(value = "/{playerId}")
+    public ResponseEntity<String> deletePlayer(@PathVariable Long gameId, @PathVariable Long playerId) {
+        Player player = playerRepository.findPlayerByIdAndGameId(playerId, gameId);
+        if(player == null)
+            return ResponseEntity.badRequest().body("Player not found");
+        playerRepository.delete(player);
         return ResponseEntity.ok().build();
     }
 }

@@ -21,10 +21,11 @@
  */
 package dk.dtu.compute.se.pisd.roborally;
 
-import dk.dtu.compute.se.pisd.roborally.controller.FakeRestController;
+import dk.dtu.compute.se.pisd.roborally.controller.ClientController;
 import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.view.*;
 import dk.dtu.compute.se.pisd.roborally.view.adminlobby.AdminLobbyBottom;
 import dk.dtu.compute.se.pisd.roborally.view.adminlobby.AdminLobbyMap;
@@ -42,9 +43,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * ...
@@ -55,9 +54,9 @@ import java.util.stream.Collectors;
 public class RoboRally extends Application {
 
     private static final int MIN_APP_WIDTH = 600;
-
     private Stage stage;
     private BorderPane boardRoot;
+    private GameSession gameSession;
 
     @Override
     public void init() throws Exception {
@@ -79,7 +78,7 @@ public class RoboRally extends Application {
         vbox.setMinWidth(MIN_APP_WIDTH);
         Scene primaryScene = new Scene(vbox);
 
-        RestController restController = new FakeRestController();
+        RestController restController = new ClientController();
         PreLobbyView preLobbyView = createPreLobbyView(appController, restController);
         boardRoot.setCenter(preLobbyView);
 
@@ -106,7 +105,7 @@ public class RoboRally extends Application {
 
         AdminLobbyView adminLobbyView = new AdminLobbyView(playerListView, adminLobbyMap, adminLobbyBottom);
 
-        adminLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(createPreLobbyView(appController, new FakeRestController())));
+        adminLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(createPreLobbyView(appController, new ClientController())));
 
         adminLobbyBottom.setStartGameButtonAction(() -> {
             try {
@@ -123,25 +122,51 @@ public class RoboRally extends Application {
         GameItemListView gameItemListView = new GameItemListView();
         PreLobbyView preLobbyView = new PreLobbyView(gameItemListView);
 
-        preLobbyView.setCreateGameButtonAction(() -> {
-            AdminLobbyView adminLobbyView = createAdminLobbyView(appController, preLobbyView);
-            boardRoot.setCenter(adminLobbyView);
-        });
-
         preLobbyView.setRefreshGameListButtonAction(() -> {
-            List<GameItemView> gameItemViews = restController.getGames()
-                    .stream()
-                    .map(GameItemView::new)
-                    .toList();
+            List<GameItemView> gameItemViews;
+            try {
+                gameItemViews = restController.getGames()
+                        .stream()
+                        .map(GameItemView::new)
+                        .toList();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            if(gameItemViews.isEmpty()) return;
 
             for (GameItemView gameItemView : gameItemViews) {
                 gameItemView.setJoinGameButtonAction(() -> {
                     UserLobbyView userLobbyView = createUserLobbyView(preLobbyView, restController);
+
                     boardRoot.setCenter(userLobbyView);
+                    try {
+                        int gameId = gameItemView.getGame().getGameID();
+                        int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
+                        gameSession = new GameSession(gameId, playerId);
+                        DataUpdater dataUpdater = new DataUpdater(gameId, restController);
+                        dataUpdater.attach(userLobbyView.getPlayerListView());
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             }
 
             gameItemListView.setGameItems(gameItemViews);
+        });
+
+        preLobbyView.setCreateGameButtonAction(() -> {
+            AdminLobbyView adminLobbyView = createAdminLobbyView(appController, preLobbyView);
+            boardRoot.setCenter(adminLobbyView);
+            Game game = new Game();
+            game.setGameName("Placeholder... bitch");
+            try {
+                int gameId = restController.postGame(game);
+                int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
+                gameSession = new GameSession(gameId, playerId);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         });
 
         return preLobbyView;
@@ -154,7 +179,7 @@ public class RoboRally extends Application {
 
         UserLobbyView userLobbyView = new UserLobbyView(userLobbyBottom, userLobbyMap, playerListView);
 
-        userLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(createPreLobbyView(new AppController(this), new FakeRestController())));
+        userLobbyBottom.setCloseButtonAction(() -> boardRoot.setCenter(createPreLobbyView(new AppController(this), new ClientController())));
 
         return userLobbyView;
     }
