@@ -1,6 +1,8 @@
+package dk.dtu.compute.se.pisd.roborally.model;
+
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
-import dk.dtu.compute.se.pisd.roborally.controller.field.PowerPlant;
+import dk.dtu.compute.se.pisd.roborally.controller.field.Pit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -8,13 +10,13 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class PowerPlantTest {
+class PitTest {
 
-    private PowerPlant powerPlant;
+    private Pit pit;
 
     @BeforeEach
     void setUp() {
-        powerPlant = new PowerPlant();
+        pit = new Pit();
     }
 
     @Test
@@ -22,7 +24,7 @@ class PowerPlantTest {
         GameController mockGameController = mock(GameController.class);
         Space mockSpace = mock(Space.class);
 
-        boolean result = powerPlant.doAction(mockGameController, mockSpace);
+        boolean result = pit.doAction(mockGameController, mockSpace);
         assertFalse(result); // The method is not implemented yet, so it should return false
     }
 }

@@ -1,7 +1,9 @@
+package dk.dtu.compute.se.pisd.roborally.model;
+
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
-import dk.dtu.compute.se.pisd.roborally.controller.field.Laser;
+import dk.dtu.compute.se.pisd.roborally.controller.field.RebootField;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -9,22 +11,22 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class LaserTest {
+class RebootFieldTest {
 
-    private Laser laser;
+    private RebootField rebootField;
 
     @BeforeEach
     void setUp() {
-        laser = new Laser();
+        rebootField = new RebootField();
     }
 
     @Test
     void testGetAndSetHeading() {
-        laser.setHeading(Heading.NORTH);
-        assertEquals(Heading.NORTH, laser.getHeading());
+        rebootField.setHeading(Heading.NORTH);
+        assertEquals(Heading.NORTH, rebootField.getHeading());
 
-        laser.setHeading(Heading.EAST);
-        assertEquals(Heading.EAST, laser.getHeading());
+        rebootField.setHeading(Heading.EAST);
+        assertEquals(Heading.EAST, rebootField.getHeading());
     }
 
     @Test
@@ -32,8 +34,7 @@ class LaserTest {
         GameController mockGameController = mock(GameController.class);
         Space mockSpace = mock(Space.class);
 
-        boolean result = laser.doAction(mockGameController, mockSpace);
+        boolean result = rebootField.doAction(mockGameController, mockSpace);
         assertFalse(result); // The method is not implemented yet, so it should return false
     }
-
 }
