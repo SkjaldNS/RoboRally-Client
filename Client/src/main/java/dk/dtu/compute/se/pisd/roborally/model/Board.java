@@ -100,8 +100,6 @@ public class Board extends Subject {
         this.stepMode = false;
         this.MAX_NUMBER_OF_CARDS =  getPlayersNumber() * 9;
         this.currentNumberOfCards = MAX_NUMBER_OF_CARDS;
-
-        this.local = new PlayerLocal(this, 1, "Test");
     }
 
     public Integer getGameId() {
@@ -116,6 +114,10 @@ public class Board extends Subject {
                 throw new IllegalStateException("A game with a set id may not be assigned a new id!");
             }
         }
+    }
+
+    public void setLocalPlayer(PlayerLocal playerLocal) {
+        this.local = playerLocal;
     }
 
     public List<Space> getStartSpaces() {

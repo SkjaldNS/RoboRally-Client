@@ -27,6 +27,8 @@ public class GameController {
 
     @GetMapping("/{gameId}")
     public ResponseEntity<Game> getGame(@PathVariable("gameId") Long gameId) {
+        if(gameId == null)
+            return ResponseEntity.badRequest().body(null);
         Game game = gameRepository.findGameByGameId(gameId);
         return ResponseEntity.ok(game);
     }
@@ -74,7 +76,6 @@ public class GameController {
         gameRepository.delete(game);
         return ResponseEntity.ok().build();
     }
-
 }
 // Create json for game
 // {

@@ -62,42 +62,41 @@ public class AppController implements Observer {
         this.roboRally = roboRally;
     }
 
-    public void newGame() throws IOException {
-        ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
-        dialog.setTitle("Player number");
-        dialog.setHeaderText("Select number of players");
-        Optional<Integer> result = dialog.showAndWait();
+    public void newGame(Game game, List<Player> players, GameSession gameSession) throws IOException {
 
-        if (result.isPresent()) {
-            if (gameController != null) {
-                // The UI should not allow this, but in case this happens anyway.
-                // give the user the option to save the game or abort this operation!
-                if (!stopGame()) {
-                    return;
-                }
-            }
 
-            // XXX the board should eventually be created programmatically or loaded from a file
-            //     here we just create an empty board with the required number of players.
-            Board board = LoadBoard.loadBoard("risky_crossing");
-            if(board == null) {
-                board = new Board(8, 8);
-
-            }
-            gameController = new GameController(board);
-            int no = result.get();
-            for (int i = 0; i < no; i++) {
-                Player player = new Player(board, i+1, "Player " + (i + 1));
-                board.addPlayer(player);
-                player.setSpace(board.getStartSpaces().get(i));
-            }
-
-            // XXX: V2
-            //board.setCurrentPlayer(board.getPlayer(0));
-            gameController.startProgrammingPhase();
-
-            roboRally.createBoardView(gameController);
+        // XXX the board should eventually be created programmatically or loaded from a file
+        //     here we just create an empty board with the required number of players.
+        Board board = LoadBoard.loadBoard(game.getBoardId());
+        if(board == null) {
+            board = new Board(8, 8);
         }
+        board.setGameId(game.getGameID());
+        gameController = new GameController(board);
+        PlayerLocal playerLocal = new PlayerLocal(board, gameSession.getPlayerId());
+        for (int i = 0; i < players.size(); i++) {
+            Player player = players.get(i);
+            player.setRobotId(i+1);
+            player.setBoard(board);
+            board.addPlayer(player);
+            player.setSpace(board.getStartSpaces().get(i));
+            // Sync the local player with the player with the same ID
+            if(player.getPlayerID() == gameSession.getPlayerId()) {
+                playerLocal.setRobotId(player.getRobotId());
+                playerLocal.setSpace(player.getSpace());
+                playerLocal.setName(player.getName());
+                playerLocal.setGameID(game.getGameID());
+                board.setLocalPlayer(playerLocal);
+            }
+        }
+
+
+        // XXX: V2
+        //board.setCurrentPlayer(board.getPlayer(0));
+        gameController.startProgrammingPhase();
+
+        roboRally.createBoardView(gameController);
+
     }
 
 

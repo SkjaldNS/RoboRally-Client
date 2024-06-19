@@ -40,6 +40,7 @@ import dk.dtu.compute.se.pisd.roborally.view.userlobby.UserLobbyView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -109,6 +110,12 @@ public class RoboRally extends Application {
 
         adminLobbyBottom.setCloseButtonAction( () -> {
             boardRoot.setCenter(createPreLobbyView(appController, new ClientController()));
+            try {
+                restController.deletePlayers(gameSession.getGameId());
+                restController.deleteGame(gameSession.getGameId());
+            } catch (Exception e) {
+                throw new RuntimeException("Player not found");
+            }
             DataUpdater.getInstance().stopLobbyPolling();
         });
 
@@ -119,7 +126,8 @@ public class RoboRally extends Application {
                 Game game = restController.getGame(gameSession.getGameId());
                 game.setGameStatus(1);
                 restController.putGame(game);
-                appController.newGame();
+                List<Player> players = restController.getPlayers(gameSession.getGameId());
+                appController.newGame(game, players, gameSession);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             } catch (Exception e) {
@@ -154,7 +162,6 @@ public class RoboRally extends Application {
                     boardRoot.setCenter(userLobbyView);
                     try {
                         int gameId = gameItemView.getGame().getGameID();
-                        System.out.println("Game ID: " + gameId);
                         int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
                         gameSession = new GameSession(gameId, playerId);
                         DataUpdater.getInstance().startLobbyPolling(() -> {
@@ -170,10 +177,21 @@ public class RoboRally extends Application {
                                 Game game = restController.getGame(gameId);
                                 if(game.getGameStatus() == 1) {
                                     DataUpdater.getInstance().stopLobbyPolling();
-                                    appController.newGame();
+                                    List<Player> players = restController.getPlayers(gameId);
+                                    appController.newGame(game, players, gameSession);
                                 }
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
+                                // Go back to prelobby
+                                System.out.println("Game deleted!");
+                                Platform.runLater(() -> {
+                                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                                    alert.setTitle("Error");
+                                    alert.setHeaderText("Game has been deleted");
+                                    alert.setContentText("The game you were in has been deleted. You will be redirected to the prelobby.");
+                                    alert.showAndWait();
+                                    boardRoot.setCenter(preLobbyView);
+                                });
+                                DataUpdater.getInstance().stopLobbyPolling();
                             }
                         });
                     } catch (Exception e) {
@@ -187,27 +205,43 @@ public class RoboRally extends Application {
 
         preLobbyView.setCreateGameButtonAction(() -> {
             AdminLobbyView adminLobbyView = createAdminLobbyView(appController, restController);
+            adminLobbyView.getAdminLobbyBottom().getStartGameButton().setDisable(true);
             boardRoot.setCenter(adminLobbyView);
-            Game game = new Game("Placeholder... bitch");
-            System.out.println(game.getGameID());
+            Game game = new Game("Game");
             try {
                 int gameId = restController.postGame(game);
                 game.setGameId(gameId);
-                int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
-                Player player = new Player(null, 0, "Placeholder... Niko is a btich");
-                player.setPlayerID(playerId);
+                game.setGameName("Game " + gameId);
+                int playerId = restController.postPlayer("PlaceholderName", gameId);
                 gameSession = new GameSession(gameId, playerId);
                 DataUpdater.getInstance().startLobbyPolling(() -> {
                     try {
-                        List<PlayerItemView> playerItemViews = restController.getPlayers(gameId)
+                        List<Player> playerList = restController.getPlayers(gameId);
+                        int serverPlayerCount = restController.getGame(gameId).getNumberOfPlayers();
+                        List<PlayerItemView> playerItemViews = playerList
                                 .stream()
                                 .map(player1 -> new PlayerItemView(player1.getPlayerID()))
                                         .toList();
+                        if(serverPlayerCount != playerList.size()) {
+                            game.setNumberOfPlayers(playerList.size());
+                            restController.putGame(game);
+                        }
+                        System.out.println("Player List size: " + playerList.size());
                         Platform.runLater(() -> adminLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews));
                     } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
-                }, () -> System.out.println("Game stuff"));
+                }, () -> {
+                    try {
+                         Game game1 = restController.getGame(gameId);
+                         int playerCount = game1.getNumberOfPlayers();
+                         if(playerCount >= 2 && playerCount <= 6) {
+                             adminLobbyView.getAdminLobbyBottom().getStartGameButton().setDisable(false);
+                         }
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -225,6 +259,11 @@ public class RoboRally extends Application {
 
         userLobbyBottom.setCloseButtonAction(() -> {
             boardRoot.setCenter(createPreLobbyView(new AppController(this), new ClientController()));
+            try {
+                restController.deletePlayer(gameSession.getGameId(), gameSession.getPlayerId());
+            } catch (Exception e) {
+                throw new RuntimeException("Player not found");
+            }
             DataUpdater.getInstance().stopLobbyPolling();
         });
 

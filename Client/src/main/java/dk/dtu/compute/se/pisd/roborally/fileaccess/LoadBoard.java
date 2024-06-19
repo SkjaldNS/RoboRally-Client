@@ -37,6 +37,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Map;
 
 /**
  * ...
@@ -48,23 +49,23 @@ public class LoadBoard {
     private static final String BOARDSFOLDER = "boards";
     private static final String DEFAULTBOARD = "defaultboard";
     private static final String JSON_EXT = "json";
-
+    private static Map<Integer, String> boardNames = Map.of(
+            0, "risky_crossing",
+            1, "fractionation"
+    );
     /**
      * Load a board from a file with the given name. If the name is null, the
      * default board is loaded.
      *
-     * @param boardname the name of the board to be loaded
+     * @param boardId the id of the board to be loaded
      * @return the board loaded from the file
      * @author Nikolaj Schæbel, s220471@dtu.dk
      * @author Daniel Overballe Lerche, s235095@dtu.dk
      */
-    public static Board loadBoard(String boardname) {
-        if (boardname == null) {
-            boardname = DEFAULTBOARD;
-        }
+    public static Board loadBoard(int boardId) {
 
         ClassLoader classLoader = LoadBoard.class.getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(BOARDSFOLDER + "/" + boardname + "." + JSON_EXT);
+        InputStream inputStream = classLoader.getResourceAsStream(BOARDSFOLDER + "/" + boardNames.get(boardId) + "." + JSON_EXT);
         if (inputStream == null) {
             // TODO these constants should be defined somewhere
             return new Board(8,8);

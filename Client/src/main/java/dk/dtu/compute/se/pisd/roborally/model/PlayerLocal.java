@@ -15,10 +15,8 @@ public class PlayerLocal extends Player {
     private CommandCardHandField[] cards;
     final public static int NO_CARDS = 8;
 
-    public PlayerLocal(@NotNull Board board, int robotId, @NotNull String name) {
-
-        super(board, robotId, name);
-
+    public PlayerLocal(@NotNull Board board, @NotNull int playerId) {
+        super(board, playerId);
         cards = new CommandCardHandField[NO_CARDS];
         for (int i = 0; i < cards.length; i++) {
             cards[i] = new CommandCardHandField(this);

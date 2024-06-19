@@ -21,6 +21,10 @@ public class AdminLobbyBottom extends HBox {
         getChildren().addAll(closeButton, startGameButton);
     }
 
+    public Button getStartGameButton() {
+        return startGameButton;
+    }
+
     public void setCloseButtonAction(Runnable action) {
         this.closeButton.setOnAction(e -> action.run());
     }

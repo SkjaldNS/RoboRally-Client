@@ -44,7 +44,7 @@ public class DataUpdater {
     }
 
     public void startGamePolling(Runnable task) {
-        gameStateFuture = executorService.scheduleAtFixedRate(this::pollGameState, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        gameStateFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
     public void stopLobbyPolling() {

@@ -50,10 +50,9 @@ public class Player extends Subject {
 
     public Player(){}
 
-    public Player(Board board, int robotId, @NotNull String name) {
+    public Player(Board board, @NotNull String name) {
         this.board = board;
         this.name = name;
-        this.robotId = robotId;
 
         this.space = null;
 
@@ -62,6 +61,16 @@ public class Player extends Subject {
             program[i] = new CommandCardField(this);
         }
 
+    }
+
+    public Player(Board board, int playerId) {
+        this.board = board;
+        this.playerId = playerId;
+
+        program = new CommandCardField[NO_REGISTERS];
+        for (int i = 0; i < program.length; i++) {
+            program[i] = new CommandCardField(this);
+        }
     }
 
     public String getName() {return name;}
@@ -84,6 +93,10 @@ public class Player extends Subject {
     public Command getLastCommand() {return lastCommand;}
 
     public int getRobotId() {return robotId;}
+
+    public void setRobotId(int robotId) {this.robotId = robotId;}
+
+    public void setBoard(Board board) {this.board = board;}
 
     public Space getSpace() {return space;}
 

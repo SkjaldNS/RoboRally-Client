@@ -11,6 +11,8 @@ public interface RestController {
 
     List<Player> getPlayers(int gameID) throws Exception;
 
+    void deletePlayer(int gameID, int playerID) throws Exception;
+
     List<Game> getGames() throws Exception;
 
     Game getGame(int gameID) throws Exception;
@@ -19,9 +21,13 @@ public interface RestController {
 
     void putGame(Game game) throws Exception;
 
+    void deleteGame(int gameID) throws Exception;
+
     int postPlayer(String playerName, int gameID) throws Exception;
 
     void putPlayer(Player player) throws Exception;
+
+    void deletePlayers(int gameID) throws Exception;
 
     void postMove(Move move) throws Exception;
 

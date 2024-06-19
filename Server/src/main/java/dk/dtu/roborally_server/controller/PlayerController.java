@@ -1,6 +1,8 @@
 package dk.dtu.roborally_server.controller;
 
+import dk.dtu.roborally_server.model.Game;
 import dk.dtu.roborally_server.model.Player;
+import dk.dtu.roborally_server.repository.GameRepository;
 import dk.dtu.roborally_server.repository.PlayerRepository;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -80,4 +82,15 @@ public class PlayerController {
         playerRepository.delete(player);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping(value = "")
+    public ResponseEntity<String> deletePlayers(@PathVariable Long gameId) {
+        List<Player> players = playerRepository.findPlayersByGameId(gameId);
+        if(players.isEmpty()) {
+            return ResponseEntity.badRequest().body("No players found with specified gameId");
+        }
+        playerRepository.deletePlayersByGameId(gameId);
+        return ResponseEntity.ok().build();
+    }
+
 }

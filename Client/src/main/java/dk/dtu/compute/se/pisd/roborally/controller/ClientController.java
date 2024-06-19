@@ -42,7 +42,7 @@ public class ClientController implements RestController {
     public void putGame(Game game) throws Exception {
         String gameJson = gson.toJson(game);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + game.getGameID()))
+                .uri(new URI(BASE_URL + "/games"))
                 .PUT(HttpRequest.BodyPublishers.ofString(gameJson))
                 .header("Content-Type", "application/json")
                 .build();
@@ -74,6 +74,17 @@ public class ClientController implements RestController {
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
         System.out.println(response.body());
         return gson.fromJson(response.body(), Game.class);
+    }
+
+    @Override
+    public void deleteGame(int gameID) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + "/games/" + gameID))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
     }
 
     @Override
@@ -113,6 +124,28 @@ public class ClientController implements RestController {
         System.out.println(response.body());
         Type listType = new TypeToken<List<Player>>() {}.getType();
         return gson.fromJson(response.body(), listType);
+    }
+
+    @Override
+    public void deletePlayer(int gameID, int playerID) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + "/games/" + gameID + "/players/" + playerID))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+    }
+
+    @Override
+    public void deletePlayers(int gameID) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(new URI(BASE_URL + "/games/" + gameID + "/players"))
+                .DELETE()
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
     }
 
     @Override
