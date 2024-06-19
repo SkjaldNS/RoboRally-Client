@@ -8,6 +8,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 import dk.dtu.compute.se.pisd.roborally.fileaccess.Adapter;
 
+/**
+ * @author Asma Maryam, s230716@dtu.dk
+ */
+
 class AdapterTest {
 
     private Gson gson;

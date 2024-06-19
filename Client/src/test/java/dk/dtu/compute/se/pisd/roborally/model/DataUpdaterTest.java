@@ -11,7 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+/**
+ * @author Asma Maryam, s230716@dtu.dk
+ */
 class DataUpdaterTest {
 
     private RestController mockRestController;

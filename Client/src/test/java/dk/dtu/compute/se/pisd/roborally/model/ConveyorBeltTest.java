@@ -10,7 +10,9 @@ import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-
+/**
+ * @author Asma Maryam, s230716@dtu.dk
+ */
 class ConveyorBeltTest {
 
     private ConveyorBelt conveyorBelt;

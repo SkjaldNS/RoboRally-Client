@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * JUnit tests for the BoardTemplate class.
+ * @author Asma Maryam, s230716@dtu.dk
  */
 public class BoardTemplateTest {
 

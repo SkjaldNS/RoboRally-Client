@@ -5,7 +5,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * @author Asma Maryam, s230716@dtu.dk
+ */
 class PlayerLocalTest {
 
     private Deck.Board board;

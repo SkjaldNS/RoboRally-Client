@@ -3,10 +3,10 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.roborally.model.Game;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
 /**
- * JUnit tests for the Game class.
+ * @author Asma Maryam, s230716@dtu.dk
  */
+
 public class GameTest {
 
     @Test

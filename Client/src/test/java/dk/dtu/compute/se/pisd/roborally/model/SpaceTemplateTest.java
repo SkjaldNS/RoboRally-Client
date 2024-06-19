@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 /**
- * JUnit tests for the SpaceTemplate class.
+ * @author Asma Maryam, s230716@dtu.dk
  */
+
 public class SpaceTemplateTest {
 
     @Test

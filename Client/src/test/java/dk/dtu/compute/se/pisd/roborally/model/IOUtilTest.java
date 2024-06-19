@@ -7,10 +7,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 /**
- * JUnit tests for the IOUtil class.
+ * @author Asma Maryam, s230716@dtu.dk
  */
+
 public class IOUtilTest {
 
     @Test

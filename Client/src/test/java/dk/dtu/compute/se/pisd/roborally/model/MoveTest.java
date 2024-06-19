@@ -7,7 +7,9 @@ import dk.dtu.compute.se.pisd.roborally.model.Move;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
+/**
+ * @author Asma Maryam, s230716@dtu.dk
+ */
 public class MoveTest {
 
     private Move move;

@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 /**
- * JUnit tests for the Deck class.
+ * @author Asma Maryam, s230716@dtu.dk
  */
+
 public class DeckTest {
 
     @Test

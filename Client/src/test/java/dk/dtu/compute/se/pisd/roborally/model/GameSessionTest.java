@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * JUnit tests for the GameSession class.
+ * @author Asma Maryam, s230716@dtu.dk
  */
 public class GameSessionTest {
 
