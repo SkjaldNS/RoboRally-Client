@@ -41,6 +41,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -87,6 +88,8 @@ public class RoboRally extends Application {
 
         stage.setScene(primaryScene);
         stage.setTitle("RoboRally");
+        Image icon = new Image("file:src/main/resources/icon/game_icon.png");
+        stage.getIcons().add(icon);
         stage.setOnCloseRequest(
                 e -> {
                     e.consume();
@@ -163,12 +166,17 @@ public class RoboRally extends Application {
                     try {
                         int gameId = gameItemView.getGame().getGameID();
                         int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
-                        gameSession = new GameSession(gameId, playerId);
+                        gameSession = new GameSession(gameId, playerId, false);
                         DataUpdater.getInstance().startLobbyPolling(() -> {
                             try {
                                 List<PlayerItemView> playerItemViews = restController.getPlayers(gameId).stream().map(
                                         player -> new PlayerItemView(player.getPlayerID())).toList();
-                                Platform.runLater(() -> userLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews));
+                                int mapId = restController.getGame(gameId).getBoardId();
+                                Platform.runLater(() -> {
+                                    userLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews);
+                                    userLobbyView.getUserLobbyMap().updateMap(mapId);
+                                });
+
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -213,20 +221,25 @@ public class RoboRally extends Application {
                 game.setGameId(gameId);
                 game.setGameName("Game " + gameId);
                 int playerId = restController.postPlayer("PlaceholderName", gameId);
-                gameSession = new GameSession(gameId, playerId);
+                gameSession = new GameSession(gameId, playerId, true);
                 DataUpdater.getInstance().startLobbyPolling(() -> {
                     try {
                         List<Player> playerList = restController.getPlayers(gameId);
                         int serverPlayerCount = restController.getGame(gameId).getNumberOfPlayers();
+                        int serverBoardId = game.getBoardId();
+                        int clientBoardId = adminLobbyView.getAdminLobbyMap().getSelectedMapId();
                         List<PlayerItemView> playerItemViews = playerList
                                 .stream()
                                 .map(player1 -> new PlayerItemView(player1.getPlayerID()))
                                         .toList();
+                        if(serverBoardId != clientBoardId) {
+                            game.setBoardId(clientBoardId);
+                            restController.putGame(game);
+                        }
                         if(serverPlayerCount != playerList.size()) {
                             game.setNumberOfPlayers(playerList.size());
                             restController.putGame(game);
                         }
-                        System.out.println("Player List size: " + playerList.size());
                         Platform.runLater(() -> adminLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews));
                     } catch (Exception e) {
                         throw new RuntimeException(e);

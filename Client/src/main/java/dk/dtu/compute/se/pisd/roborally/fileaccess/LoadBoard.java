@@ -47,9 +47,8 @@ import java.util.Map;
 public class LoadBoard {
 
     private static final String BOARDSFOLDER = "boards";
-    private static final String DEFAULTBOARD = "defaultboard";
     private static final String JSON_EXT = "json";
-    private static Map<Integer, String> boardNames = Map.of(
+    private static final Map<Integer, String> boardNames = Map.of(
             0, "risky_crossing",
             1, "fractionation"
     );

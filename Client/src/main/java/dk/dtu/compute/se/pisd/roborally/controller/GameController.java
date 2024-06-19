@@ -35,12 +35,18 @@ import java.util.List;
 public class GameController {
 
     final public Board board;
+    private GameSession gameSession;
+    private final RestController restController;
+    private Game game;
 
 
     //private DiscardPile discardPile = new DiscardPile();
 
-    public GameController(Board board) {
+    public GameController(Board board, GameSession gameSession, Game game) {
         this.board = board;
+        this.gameSession = gameSession;
+        this.game = game;
+        this.restController = new ClientController();
     }
 
 
@@ -193,9 +199,11 @@ public class GameController {
     private void makeProgramFieldsVisible(int register) {
         if (register >= 0 && register < Player.NO_REGISTERS) {
             for (int i = 0; i < board.getPlayersNumber(); i++) {
-                Player player = board.getPlayer(i);
-                CommandCardField field = player.getProgramField(register);
-                field.setVisible(true);
+                if(isPlayerLocal(board.getPlayer(i))) {
+                    PlayerLocal player = (PlayerLocal) board.getPlayer(i);
+                    CommandCardHandField field = player.getCardField(register);
+                    field.setVisible(true);
+                }
             }
         }
     }
@@ -206,11 +214,19 @@ public class GameController {
     private void makeProgramFieldsInvisible() {
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
-            for (int j = 0; j < Player.NO_REGISTERS; j++) {
-                CommandCardField field = player.getProgramField(j);
-                field.setVisible(false);
+            if(isPlayerLocal(player)) {
+                for (int j = 0; j < Player.NO_REGISTERS; j++) {
+
+                    PlayerLocal playerLocal = (PlayerLocal) player;
+                    CommandCardHandField field = playerLocal.getCardField(j);
+                    field.setVisible(false);
+                }
             }
         }
+    }
+
+    public boolean isPlayerLocal(Player player) {
+        return player.getPlayerID() == gameSession.getPlayerId();
     }
 
     /**
@@ -285,6 +301,16 @@ public class GameController {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
                     step++;
+                    // if the last player has executed the last step,
+                    // then update turn id to the server
+                    if(gameSession.isAdmin()) {
+                        game.setTurnId(game.getTurnId() + 1);
+                        try {
+                            restController.putGame(game);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
                         board.setStep(step);
@@ -351,7 +377,6 @@ public class GameController {
                 default:
                     // DO NOTHING (for now)
             }
-            //player.getDiscardedPile().getPile().pile.add(command);
             player.setLastCommand(command);
             board.useCard();
         }
@@ -391,7 +416,7 @@ public class GameController {
         PlayerLocal player = null;
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
-            if (board.getPlayer(i).isLocalPlayer()) {
+            if (isPlayerLocal(board.getPlayer(i))) {
                 player = (PlayerLocal) board.getPlayer(i);
             }
         }
@@ -419,7 +444,7 @@ public class GameController {
                 pile.setVisible(true);
             }
 
-            for (int j = 0; j < player.NO_CARDS; j++) {
+            for (int j = 0; j < PlayerLocal.NO_CARDS; j++) {
                 if (player.getCardField(j) != null) {
                     player.getDiscardedPile().getPile().pile.add(player.getCardField(j).getCard().command);
                 }
@@ -430,7 +455,7 @@ public class GameController {
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
 
-            if (board.getPlayer(i) != null) {
+            if (board.getPlayer(i) != null && isPlayerLocal(board.getPlayer(i))) {
                 for (int j = 0; j < Player.NO_REGISTERS; j++) {
                     CommandCardField field = board.getPlayer(i).getProgramField(j);
                     field.setCard(null);

@@ -22,7 +22,9 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.ClientController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -64,9 +66,11 @@ public class PlayerView extends Pane implements ViewObserver {
 
     private GameController gameController;
 
+    private RestController restController;
+
     public PlayerView(@NotNull GameController gameController, @NotNull PlayerLocal player) {
         //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
-
+        this.restController = new ClientController();
         top = new VBox();
         this.getChildren().add(top);
 
@@ -205,26 +209,64 @@ public class PlayerView extends Pane implements ViewObserver {
                 }
                 playerInteractionPanel.getChildren().clear();
 
-                if (player.board.getCurrentPlayer() == player) {
+                if (gameController.isPlayerLocal(player.board.getCurrentPlayer())) {
                     if(player.getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
                         // TODO Assignment A3: these buttons should be shown only when there is
                         //      an interactive command card, and the buttons should represent
                         //      the player's choices of the interactive command card. The
                         //      following is just a mockup showing two options
                         Button optionButton = new Button("Right");
-                        optionButton.setOnAction( e ->
-                                gameController.executeCommandOptionAndContinue(Command.RIGHT)
-                        );
+                        optionButton.setOnAction(e -> {
+                            try {
+                                Game game = restController.getGame(player.board.getGameId());
+                                Choice choice = new Choice(Choice.ChoiceType.RIGHT,
+                                        game.getTurnId(),
+                                        (int) player.getPlayerID(),
+                                        player.board.getGameId());
+                                restController.postChoice(choice);
+                                gameController.executeCommandOptionAndContinue(Command.RIGHT);
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
                         optionButton.setDisable(false);
                         playerInteractionPanel.getChildren().add(optionButton);
 
                         optionButton = new Button("Left");
-                        optionButton.setOnAction( e ->
-                                gameController.executeCommandOptionAndContinue(Command.LEFT)
-                        );
+                        optionButton.setOnAction(e -> {
+                            try {
+                                Game game = restController.getGame(player.board.getGameId());
+                                Choice choice = new Choice(Choice.ChoiceType.LEFT,
+                                        game.getTurnId(),
+                                        (int) player.getPlayerID(),
+                                        player.board.getGameId());
+                                restController.postChoice(choice);
+                                gameController.executeCommandOptionAndContinue(Command.LEFT);
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
                         optionButton.setDisable(false);
                         playerInteractionPanel.getChildren().add(optionButton);
-
+                    }
+                } else if (player.board.getCurrentPlayer().getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
+                    try {
+                        int playerId = (int) player.board.getCurrentPlayer().getPlayerID();
+                        Game game = restController.getGame(player.board.getGameId());
+                        DataUpdater.getInstance().startChoicePolling(() -> {
+                            Choice choice = null;
+                            try {
+                                choice = restController.getChoice(game.getGameID(), playerId, game.getTurnId());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (choice != null) {
+                                gameController.executeCommandOptionAndContinue(choice.getChoiceType() == Choice.ChoiceType.LEFT ? Command.LEFT : Command.RIGHT);
+                                DataUpdater.getInstance().stopChoicePolling();
+                            }
+                        });
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }

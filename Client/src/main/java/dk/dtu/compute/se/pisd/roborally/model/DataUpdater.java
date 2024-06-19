@@ -16,6 +16,8 @@ public class DataUpdater {
 
     private ScheduledFuture<?> playerListFuture;
     private ScheduledFuture<?> gameStateFuture;
+    private ScheduledFuture<?> moveFuture;
+    private ScheduledFuture<?> choiceFuture;
 
     private static DataUpdater instance;
 
@@ -52,8 +54,27 @@ public class DataUpdater {
         gameStateFuture.cancel(false);
     }
 
-    private void pollGameState() {
+    public void startTaskPolling(List<Runnable> tasks) {
+    }
 
+    public void stopTaskPolling() {
+
+    }
+
+    public void startMovePolling(Runnable task) {
+        moveFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+    }
+
+    public void stopMovePolling() {
+        moveFuture.cancel(false);
+    }
+
+    public void startChoicePolling(Runnable task) {
+        choiceFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+    }
+
+    public void stopChoicePolling() {
+        choiceFuture.cancel(false);
     }
 
     public void stopPlayerListPolling() {

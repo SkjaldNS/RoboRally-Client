@@ -174,10 +174,10 @@ public class ClientController implements RestController {
     }
 
     @Override
-    public void postChoice(Move move) throws Exception {
-        String moveJson = gson.toJson(move);
+    public void postChoice(Choice choice) throws Exception {
+        String moveJson = gson.toJson(choice);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + move.getGameID() + "/choices"))
+                .uri(new URI(BASE_URL + "/games/" + choice.getGameId() + "/choices"))
                 .POST(HttpRequest.BodyPublishers.ofString(moveJson))
                 .header("Content-Type", "application/json")
                 .build();
@@ -187,7 +187,7 @@ public class ClientController implements RestController {
     }
 
     @Override
-    public Choice getChoice(String gameID, String playerID, String turnID) throws Exception {
+    public Choice getChoice(int gameID, int playerID, int turnID) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + "/games/" + gameID + "/choices" + turnID + playerID))
                 .GET()

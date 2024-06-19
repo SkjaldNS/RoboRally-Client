@@ -33,7 +33,7 @@ public interface RestController {
 
     Move[] getMoves(String gameID, String turnID) throws Exception;
 
-    void postChoice(Move move) throws Exception;
+    Choice getChoice(int gameID, int playerID, int turnID) throws Exception;
 
-    Choice getChoice(String gameID, String playerID, String turnID) throws Exception;
+    void postChoice(Choice choice) throws Exception;
 }
