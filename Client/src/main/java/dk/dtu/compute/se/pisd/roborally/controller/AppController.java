@@ -72,7 +72,7 @@ public class AppController implements Observer {
             board = new Board(8, 8);
         }
         board.setGameId(game.getGameID());
-        gameController = new GameController(board, gameSession);
+        gameController = new GameController(board, gameSession, game);
         PlayerLocal playerLocal = new PlayerLocal(board, gameSession.getPlayerId());
         for (int i = 0; i < players.size(); i++) {
             Player player = players.get(i);
