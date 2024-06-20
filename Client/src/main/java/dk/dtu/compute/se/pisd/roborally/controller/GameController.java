@@ -388,6 +388,7 @@ public class GameController {
      */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
+            player.setLastCommand(player.getCurrentCommand());
             player.setCurrentCommand(command);
             switch (command) {
                 case FORWARD:
@@ -425,7 +426,6 @@ public class GameController {
                 default:
                     // DO NOTHING (for now)
             }
-            player.setLastCommand(command);
             board.useCard();
         }
     }
