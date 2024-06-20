@@ -111,7 +111,7 @@ public class PlayerView extends Pane implements ViewObserver {
                 }
             }
         }
-        programPane.add(playerLabel, 31, 6);
+        programPane.add(playerLabel, 32, 6);
 
         // XXX  the following buttons should actually not be on the tabs of the individual
         //      players, but on the PlayersView (view for all players). This should be
