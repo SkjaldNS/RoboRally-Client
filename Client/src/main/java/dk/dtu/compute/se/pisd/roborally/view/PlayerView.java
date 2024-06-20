@@ -269,6 +269,7 @@ public class PlayerView extends Pane implements ViewObserver {
                         int playerId = (int) player.board.getCurrentPlayer().getPlayerID();
                         Game game = restController.getGame(player.board.getGameId());
                         DataUpdater.getInstance().startChoicePolling(() -> {
+                            System.out.println("CHOICE MOFO");
                             Choice choice = null;
                             try {
                                 choice = restController.getChoice(game.getGameID(), playerId, game.getTurnId());

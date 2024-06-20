@@ -367,6 +367,9 @@ public class GameController {
                             throw new RuntimeException(e);
                         }
                     }
+                    else {
+                        game.setTurnId(game.getTurnId() +1);
+                    }
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
                         board.setStep(step);
@@ -396,7 +399,7 @@ public class GameController {
      */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
-            player.setLastCommand(player.getCurrentCommand());
+            //player.setLastCommand(player.getCurrentCommand());
             player.setCurrentCommand(command);
             switch (command) {
                 case FORWARD:
@@ -434,6 +437,7 @@ public class GameController {
                 default:
                     // DO NOTHING (for now)
             }
+            player.setLastCommand(command);
             board.useCard();
         }
     }

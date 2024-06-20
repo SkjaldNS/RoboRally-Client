@@ -189,9 +189,9 @@ public class ClientController implements RestController {
     }
 
     @Override
-    public Choice getChoice(int gameID, int playerID, int turnID) throws Exception {
+    public Choice getChoice(int gameId, int playerId, int turnId) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + gameID + "/choices" + turnID + playerID))
+                .uri(new URI(BASE_URL + "/games/" + gameId + "/choices" + "/" + turnId + "/" +  playerId))
                 .GET()
                 .build();
 
