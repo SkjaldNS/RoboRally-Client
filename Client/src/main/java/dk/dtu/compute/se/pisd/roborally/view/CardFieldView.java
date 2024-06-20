@@ -119,6 +119,7 @@ public class CardFieldView extends GridPane implements ViewObserver {
     }
 
     private CommandCardField cardFieldFromRepresentation(String rep) {
+        // TODO - Removed isLocalPlayer check
         if (rep != null && field.player != null && field.player.isLocalPlayer()) {
             String[] strings = rep.split(",");
             if (strings.length == 2) {
@@ -275,14 +276,15 @@ public class CardFieldView extends GridPane implements ViewObserver {
                             db.hasContent(ROBO_RALLY_CARD)) {
                         Object object = db.getContent(ROBO_RALLY_CARD);
                         if (object instanceof String) {
-                            CommandCardField source = cardFieldFromRepresentation((String) object);
+                            CommandCardField source = handFieldFromRepresentation((String) object);
                             if (source != null && gameController.moveCards(source, cardField)) {
-                                // CommandCard card = source.getCard();
-                                // if (card != null) {
-                                // if (gameController.moveCards(source, cardField)) {
-                                    // cardField.setCard(card);
-                                    success = true;
-                                // }
+                                CommandCard card = source.getCard();
+                                if (card != null) {
+                                    if (gameController.moveCards(source, cardField)) {
+                                        cardField.setCard(card);
+                                        success = true;
+                                    }
+                                }
                             }
                         }
                     }
