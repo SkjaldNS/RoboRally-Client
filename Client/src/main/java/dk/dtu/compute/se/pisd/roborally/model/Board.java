@@ -284,6 +284,10 @@ public class Board extends Subject {
                 x = (x + 1) % width;
                 break;
         }
+
+        if(x < 0 || x >= width || y < 0 || y >= height) {
+            return null;
+        }
         Heading reverse = Heading.values()[(heading.ordinal() + 2)% Heading.values().length];
         Space result = getSpace(x, y);
         if (result != null) {

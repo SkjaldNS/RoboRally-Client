@@ -57,9 +57,18 @@ public class GameController {
      * @author Haleef Abu Talib, s224523@dtu.dk
      */
     public void moveForward(@NotNull Player player) {
+        int playerx = player.getSpace().x;
+        int playery = player.getSpace().y;
+        Heading heading = player.getHeading();
+        if((playerx == 0 && heading == Heading.WEST)||(playerx == 0 && heading == Heading.NORTH)
+                || playery == 0 && heading == Heading.SOUTH || playery == 0 && heading == Heading.WEST) {
+            return;
+        }
+
+
         if (player.board == board) {
             Space space = player.getSpace();
-            Heading heading = player.getHeading();
+            //Heading heading = player.getHeading();
 
             Space target = board.getNeighbour(space, heading);
             if (target != null) {
@@ -98,6 +107,13 @@ public class GameController {
         Space space = player.getSpace();
         Heading heading = player.getHeading();
         Space target = board.getNeighbour(space, heading.opposite());
+        int playerx = player.getSpace().x;
+        int playery = player.getSpace().y;
+
+        if((playerx == 0 && heading == Heading.WEST)||(playerx == 0 && heading == Heading.NORTH)
+                || playery == 0 && heading == Heading.SOUTH || playery == 0 && heading == Heading.WEST) {
+            return;
+        }
         if (target != null) {
             try {
                 moveToSpace(player, target, heading.opposite());
