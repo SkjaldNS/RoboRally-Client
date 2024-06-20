@@ -228,6 +228,43 @@ public class GameController {
      * and setting the phase, current player, and step accordingly.
      */
     public void finishProgrammingPhase() {
+        for (Player player : board.getPlayers()) {
+            if(player.isLocalPlayer()) {
+                Move move = new Move();
+                move.setPlayerId((int) player.getPlayerID());
+                move.setGameId(gameSession.getGameId());
+                move.setTurnId(game.getTurnId());
+                move.setReg1(player.getProgramField(0).getCard().command);
+                move.setReg2(player.getProgramField(1).getCard().command);
+                move.setReg3(player.getProgramField(2).getCard().command);
+                move.setReg4(player.getProgramField(3).getCard().command);
+                move.setReg5(player.getProgramField(4).getCard().command);
+                try {
+                    restController.postMove(move);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
+        DataUpdater.getInstance().startMovePolling(() -> {
+            try {
+                Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
+                if(moves.length == board.getPlayers().length) {
+                    for(Player player1 : board.getPlayers()) {
+                        if(!player1.isLocalPlayer()) {
+                            for(Move move : moves) {
+                                if(move.getPlayerId() == player1.getPlayerID()) {
+                                    player1.setProgramField(move);
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        });
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
         board.setPhase(Phase.ACTIVATION);
@@ -462,7 +499,6 @@ public class GameController {
             }
 
         }
-
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
 

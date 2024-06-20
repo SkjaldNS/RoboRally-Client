@@ -166,7 +166,7 @@ public class ClientController implements RestController {
     @Override
     public Move[] getMoves(int gameID, int turnID) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + gameID + "/players" + "/moves" + turnID))
+                .uri(new URI(BASE_URL + "/games/" + gameID + "/moves/" + turnID))
                 .GET()
                 .build();
 
