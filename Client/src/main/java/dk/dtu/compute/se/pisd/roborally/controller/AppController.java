@@ -73,21 +73,17 @@ public class AppController implements Observer {
         }
         board.setGameId(game.getGameID());
         gameController = new GameController(board, gameSession, game);
-        PlayerLocal playerLocal = new PlayerLocal(board, gameSession.getPlayerId());
+        List<Player> playersList = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
-            Player player = players.get(i);
-            player.setRobotId(i+1);
-            player.setBoard(board);
-            board.addPlayer(player);
-            player.setSpace(board.getStartSpaces().get(i));
-            // Sync the local player with the player with the same ID
-            if(player.getPlayerID() == gameSession.getPlayerId()) {
-                playerLocal.setRobotId(player.getRobotId());
-                playerLocal.setSpace(player.getSpace());
-                playerLocal.setName(player.getName());
-                playerLocal.setGameID(game.getGameID());
-                board.setLocalPlayer(playerLocal);
-            }
+            // FIXME - Use the player contructor for each player in the list
+            playersList.add(new Player(board, players.get(i).getName(), players.get(i).isLocalPlayer()));
+            playersList.get(i).setRobotId(i+1);
+            playersList.get(i).setBoard(board);
+            playersList.get(i).setPlayerID((int) players.get(i).getPlayerID());
+            playersList.get(i).setGameID(game.getGameID());
+            playersList.get(i).initPlayer(players.get(i));
+            board.addPlayer(playersList.get(i));
+            playersList.get(i).setSpace(board.getStartSpaces().get(i));
         }
 
 
@@ -221,21 +217,23 @@ public class AppController implements Observer {
         return false;
     }
 
-    public void exit() throws IOException {
+    public void exit() {
+
         if (gameController != null) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Exit RoboRally?");
             alert.setContentText("Are you sure you want to exit RoboRally?");
             Optional<ButtonType> result = alert.showAndWait();
-
             if (result.isEmpty() || result.get() != ButtonType.OK) {
                 return; // return without exiting the application
             }
+            DataUpdater.getInstance().stopExecutorService();
+            Platform.exit();
         }
 
         // If the user did not cancel, the RoboRally application will exit
         // after the option to save the game
-        if (gameController == null || stopGame()) {
+        if (gameController == null) {
             Platform.exit();
         }
     }

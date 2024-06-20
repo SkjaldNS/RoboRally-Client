@@ -5,8 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -138,7 +140,7 @@ public class ClientController implements RestController {
     }
 
     @Override
-    public void deletePlayers(int gameID) throws Exception {
+    public void deletePlayers(int gameID) throws IOException, InterruptedException, URISyntaxException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + "/games/" + gameID + "/players"))
                 .DELETE()
@@ -152,7 +154,7 @@ public class ClientController implements RestController {
     public void postMove(Move move) throws Exception {
         String moveJson = gson.toJson(move);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(new URI(BASE_URL + "/games/" + move.getGameID() + "/moves"))
+                .uri(new URI(BASE_URL + "/games/" + move.getGameId() + "/moves"))
                 .POST(HttpRequest.BodyPublishers.ofString(moveJson))
                 .header("Content-Type", "application/json")
                 .build();
@@ -162,7 +164,7 @@ public class ClientController implements RestController {
     }
 
     @Override
-    public Move[] getMoves(String gameID, String turnID) throws Exception {
+    public Move[] getMoves(int gameID, int turnID) throws Exception {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(new URI(BASE_URL + "/games/" + gameID + "/players" + "/moves" + turnID))
                 .GET()

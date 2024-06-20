@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PlayerView extends Pane implements ViewObserver {
 
-    private PlayerLocal player;
+    private Player player;
 
     private VBox top;
 
@@ -68,7 +68,7 @@ public class PlayerView extends Pane implements ViewObserver {
 
     private RestController restController;
 
-    public PlayerView(@NotNull GameController gameController, @NotNull PlayerLocal player) {
+    public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
         //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
         this.restController = new ClientController();
         top = new VBox();
@@ -85,12 +85,11 @@ public class PlayerView extends Pane implements ViewObserver {
         programPane.setVgap(2.0);
         programPane.setHgap(2.0);
         programCardViews = new CardFieldView[Player.NO_REGISTERS];
-        for(int j = 0; j < PlayerLocal.NO_CARDS; j++) {
+        for(int j = 0; j < Player.NO_CARDS; j++) {
             for (int i = 0; i < Player.NO_REGISTERS; i++) {
                 CommandCardField cardField = player.getProgramField(i);
-                CommandCardHandField hand = player.getCardField(j);
                 if (cardField != null) {
-                    programCardViews[i] = new CardFieldView(gameController, cardField, hand);
+                    programCardViews[i] = new CardFieldView(gameController, cardField);
                     programPane.add(programCardViews[i], i, 0);
                 }
             }
@@ -122,16 +121,16 @@ public class PlayerView extends Pane implements ViewObserver {
         cardsPane = new GridPane();
         cardsPane.setVgap(2.0);
         cardsPane.setHgap(2.0);
-        cardViews = new CardFieldView[PlayerLocal.NO_CARDS];
-        for (int i = 0; i < PlayerLocal.NO_CARDS; i++) {
-            CommandCardHandField cardField = player.getCardField(i);
+        cardViews = new CardFieldView[Player.NO_CARDS];
+        for (int i = 0; i < Player.NO_CARDS; i++) {
+            CommandCardField cardField = player.getCardField(i);
             if (cardField != null) {
-                cardViews[i] = new CardFieldView(gameController, null, cardField);
+                cardViews[i] = new CardFieldView(gameController, cardField);
                 cardsPane.add(cardViews[i], i, 0);
             }
         }
 
-        top.getChildren().add(playerLabel);
+        //top.getChildren().add(playerLabel);
         top.getChildren().add(programLabel);
         top.getChildren().add(programPane);
         top.getChildren().add(cardsLabel);
@@ -209,7 +208,7 @@ public class PlayerView extends Pane implements ViewObserver {
                 }
                 playerInteractionPanel.getChildren().clear();
 
-                if (gameController.isPlayerLocal(player.board.getCurrentPlayer())) {
+                if (player.board.getCurrentPlayer().isLocalPlayer()) {
                     if(player.getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
                         // TODO Assignment A3: these buttons should be shown only when there is
                         //      an interactive command card, and the buttons should represent

@@ -3,22 +3,14 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import com.google.gson.annotations.Expose;
 
 public class Move {
-    @Expose
     private Command reg1;
-    @Expose
     private Command reg2;
-    @Expose
     private Command reg3;
-    @Expose
     private Command reg4;
-    @Expose
     private Command reg5;
-    @Expose
-    private int gameID;
-    @Expose
-    private int playerID;
-    @Expose
-    private int turnID;
+    private int gameId;
+    private int playerId;
+    private int turnId;
 
     public Command getReg1() {
         return reg1;
@@ -60,28 +52,28 @@ public class Move {
         this.reg5 = reg5;
     }
 
-    public int getGameID() {
-        return gameID;
+    public int getGameId() {
+        return gameId;
     }
 
-    public void setGameID(int gameID) {
-        this.gameID = gameID;
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
     }
 
-    public int getPlayerID() {
-        return playerID;
+    public int getPlayerId() {
+        return playerId;
     }
 
-    public void setPlayerID(int playerID) {
-        this.playerID = playerID;
+    public void setPlayerId(int playerId) {
+        this.playerId = playerId;
     }
 
-    public int getTurnID() {
-        return turnID;
+    public int getTurnId() {
+        return turnId;
     }
 
-    public void setTurnID(int turnID) {
-        this.turnID = turnID;
+    public void setTurnId(int turnId) {
+        this.turnId = turnId;
     }
 
     public boolean isChoice(Command register){

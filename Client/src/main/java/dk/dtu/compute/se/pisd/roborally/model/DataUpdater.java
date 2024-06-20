@@ -84,4 +84,8 @@ public class DataUpdater {
     private void stopGamePolling() {
         gameStateFuture.cancel(false);
     }
+
+    public void stopExecutorService() {
+        executorService.shutdown();
+    }
 }

@@ -47,6 +47,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.nio.channels.ClosedChannelException;
 import java.util.List;
 
 /**
@@ -60,7 +62,7 @@ public class RoboRally extends Application {
     private static final int MIN_APP_WIDTH = 600;
     private Stage stage;
     private BorderPane boardRoot;
-    private GameSession gameSession;
+    private GameSession gameSession = null;
 
     @Override
     public void init() throws Exception {
@@ -94,9 +96,15 @@ public class RoboRally extends Application {
                 e -> {
                     e.consume();
                     try {
-                        appController.exit();
-                    } catch (IOException ex) {
+                        if(gameSession != null) {
+                            // TODO - Change to switch status
+                            restController.deletePlayers(gameSession.getGameId());
+                            restController.deleteGame(gameSession.getGameId());
+                        }
+                    } catch(Exception ex) {
                         throw new RuntimeException(ex);
+                    } finally {
+                        appController.exit();
                     }
                 });
         stage.setResizable(false);
@@ -130,6 +138,11 @@ public class RoboRally extends Application {
                 game.setGameStatus(1);
                 restController.putGame(game);
                 List<Player> players = restController.getPlayers(gameSession.getGameId());
+                for (Player player : players) {
+                    if (player.getPlayerID() == gameSession.getPlayerId()) {
+                        player.setLocalPlayer(true);
+                    }
+                }
                 appController.newGame(game, players, gameSession);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -156,21 +169,21 @@ public class RoboRally extends Application {
                 throw new RuntimeException(e);
             }
 
-            if(gameItemViews.isEmpty()) return;
-
             for (GameItemView gameItemView : gameItemViews) {
                 gameItemView.setJoinGameButtonAction(() -> {
                     UserLobbyView userLobbyView = createUserLobbyView(preLobbyView, restController);
 
                     boardRoot.setCenter(userLobbyView);
                     try {
+                        PlayerNameAlertBox playerNameAlertBox = new PlayerNameAlertBox();
+                        String playerName = playerNameAlertBox.getPlayerName();
                         int gameId = gameItemView.getGame().getGameID();
-                        int playerId = restController.postPlayer("Placeholder... Niko is a btich", gameId);
+                        int playerId = restController.postPlayer(playerName, gameId);
                         gameSession = new GameSession(gameId, playerId, false);
                         DataUpdater.getInstance().startLobbyPolling(() -> {
                             try {
                                 List<PlayerItemView> playerItemViews = restController.getPlayers(gameId).stream().map(
-                                        player -> new PlayerItemView(player.getPlayerID())).toList();
+                                        player -> new PlayerItemView(player.getPlayerID(), player.getName())).toList();
                                 int mapId = restController.getGame(gameId).getBoardId();
                                 Platform.runLater(() -> {
                                     userLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews);
@@ -184,9 +197,20 @@ public class RoboRally extends Application {
                             try {
                                 Game game = restController.getGame(gameId);
                                 if(game.getGameStatus() == 1) {
-                                    DataUpdater.getInstance().stopLobbyPolling();
                                     List<Player> players = restController.getPlayers(gameId);
-                                    appController.newGame(game, players, gameSession);
+                                    for (Player player : players) {
+                                        if (player.getPlayerID() == gameSession.getPlayerId()) {
+                                            player.setLocalPlayer(true);
+                                        }
+                                    }
+                                    Platform.runLater(() -> {
+                                        try {
+                                            appController.newGame(game, players, gameSession);
+                                        } catch (IOException e) {
+                                            throw new RuntimeException(e);
+                                        }
+                                    });
+                                    DataUpdater.getInstance().stopLobbyPolling();
                                 }
                             } catch (Exception e) {
                                 // Go back to prelobby
@@ -214,13 +238,15 @@ public class RoboRally extends Application {
         preLobbyView.setCreateGameButtonAction(() -> {
             AdminLobbyView adminLobbyView = createAdminLobbyView(appController, restController);
             adminLobbyView.getAdminLobbyBottom().getStartGameButton().setDisable(true);
+            PlayerNameAlertBox playerNameAlertBox = new PlayerNameAlertBox();
+            String playerName = playerNameAlertBox.getPlayerName();
             boardRoot.setCenter(adminLobbyView);
             Game game = new Game("Game");
             try {
                 int gameId = restController.postGame(game);
                 game.setGameId(gameId);
                 game.setGameName("Game " + gameId);
-                int playerId = restController.postPlayer("PlaceholderName", gameId);
+                int playerId = restController.postPlayer(playerName, gameId);
                 gameSession = new GameSession(gameId, playerId, true);
                 DataUpdater.getInstance().startLobbyPolling(() -> {
                     try {
@@ -230,7 +256,7 @@ public class RoboRally extends Application {
                         int clientBoardId = adminLobbyView.getAdminLobbyMap().getSelectedMapId();
                         List<PlayerItemView> playerItemViews = playerList
                                 .stream()
-                                .map(player1 -> new PlayerItemView(player1.getPlayerID()))
+                                .map(player1 -> new PlayerItemView(player1.getPlayerID(), player1.getName()))
                                         .toList();
                         if(serverBoardId != clientBoardId) {
                             game.setBoardId(clientBoardId);

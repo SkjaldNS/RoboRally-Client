@@ -25,8 +25,6 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
-import java.util.List;
-
 /**
  * Controls the game logic.
  *
@@ -199,9 +197,9 @@ public class GameController {
     private void makeProgramFieldsVisible(int register) {
         if (register >= 0 && register < Player.NO_REGISTERS) {
             for (int i = 0; i < board.getPlayersNumber(); i++) {
-                if(isPlayerLocal(board.getPlayer(i))) {
-                    PlayerLocal player = (PlayerLocal) board.getPlayer(i);
-                    CommandCardHandField field = player.getCardField(register);
+                if(board.getPlayer(i).isLocalPlayer()) {
+                    Player player = board.getPlayer(i);
+                    CommandCardField field = player.getCardField(register);
                     field.setVisible(true);
                 }
             }
@@ -214,19 +212,14 @@ public class GameController {
     private void makeProgramFieldsInvisible() {
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
-            if(isPlayerLocal(player)) {
+            if(player.isLocalPlayer()) {
                 for (int j = 0; j < Player.NO_REGISTERS; j++) {
 
-                    PlayerLocal playerLocal = (PlayerLocal) player;
-                    CommandCardHandField field = playerLocal.getCardField(j);
+                    CommandCardField field = player.getCardField(j);
                     field.setVisible(false);
                 }
             }
         }
-    }
-
-    public boolean isPlayerLocal(Player player) {
-        return player.getPlayerID() == gameSession.getPlayerId();
     }
 
     /**
@@ -248,6 +241,24 @@ public class GameController {
      */
 
     public void startActivationPhase(int steps) { // start the activation phase
+        Game game;
+        Move[] moves;
+        try {
+            game = restController.getGame(gameSession.getGameId());
+            moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        for (int i = 0; i < board.getPlayersNumber(); i++) { // for each player
+            Player player = board.getPlayer(i);
+            if(!(player.isLocalPlayer())) {
+                for (Move move : moves) { // for each move
+                    if (move.getPlayerId() == player.getPlayerID()) { // if the move is for the player
+                        player.setProgramField(move); // set the program field
+                    }
+                }
+            }
+        }
         makeProgramFieldsInvisible(); // make the program fields invisible
         for (int i = 0; i <= steps; i++) { // for each step
             makeProgramFieldsVisible(i); // make the program fields visible
@@ -413,11 +424,11 @@ public class GameController {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
-        PlayerLocal player = null;
 
+        Player player = null;
         for (int i = 0; i < board.getPlayersNumber(); i++) {
-            if (isPlayerLocal(board.getPlayer(i))) {
-                player = (PlayerLocal) board.getPlayer(i);
+            if (board.getPlayer(i).isLocalPlayer()) {
+                player = board.getPlayer(i);
             }
         }
 
@@ -432,8 +443,8 @@ public class GameController {
                 currentDeck.shuffleDeck();
             }
 
-            for (int j = 0; j < PlayerLocal.NO_CARDS; j++) {
-                CommandCardHandField field = player.getCardField(j);
+            for (int j = 0; j < Player.NO_CARDS; j++) {
+                CommandCardField field = player.getCardField(j);
                 field.setCard(new CommandCard(currentDeck.initDeck.get(0)));
                 currentDeck.initDeck.remove(0);
                 field.setVisible(true);
@@ -444,7 +455,7 @@ public class GameController {
                 pile.setVisible(true);
             }
 
-            for (int j = 0; j < PlayerLocal.NO_CARDS; j++) {
+            for (int j = 0; j < Player.NO_CARDS; j++) {
                 if (player.getCardField(j) != null) {
                     player.getDiscardedPile().getPile().pile.add(player.getCardField(j).getCard().command);
                 }
@@ -455,7 +466,7 @@ public class GameController {
 
         for (int i = 0; i < board.getPlayersNumber(); i++) {
 
-            if (board.getPlayer(i) != null && isPlayerLocal(board.getPlayer(i))) {
+            if (board.getPlayer(i) != null && board.getPlayer(i).isLocalPlayer()) {
                 for (int j = 0; j < Player.NO_REGISTERS; j++) {
                     CommandCardField field = board.getPlayer(i).getProgramField(j);
                     field.setCard(null);

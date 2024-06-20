@@ -18,7 +18,7 @@ public class MoveController {
     public MoveController(MoveRepository moveRepository) {this.moveRepository = moveRepository;}
 
     @GetMapping
-    @RequestMapping( "{turnId}")
+    @RequestMapping("/{turnId}")
     public ResponseEntity<List<Move>> getMoves(@PathVariable("gameId") Long gameId, @PathVariable("turnId") Long turnId){
         List<Move> listMove = moveRepository.findMoveByGameIdAndTurnId(gameId, turnId);
         return ResponseEntity.ok(listMove);

@@ -4,6 +4,7 @@ import dk.dtu.roborally_server.model.Game;
 import dk.dtu.roborally_server.model.Player;
 import dk.dtu.roborally_server.repository.GameRepository;
 import dk.dtu.roborally_server.repository.PlayerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -83,6 +84,7 @@ public class PlayerController {
         return ResponseEntity.ok().build();
     }
 
+    @Transactional // Apparently needed to delete players by gameId to not give errors
     @DeleteMapping(value = "")
     public ResponseEntity<String> deletePlayers(@PathVariable Long gameId) {
         List<Player> players = playerRepository.findPlayersByGameId(gameId);
@@ -92,5 +94,4 @@ public class PlayerController {
         playerRepository.deletePlayersByGameId(gameId);
         return ResponseEntity.ok().build();
     }
-
 }

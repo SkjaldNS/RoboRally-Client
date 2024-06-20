@@ -99,11 +99,7 @@ public class RoboRallyMenuBar extends MenuBar {
 */
         exitApp = new MenuItem("Exit");
         exitApp.setOnAction(e -> {
-            try {
                 this.appController.exit();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
         });
         controlMenu.getItems().add(exitApp);
 

@@ -82,7 +82,7 @@ public class Board extends Subject {
     private boolean stepMode;
 
     @Expose
-    private PlayerLocal local;
+    private Player local;
 
     // Empty constructor for GSON since it will give errors without it
     public Board() {}
@@ -116,7 +116,7 @@ public class Board extends Subject {
         }
     }
 
-    public void setLocalPlayer(PlayerLocal playerLocal) {
+    public void setLocalPlayer(Player playerLocal) {
         this.local = playerLocal;
     }
 
@@ -180,7 +180,7 @@ public class Board extends Subject {
 
     public Player getPlayer(int i) {
         if (i >= 0 && i < players.size()) {
-            return players.get(i);
+            return (Player) players.get(i);
         } else {
             return null;
         }
@@ -197,7 +197,7 @@ public class Board extends Subject {
         }
     }
 
-    public PlayerLocal getLocalPlayer() { return local; }
+    public Player getLocalPlayer() { return local; }
 
     public Phase getPhase() {
         return phase;

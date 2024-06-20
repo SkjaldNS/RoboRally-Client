@@ -57,7 +57,18 @@ public class BoardView extends VBox implements ViewObserver {
         board = gameController.board;
 
         mainBoardPane = new GridPane();
-        playerView = new PlayerView(gameController, board.getLocalPlayer());
+        Player player = null;
+        for (int i = 0; i < board.getPlayers().length; i++) {
+            Player player1 = board.getPlayers()[i];
+            if (player1.isLocalPlayer()) {
+                player = player1;
+                break;
+            }
+        }
+        if(player == null) {
+            throw new IllegalArgumentException("No local player found");
+        }
+        playerView = new PlayerView(gameController, player);
         statusLabel = new Label("<no status>");
 
         this.getChildren().add(mainBoardPane);

@@ -39,7 +39,7 @@ public class Player extends Subject {
     private Command lastCommand = null;
     private int playerId;
     private int gameId;
-    private String name;
+    private String playerName;
     private int robotId;
     private int powerUpCnt = 0;
     private Command currentCommand;
@@ -47,22 +47,22 @@ public class Player extends Subject {
     private Space space;
     private Heading heading = SOUTH;
     private CommandCardField[] program;
+    // Player Local
+    private DiscardPileField discardedPile;
+    private Deck deck;
+    private CommandCardField[] cards;
+    final public static int NO_CARDS = 8;
+    private boolean isLocalPlayer;
 
     public Player(){}
 
-    public Player(Board board, @NotNull String name) {
+    public Player(Board board, @NotNull String playerName, boolean isLocalPlayer) {
         this.board = board;
-        this.name = name;
-
+        this.playerName = playerName;
+        this.isLocalPlayer = isLocalPlayer;
         this.space = null;
-
-        program = new CommandCardField[NO_REGISTERS];
-        for (int i = 0; i < program.length; i++) {
-            program[i] = new CommandCardField(this);
-        }
-
     }
-
+    /*
     public Player(Board board, int playerId) {
         this.board = board;
         this.playerId = playerId;
@@ -72,14 +72,53 @@ public class Player extends Subject {
             program[i] = new CommandCardField(this);
         }
     }
+*/
+    public void initPlayer(Player player) {
+        program = new CommandCardField[NO_REGISTERS];
+        for (int i = 0; i < program.length; i++) {
+            program[i] = new CommandCardField(this);
+        }
 
-    public String getName() {return name;}
+        cards = new CommandCardField[NO_CARDS];
+        for (int i = 0; i < cards.length; i++) {
+            cards[i] = new CommandCardField(this);
+        }
 
-    public void setName(String name) {this.name = name;}
+        discardedPile = new DiscardPileField(this);
+        deck = new Deck();
+        deck.shuffleDeck();
+    }
+
+    public Deck getDeck() {
+        if(!isLocalPlayer) return null;
+        return deck;
+    }
+
+    public DiscardPileField getDiscardedPile() {
+        if(!isLocalPlayer) return null;
+        return discardedPile;
+    }
+
+    public CommandCardField getCardField(int i) {
+        if(!isLocalPlayer) return null;
+        return cards[i];
+    }
+
+    public String getName() {return playerName;}
+
+    public void setName(String playerName) {this.playerName = playerName;}
 
     public Command getCurrentCommand() {return currentCommand;}
 
     public void setCurrentCommand(Command command){this.currentCommand = command;}
+
+    public void setProgramField(Move move) {
+        program[0].setCard(new CommandCard(move.getReg1()));
+        program[1].setCard(new CommandCard(move.getReg2()));
+        program[2].setCard(new CommandCard(move.getReg3()));
+        program[3].setCard(new CommandCard(move.getReg4()));
+        program[4].setCard(new CommandCard(move.getReg5()));
+    }
 
     public void oneUpPowerUpCnt() {this.powerUpCnt++;}
 
@@ -146,5 +185,9 @@ public class Player extends Subject {
 
     public void setGameID(int gameID) {this.gameId = gameID;}
 
-    public boolean isLocalPlayer() {return false;}
+    public void setLocalPlayer(boolean localPlayer) {
+        isLocalPlayer = localPlayer;
+    }
+
+    public boolean isLocalPlayer() {return isLocalPlayer;}
 }
