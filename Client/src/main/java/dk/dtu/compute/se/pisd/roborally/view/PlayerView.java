@@ -29,8 +29,10 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
@@ -52,6 +54,7 @@ public class PlayerView extends Pane implements ViewObserver {
     private GridPane programPane;
     private Label cardsLabel;
     private GridPane cardsPane;
+    private ImageView robotImage;
 
     private CardFieldView[] programCardViews;
     private CardFieldView[] cardViews;
@@ -71,8 +74,18 @@ public class PlayerView extends Pane implements ViewObserver {
     public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
         //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
         this.restController = new ClientController();
+        HBox robotBox = new HBox();
+        robotImage = new ImageView();
+        robotImage.setImage(new Image("robots/r" + player.getRobotId() + ".png"));
+        robotImage.setFitHeight(100);
+        robotImage.setFitWidth(100);
+        robotBox.alignmentProperty().set(Pos.BOTTOM_RIGHT);
         top = new VBox();
+        robotBox.getChildren().add(robotImage);
+        robotBox.setMinWidth(this.getMinWidth());
+        robotBox.setMinHeight(this.getMinHeight());
         this.getChildren().add(top);
+
 
         this.gameController = gameController;
         this.player = player;
@@ -130,6 +143,8 @@ public class PlayerView extends Pane implements ViewObserver {
             }
         }
 
+        cardsPane.add(robotImage, Player.NO_REGISTERS + 6, 0);
+
         //top.getChildren().add(playerLabel);
         top.getChildren().add(programLabel);
         top.getChildren().add(programPane);
@@ -140,6 +155,7 @@ public class PlayerView extends Pane implements ViewObserver {
             player.board.attach(this);
             update(player.board);
         }
+
     }
 
     @Override
