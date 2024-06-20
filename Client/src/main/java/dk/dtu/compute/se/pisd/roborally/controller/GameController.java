@@ -228,6 +228,12 @@ public class GameController {
      * and setting the phase, current player, and step accordingly.
      */
     public void finishProgrammingPhase() {
+        try {
+            game.setTurnId(restController.getGame(gameSession.getGameId()).getTurnId());
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         for (Player player : board.getPlayers()) {
             if(player.isLocalPlayer()) {
                 Move move = new Move();
@@ -247,24 +253,26 @@ public class GameController {
             }
 
         }
-        DataUpdater.getInstance().startMovePolling(() -> {
-            try {
-                Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
-                if(moves.length == board.getPlayers().length) {
-                    for(Player player1 : board.getPlayers()) {
-                        if(!player1.isLocalPlayer()) {
-                            for(Move move : moves) {
-                                if(move.getPlayerId() == player1.getPlayerID()) {
-                                    player1.setProgramField(move);
-                                }
+        try {
+            Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
+            if(moves.length == board.getPlayers().length) {
+                for(Player player1 : board.getPlayers()) {
+                    if(!player1.isLocalPlayer()) {
+                        for(Move move : moves) {
+                            if(move.getPlayerId() == player1.getPlayerID()) {
+                                player1.setProgramField(move);
                             }
                         }
                     }
                 }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
             }
-        });
+            else {
+                return;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
         board.setPhase(Phase.ACTIVATION);

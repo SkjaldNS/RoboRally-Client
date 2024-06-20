@@ -26,7 +26,7 @@ public class Game {
     @Column(name = "GAMESTATUS")
     private int gameStatus;
     @Column(name = "TURNID")
-    private Long turnID;
+    private Long turnId;
     @Column(name = "NUMBEROFPLAYERS")
     private Long numberOfPlayers;
 
