@@ -35,6 +35,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -90,7 +92,9 @@ public class PlayerView extends Pane implements ViewObserver {
         this.gameController = gameController;
         this.player = player;
 
-        playerLabel = new Label(Long.toString(player.getPlayerID()));
+        playerLabel = new Label(player.getName());
+        playerLabel.setAlignment(Pos.BOTTOM_RIGHT);
+        playerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         programLabel = new Label("Program");
 
@@ -107,6 +111,7 @@ public class PlayerView extends Pane implements ViewObserver {
                 }
             }
         }
+        programPane.add(playerLabel, 31, 6);
 
         // XXX  the following buttons should actually not be on the tabs of the individual
         //      players, but on the PlayersView (view for all players). This should be
@@ -145,7 +150,6 @@ public class PlayerView extends Pane implements ViewObserver {
 
         cardsPane.add(robotImage, Player.NO_REGISTERS + 6, 0);
 
-        //top.getChildren().add(playerLabel);
         top.getChildren().add(programLabel);
         top.getChildren().add(programPane);
         top.getChildren().add(cardsLabel);
