@@ -21,11 +21,10 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
-import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
 /**
- * ...
+ * A field for a command card that is placed on the board. The field is
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -34,12 +33,15 @@ public class CommandCardField extends Subject {
 
     public Player player;
 
-    @Expose
     private CommandCard card;
 
-    @Expose
     private boolean visible;
 
+    /**
+     * The constructor for the field for a command card. The field is initially
+     * empty and visible.
+     * @param player the player that is associated with this field
+     */
     public CommandCardField(Player player) {
         this.player = player;
         this.card = null;
@@ -49,10 +51,18 @@ public class CommandCardField extends Subject {
     public CommandCardField(){
     }
 
+    /**
+     * @return the card that is placed on this field
+     */
     public CommandCard getCard() {
         return card;
     }
 
+    /**
+     * Sets the card that is placed on this field. This will notify the
+     * observers of this field.
+     * @param card the card to be placed on this field
+     */
     public void setCard(CommandCard card) {
         if (card != this.card) {
             this.card = card;
@@ -60,10 +70,18 @@ public class CommandCardField extends Subject {
         }
     }
 
+    /**
+     * @return whether the card on this field is visible
+     */
     public boolean isVisible() {
         return visible;
     }
 
+    /**
+     * Sets the visibility of the card on this field. This will notify the
+     * observers of this field.
+     * @param visible whether the card on this field should be visible
+     */
     public void setVisible(boolean visible) {
         if (visible != this.visible) {
             this.visible = visible;

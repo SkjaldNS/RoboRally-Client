@@ -6,14 +6,28 @@ import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * The Checkpoint class represents a checkpoint in the game.
+ * When a player lands on a checkpoint and has collected the previous checkpoint, a specific action occurs.
+ * The specific action is implemented in the doAction method.
+ */
 public class Checkpoint extends FieldAction {
-    @Expose
     private int orderNumber;
 
+    /**
+     * Sets the order number of the checkpoint.
+     *
+     * @param orderNumber the new order number of the checkpoint
+     */
     public void setOrderNumber(int orderNumber) {
         this.orderNumber = orderNumber;
     }
 
+    /**
+     * Returns the order number of the checkpoint.
+     *
+     * @return the order number of the checkpoint
+     */
     public int getOrderNumber() {
         return orderNumber;
     }

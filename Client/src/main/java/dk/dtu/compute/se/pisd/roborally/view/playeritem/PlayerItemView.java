@@ -20,10 +20,16 @@ public class PlayerItemView extends HBox {
         getChildren().add(playerNameText);
     }
 
+    /**
+     * @return the player id of the player item.
+     */
     public long getPlayerId() {
         return playerId;
     }
 
+    /**
+     * @return the player name text of the player item.
+     */
     public Text getPlayerNameText() {
         return playerNameText;
     }

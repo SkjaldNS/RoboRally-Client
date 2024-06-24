@@ -19,6 +19,9 @@ public class GameItemListView extends ScrollPane {
     private final VBox gameItemContainer;
     private final List<GameItemView> gameItems;
 
+    /**
+     * Constructor for the GameItemListView class.
+     */
     public GameItemListView() {
         gameItemContainer = new VBox();
         gameItemContainer.alignmentProperty().set(Pos.CENTER_RIGHT);
@@ -28,12 +31,19 @@ public class GameItemListView extends ScrollPane {
         gameItems = new ArrayList<>();
     }
 
+    /**
+     * Sets the game items to be displayed in the list.
+     * @param gameItems The game items to be displayed.
+     */
     public void setGameItems(List<GameItemView> gameItems) {
         this.gameItems.clear();
         this.gameItems.addAll(gameItems);
         updateGameItems();
     }
 
+    /**
+     * Updates the game items displayed in the list.
+     */
     private void updateGameItems() {
         gameItemContainer.getChildren().clear();
         for (GameItemView gameItem : gameItems) {

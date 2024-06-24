@@ -26,7 +26,8 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
+ * A class representing a command card in the game. A command card is
+ * associated with a specific command that can be executed by a robot.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -41,6 +42,9 @@ public class CommandCard extends Subject {
     }
     public CommandCard(){}
 
+    /**
+     * @return display name of the command card.
+     */
     public String getName() {
         return command.displayName;
     }

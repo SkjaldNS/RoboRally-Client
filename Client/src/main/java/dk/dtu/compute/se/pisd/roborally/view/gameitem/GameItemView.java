@@ -19,6 +19,9 @@ public class GameItemView extends HBox {
     private final Text gameNameText;
     private final Game game;
 
+    /**
+     * Constructor for the GameItemView class.
+     */
     public GameItemView(Game game) {
         this.game = game;
         joinGameButton = new Button(JOIN_BUTTON_MESSAGE);
@@ -29,10 +32,17 @@ public class GameItemView extends HBox {
         this.setAlignment(Pos.CENTER_RIGHT);
     }
 
+    /**
+     * Sets the action of the join game button.
+     * @param action The action to be set.
+     */
     public void setJoinGameButtonAction(Runnable action) {
         this.joinGameButton.setOnAction(e -> action.run());
     }
 
+    /**
+     * @return The game associated with the game item view.
+     */
     public Game getGame() {
         return game;
     }

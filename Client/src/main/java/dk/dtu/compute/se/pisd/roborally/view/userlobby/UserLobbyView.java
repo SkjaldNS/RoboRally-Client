@@ -23,6 +23,9 @@ public class UserLobbyView extends VBox {
     private final PlayerListView playerListView;
     private final UserLobbyMap userLobbyMap;
 
+    /**
+     * Constructor for the UserLobbyView
+     */
     public UserLobbyView(UserLobbyBottom userLobbyBottom, UserLobbyMap userLobbyMap, PlayerListView playerListView) {
         this.playerListView = playerListView;
         this.userLobbyMap = userLobbyMap;
@@ -36,10 +39,16 @@ public class UserLobbyView extends VBox {
         getChildren().addAll(content, userLobbyBottom);
     }
 
+    /**
+     * @return the player list view
+     */
     public PlayerListView getPlayerListView() {
         return playerListView;
     }
 
+    /**
+     * @return the user lobby map
+     */
     public UserLobbyMap getUserLobbyMap() {
         return userLobbyMap;
     }

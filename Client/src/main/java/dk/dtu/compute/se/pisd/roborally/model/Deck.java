@@ -12,7 +12,6 @@ import java.util.Collections;
  * @author Haleef Abu Talib, s224523@dtu.dk
  */
 public class Deck {
-    @Expose
     public ArrayList<Command> initDeck;
     /**
      * Constructs a new deck with the initial set of command cards.

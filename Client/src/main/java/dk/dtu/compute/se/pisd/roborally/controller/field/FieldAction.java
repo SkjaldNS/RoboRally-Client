@@ -25,13 +25,20 @@ import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 
 /**
- * ...
+ * The FieldAction class represents an action that can be performed on a field in the game.
+ * It is an abstract class, meaning it cannot be instantiated directly.
+ * Instead, it must be subclassed by other classes that provide an implementation for the doAction method.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 public abstract class FieldAction {
 
-
+    /**
+     * Performs an action on a given space in the game.
+     *
+     * @param gameController the game controller
+     * @param space the space on which the action is performed
+     * @return true if the action was successful, false otherwise
+     */
     public abstract boolean doAction(GameController gameController, Space space);
 }
