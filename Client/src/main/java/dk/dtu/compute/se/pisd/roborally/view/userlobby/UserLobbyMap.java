@@ -15,7 +15,6 @@ import javafx.scene.shape.Rectangle;
 public class UserLobbyMap extends VBox {
 
     private ImageView mapPreview;
-    private Rectangle mapPreviewBackground;
 
     public UserLobbyMap() {
         // Placeholder for map preview
@@ -23,14 +22,21 @@ public class UserLobbyMap extends VBox {
         mapPreview.setFitWidth(200);
         mapPreview.setFitHeight(200);
         mapPreview.setStyle("-fx-border-color: black; -fx-border-width: 10px;");
-
-        mapPreviewBackground = new Rectangle(200, 200);
-        mapPreviewBackground.setFill(Color.LIGHTGRAY);
-        getChildren().addAll(mapPreviewBackground);
         this.alignmentProperty().set(Pos.CENTER_RIGHT);
+    }
 
-        // Load the initial map image
-        updateMapPreview("map_image/map_1.png");
+    public void updateMap(int boardId) {
+        switch (boardId) {
+            case 0:
+                updateMapPreview("map_image/map_1.png");
+                break;
+            case 1:
+                updateMapPreview("map_image/map_2.png");
+                break;
+            default:
+                updateMapPreview("map_image/map_1.png");
+                break;
+        }
     }
 
     private void updateMapPreview(String imagePath) {
@@ -39,8 +45,9 @@ public class UserLobbyMap extends VBox {
             Image mapImage = new Image(getClass().getClassLoader().getResourceAsStream(imagePath));
 
             // Remove the placeholder and set the image
-            getChildren().remove(mapPreviewBackground);
-            getChildren().add(mapPreview);
+            if (!getChildren().contains(mapPreview)) {
+                getChildren().add(mapPreview);
+            }
             mapPreview.setImage(mapImage);
         } catch (Exception e) {
             System.err.println("Could not load image: " + imagePath);

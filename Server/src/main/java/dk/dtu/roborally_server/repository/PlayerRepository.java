@@ -17,4 +17,6 @@ public interface PlayerRepository extends JpaRepository<Player, Long> {
     public List<Player> findPlayersByGameId(Long gameId);
 
     public Player findPlayerByIdAndGameId(Long playerId, Long gameId);
+
+    public void deletePlayersByGameId(Long gameId);
 }

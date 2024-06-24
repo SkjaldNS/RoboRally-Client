@@ -22,15 +22,21 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.ClientController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.Tab;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -41,7 +47,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class PlayerView extends Pane implements ViewObserver {
 
-    private PlayerLocal player;
+    private Player player;
 
     private VBox top;
 
@@ -50,6 +56,7 @@ public class PlayerView extends Pane implements ViewObserver {
     private GridPane programPane;
     private Label cardsLabel;
     private GridPane cardsPane;
+    private ImageView robotImage;
 
     private CardFieldView[] programCardViews;
     private CardFieldView[] cardViews;
@@ -64,16 +71,30 @@ public class PlayerView extends Pane implements ViewObserver {
 
     private GameController gameController;
 
-    public PlayerView(@NotNull GameController gameController, @NotNull PlayerLocal player) {
-        //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
+    private RestController restController;
 
+    public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
+        //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
+        this.restController = new ClientController();
+        HBox robotBox = new HBox();
+        robotImage = new ImageView();
+        robotImage.setImage(new Image("robots/r" + player.getRobotId() + ".png"));
+        robotImage.setFitHeight(100);
+        robotImage.setFitWidth(100);
+        robotBox.alignmentProperty().set(Pos.BOTTOM_RIGHT);
         top = new VBox();
+        robotBox.getChildren().add(robotImage);
+        robotBox.setMinWidth(this.getMinWidth());
+        robotBox.setMinHeight(this.getMinHeight());
         this.getChildren().add(top);
+
 
         this.gameController = gameController;
         this.player = player;
 
-        playerLabel = new Label(Long.toString(player.getPlayerID()));
+        playerLabel = new Label(player.getName());
+        playerLabel.setAlignment(Pos.BOTTOM_RIGHT);
+        playerLabel.setFont(Font.font("Arial", FontWeight.BOLD, 20));
 
         programLabel = new Label("Program");
 
@@ -81,16 +102,16 @@ public class PlayerView extends Pane implements ViewObserver {
         programPane.setVgap(2.0);
         programPane.setHgap(2.0);
         programCardViews = new CardFieldView[Player.NO_REGISTERS];
-        for(int j = 0; j < PlayerLocal.NO_CARDS; j++) {
+        for(int j = 0; j < Player.NO_CARDS; j++) {
             for (int i = 0; i < Player.NO_REGISTERS; i++) {
                 CommandCardField cardField = player.getProgramField(i);
-                CommandCardHandField hand = player.getCardField(j);
                 if (cardField != null) {
-                    programCardViews[i] = new CardFieldView(gameController, cardField, hand);
+                    programCardViews[i] = new CardFieldView(gameController, cardField);
                     programPane.add(programCardViews[i], i, 0);
                 }
             }
         }
+        programPane.add(playerLabel, 32, 6);
 
         // XXX  the following buttons should actually not be on the tabs of the individual
         //      players, but on the PlayersView (view for all players). This should be
@@ -118,16 +139,17 @@ public class PlayerView extends Pane implements ViewObserver {
         cardsPane = new GridPane();
         cardsPane.setVgap(2.0);
         cardsPane.setHgap(2.0);
-        cardViews = new CardFieldView[PlayerLocal.NO_CARDS];
-        for (int i = 0; i < PlayerLocal.NO_CARDS; i++) {
-            CommandCardHandField cardField = player.getCardField(i);
+        cardViews = new CardFieldView[Player.NO_CARDS];
+        for (int i = 0; i < Player.NO_CARDS; i++) {
+            CommandCardField cardField = player.getCardField(i);
             if (cardField != null) {
-                cardViews[i] = new CardFieldView(gameController, null, cardField);
+                cardViews[i] = new CardFieldView(gameController, cardField);
                 cardsPane.add(cardViews[i], i, 0);
             }
         }
 
-        top.getChildren().add(playerLabel);
+        cardsPane.add(robotImage, Player.NO_REGISTERS + 6, 0);
+
         top.getChildren().add(programLabel);
         top.getChildren().add(programPane);
         top.getChildren().add(cardsLabel);
@@ -137,6 +159,7 @@ public class PlayerView extends Pane implements ViewObserver {
             player.board.attach(this);
             update(player.board);
         }
+
     }
 
     @Override
@@ -205,26 +228,65 @@ public class PlayerView extends Pane implements ViewObserver {
                 }
                 playerInteractionPanel.getChildren().clear();
 
-                if (player.board.getCurrentPlayer() == player) {
+                if (player.board.getCurrentPlayer().isLocalPlayer()) {
                     if(player.getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
                         // TODO Assignment A3: these buttons should be shown only when there is
                         //      an interactive command card, and the buttons should represent
                         //      the player's choices of the interactive command card. The
                         //      following is just a mockup showing two options
                         Button optionButton = new Button("Right");
-                        optionButton.setOnAction( e ->
-                                gameController.executeCommandOptionAndContinue(Command.RIGHT)
-                        );
+                        optionButton.setOnAction(e -> {
+                            try {
+                                Game game = restController.getGame(player.board.getGameId());
+                                Choice choice = new Choice(Choice.ChoiceType.RIGHT,
+                                        game.getTurnId(),
+                                        (int) player.getPlayerID(),
+                                        player.board.getGameId());
+                                restController.postChoice(choice);
+                                gameController.executeCommandOptionAndContinue(Command.RIGHT);
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
                         optionButton.setDisable(false);
                         playerInteractionPanel.getChildren().add(optionButton);
 
                         optionButton = new Button("Left");
-                        optionButton.setOnAction( e ->
-                                gameController.executeCommandOptionAndContinue(Command.LEFT)
-                        );
+                        optionButton.setOnAction(e -> {
+                            try {
+                                Game game = restController.getGame(player.board.getGameId());
+                                Choice choice = new Choice(Choice.ChoiceType.LEFT,
+                                        game.getTurnId(),
+                                        (int) player.getPlayerID(),
+                                        player.board.getGameId());
+                                restController.postChoice(choice);
+                                gameController.executeCommandOptionAndContinue(Command.LEFT);
+                            } catch (Exception ex) {
+                                throw new RuntimeException(ex);
+                            }
+                        });
                         optionButton.setDisable(false);
                         playerInteractionPanel.getChildren().add(optionButton);
-
+                    }
+                } else if (player.board.getCurrentPlayer().getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
+                    try {
+                        int playerId = (int) player.board.getCurrentPlayer().getPlayerID();
+                        Game game = restController.getGame(player.board.getGameId());
+                        DataUpdater.getInstance().startChoicePolling(() -> {
+                            System.out.println("CHOICE MOFO");
+                            Choice choice = null;
+                            try {
+                                choice = restController.getChoice(game.getGameID(), playerId, game.getTurnId());
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                            if (choice != null) {
+                                gameController.executeCommandOptionAndContinue(choice.getChoiceType() == Choice.ChoiceType.LEFT ? Command.LEFT : Command.RIGHT);
+                                DataUpdater.getInstance().stopChoicePolling();
+                            }
+                        });
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
                     }
                 }
             }

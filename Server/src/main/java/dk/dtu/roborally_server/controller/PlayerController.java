@@ -1,7 +1,10 @@
 package dk.dtu.roborally_server.controller;
 
+import dk.dtu.roborally_server.model.Game;
 import dk.dtu.roborally_server.model.Player;
+import dk.dtu.roborally_server.repository.GameRepository;
 import dk.dtu.roborally_server.repository.PlayerRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -42,18 +45,13 @@ public class PlayerController {
      * @param playerName the name of the player to create
      * @return a ResponseEntity containing the player's ID and an HTTP status code
      */
-    @PostMapping(consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.APPLICATION_JSON_VALUE, value = "")
-    public ResponseEntity<Player> createPlayer(@PathVariable Long gameId) {
-        List<Player> players = playerRepository.findPlayersByGameId(gameId);
-        if(players != null) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
+    @PostMapping(value = "", consumes = MediaType.TEXT_PLAIN_VALUE)
+    public ResponseEntity<String> createPlayer(@PathVariable Long gameId, @RequestBody String playerName) {
         Player player = new Player();
         player.setGameId(gameId);
-        playerRepository.save(player);
-
-        return ResponseEntity.ok(player);
+        player.setPlayerName(playerName);
+        player = playerRepository.save(player);
+        return ResponseEntity.ok(player.getPlayerId().toString());
     }
     /**
      * Handles PUT requests to update the player with the given ID.
@@ -83,6 +81,17 @@ public class PlayerController {
         if(player == null)
             return ResponseEntity.badRequest().body("Player not found");
         playerRepository.delete(player);
+        return ResponseEntity.ok().build();
+    }
+
+    @Transactional // Apparently needed to delete players by gameId to not give errors
+    @DeleteMapping(value = "")
+    public ResponseEntity<String> deletePlayers(@PathVariable Long gameId) {
+        List<Player> players = playerRepository.findPlayersByGameId(gameId);
+        if(players.isEmpty()) {
+            return ResponseEntity.badRequest().body("No players found with specified gameId");
+        }
+        playerRepository.deletePlayersByGameId(gameId);
         return ResponseEntity.ok().build();
     }
 }

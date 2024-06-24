@@ -15,7 +15,7 @@ public class ChoiceController {
     public ChoiceController(ChoiceRepository choiceRepository) {this.choiceRepository = choiceRepository;}
 
     @GetMapping
-    @RequestMapping( "{turnId}/{playerId}")
+    @RequestMapping( "/{turnId}/{playerId}")
     public ResponseEntity<Choice> getChoices(@PathVariable("gameId") Long gameId, @PathVariable("turnId") Long turnId, @PathVariable("playerId") Long playerId){
         Choice choice = choiceRepository.findChoiceByGameIdAndTurnIdAndPlayerId(gameId, turnId, playerId);
         return ResponseEntity.ok(choice);

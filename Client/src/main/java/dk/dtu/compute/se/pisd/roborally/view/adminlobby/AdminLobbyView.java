@@ -16,8 +16,16 @@ import javafx.scene.text.Text;
  */
 public class AdminLobbyView extends VBox {
 
+    private PlayerListView playerListView;
+    private AdminLobbyMap adminLobbyMap;
+    private AdminLobbyBottom adminLobbyBottom;
+
     //call player Item View and Player List View.
     public AdminLobbyView(PlayerListView playerListView, AdminLobbyMap adminLobbyMap, AdminLobbyBottom adminLobbyBottom) {
+        this.adminLobbyBottom = adminLobbyBottom;
+        this.playerListView = playerListView;
+        this.adminLobbyMap = adminLobbyMap;
+
         HBox filler = new HBox();
         this.paddingProperty().set(new Insets(10, 10, 10, 10));
         HBox.setHgrow(filler, Priority.ALWAYS);
@@ -27,6 +35,19 @@ public class AdminLobbyView extends VBox {
         HBox content = new HBox(playerListContainer, filler, adminLobbyMap);
         getChildren().addAll(content, adminLobbyBottom);
     }
+
+    public PlayerListView getPlayerListView() {
+        return playerListView;
+    }
+
+    public AdminLobbyMap getAdminLobbyMap() {
+        return adminLobbyMap;
+    }
+
+    public AdminLobbyBottom getAdminLobbyBottom() {
+        return adminLobbyBottom;
+    }
+
 }
 
 

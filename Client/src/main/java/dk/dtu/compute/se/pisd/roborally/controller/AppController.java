@@ -62,42 +62,37 @@ public class AppController implements Observer {
         this.roboRally = roboRally;
     }
 
-    public void newGame() throws IOException {
-        ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
-        dialog.setTitle("Player number");
-        dialog.setHeaderText("Select number of players");
-        Optional<Integer> result = dialog.showAndWait();
+    public void newGame(Game game, List<Player> players, GameSession gameSession) throws IOException {
 
-        if (result.isPresent()) {
-            if (gameController != null) {
-                // The UI should not allow this, but in case this happens anyway.
-                // give the user the option to save the game or abort this operation!
-                if (!stopGame()) {
-                    return;
-                }
-            }
 
-            // XXX the board should eventually be created programmatically or loaded from a file
-            //     here we just create an empty board with the required number of players.
-            Board board = LoadBoard.loadBoard("risky_crossing");
-            if(board == null) {
-                board = new Board(8, 8);
-
-            }
-            gameController = new GameController(board);
-            int no = result.get();
-            for (int i = 0; i < no; i++) {
-                Player player = new Player(board, i+1, "Player " + (i + 1));
-                board.addPlayer(player);
-                player.setSpace(board.getStartSpaces().get(i));
-            }
-
-            // XXX: V2
-            //board.setCurrentPlayer(board.getPlayer(0));
-            gameController.startProgrammingPhase();
-
-            roboRally.createBoardView(gameController);
+        // XXX the board should eventually be created programmatically or loaded from a file
+        //     here we just create an empty board with the required number of players.
+        Board board = LoadBoard.loadBoard(game.getBoardId());
+        if(board == null) {
+            board = new Board(8, 8);
         }
+        board.setGameId(game.getGameID());
+        gameController = new GameController(board, gameSession, game);
+        List<Player> playersList = new ArrayList<>();
+        for (int i = 0; i < players.size(); i++) {
+            // FIXME - Use the player contructor for each player in the list
+            playersList.add(new Player(board, players.get(i).getName(), players.get(i).isLocalPlayer()));
+            playersList.get(i).setRobotId(i+1);
+            playersList.get(i).setBoard(board);
+            playersList.get(i).setPlayerID((int) players.get(i).getPlayerID());
+            playersList.get(i).setGameID(game.getGameID());
+            playersList.get(i).initPlayer(players.get(i));
+            board.addPlayer(playersList.get(i));
+            playersList.get(i).setSpace(board.getStartSpaces().get(i));
+        }
+
+
+        // XXX: V2
+        //board.setCurrentPlayer(board.getPlayer(0));
+        gameController.startProgrammingPhase();
+
+        roboRally.createBoardView(gameController);
+
     }
 
 
@@ -222,21 +217,23 @@ public class AppController implements Observer {
         return false;
     }
 
-    public void exit() throws IOException {
+    public void exit() {
+
         if (gameController != null) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
             alert.setTitle("Exit RoboRally?");
             alert.setContentText("Are you sure you want to exit RoboRally?");
             Optional<ButtonType> result = alert.showAndWait();
-
             if (result.isEmpty() || result.get() != ButtonType.OK) {
                 return; // return without exiting the application
             }
+            DataUpdater.getInstance().stopExecutorService();
+            Platform.exit();
         }
 
         // If the user did not cancel, the RoboRally application will exit
         // after the option to save the game
-        if (gameController == null || stopGame()) {
+        if (gameController == null) {
             Platform.exit();
         }
     }

@@ -21,10 +21,11 @@ import javafx.scene.text.Text;
 public class UserLobbyView extends VBox {
 
     private final PlayerListView playerListView;
+    private final UserLobbyMap userLobbyMap;
 
     public UserLobbyView(UserLobbyBottom userLobbyBottom, UserLobbyMap userLobbyMap, PlayerListView playerListView) {
         this.playerListView = playerListView;
-
+        this.userLobbyMap = userLobbyMap;
         HBox filler = new HBox();
         this.paddingProperty().set(new Insets(10, 10, 10, 10));
         HBox.setHgrow(filler, Priority.ALWAYS);
@@ -38,4 +39,9 @@ public class UserLobbyView extends VBox {
     public PlayerListView getPlayerListView() {
         return playerListView;
     }
+
+    public UserLobbyMap getUserLobbyMap() {
+        return userLobbyMap;
+    }
+
 }

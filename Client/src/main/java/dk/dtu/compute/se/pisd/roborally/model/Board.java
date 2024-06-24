@@ -82,7 +82,7 @@ public class Board extends Subject {
     private boolean stepMode;
 
     @Expose
-    private PlayerLocal local;
+    private Player local;
 
     // Empty constructor for GSON since it will give errors without it
     public Board() {}
@@ -100,8 +100,6 @@ public class Board extends Subject {
         this.stepMode = false;
         this.MAX_NUMBER_OF_CARDS =  getPlayersNumber() * 9;
         this.currentNumberOfCards = MAX_NUMBER_OF_CARDS;
-
-        this.local = new PlayerLocal(this, 1, "Test");
     }
 
     public Integer getGameId() {
@@ -116,6 +114,10 @@ public class Board extends Subject {
                 throw new IllegalStateException("A game with a set id may not be assigned a new id!");
             }
         }
+    }
+
+    public void setLocalPlayer(Player playerLocal) {
+        this.local = playerLocal;
     }
 
     public List<Space> getStartSpaces() {
@@ -178,7 +180,7 @@ public class Board extends Subject {
 
     public Player getPlayer(int i) {
         if (i >= 0 && i < players.size()) {
-            return players.get(i);
+            return (Player) players.get(i);
         } else {
             return null;
         }
@@ -195,7 +197,7 @@ public class Board extends Subject {
         }
     }
 
-    public PlayerLocal getLocalPlayer() { return local; }
+    public Player getLocalPlayer() { return local; }
 
     public Phase getPhase() {
         return phase;
@@ -281,6 +283,10 @@ public class Board extends Subject {
             case EAST:
                 x = (x + 1) % width;
                 break;
+        }
+
+        if(x < 0 || x >= width || y < 0 || y >= height) {
+            return null;
         }
         Heading reverse = Heading.values()[(heading.ordinal() + 2)% Heading.values().length];
         Space result = getSpace(x, y);

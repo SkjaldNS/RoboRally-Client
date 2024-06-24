@@ -25,8 +25,6 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
-import java.util.List;
-
 /**
  * Controls the game logic.
  *
@@ -35,12 +33,18 @@ import java.util.List;
 public class GameController {
 
     final public Board board;
+    private GameSession gameSession;
+    private final RestController restController;
+    private Game game;
 
 
     //private DiscardPile discardPile = new DiscardPile();
 
-    public GameController(Board board) {
+    public GameController(Board board, GameSession gameSession, Game game) {
         this.board = board;
+        this.gameSession = gameSession;
+        this.game = game;
+        this.restController = new ClientController();
     }
 
 
@@ -53,9 +57,18 @@ public class GameController {
      * @author Haleef Abu Talib, s224523@dtu.dk
      */
     public void moveForward(@NotNull Player player) {
+        int playerx = player.getSpace().x;
+        int playery = player.getSpace().y;
+        Heading heading = player.getHeading();
+        if((playerx == 0 && heading == Heading.WEST)||(playerx == 0 && heading == Heading.NORTH)
+                || playery == 0 && heading == Heading.SOUTH || playery == 0 && heading == Heading.WEST) {
+            return;
+        }
+
+
         if (player.board == board) {
             Space space = player.getSpace();
-            Heading heading = player.getHeading();
+            //Heading heading = player.getHeading();
 
             Space target = board.getNeighbour(space, heading);
             if (target != null) {
@@ -94,6 +107,13 @@ public class GameController {
         Space space = player.getSpace();
         Heading heading = player.getHeading();
         Space target = board.getNeighbour(space, heading.opposite());
+        int playerx = player.getSpace().x;
+        int playery = player.getSpace().y;
+
+        if((playerx == 0 && heading == Heading.WEST)||(playerx == 0 && heading == Heading.NORTH)
+                || playery == 0 && heading == Heading.SOUTH || playery == 0 && heading == Heading.WEST) {
+            return;
+        }
         if (target != null) {
             try {
                 moveToSpace(player, target, heading.opposite());
@@ -193,9 +213,11 @@ public class GameController {
     private void makeProgramFieldsVisible(int register) {
         if (register >= 0 && register < Player.NO_REGISTERS) {
             for (int i = 0; i < board.getPlayersNumber(); i++) {
-                Player player = board.getPlayer(i);
-                CommandCardField field = player.getProgramField(register);
-                field.setVisible(true);
+                if(board.getPlayer(i).isLocalPlayer()) {
+                    Player player = board.getPlayer(i);
+                    CommandCardField field = player.getCardField(register);
+                    field.setVisible(true);
+                }
             }
         }
     }
@@ -206,9 +228,12 @@ public class GameController {
     private void makeProgramFieldsInvisible() {
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
-            for (int j = 0; j < Player.NO_REGISTERS; j++) {
-                CommandCardField field = player.getProgramField(j);
-                field.setVisible(false);
+            if(player.isLocalPlayer()) {
+                for (int j = 0; j < Player.NO_REGISTERS; j++) {
+
+                    CommandCardField field = player.getCardField(j);
+                    field.setVisible(false);
+                }
             }
         }
     }
@@ -219,6 +244,51 @@ public class GameController {
      * and setting the phase, current player, and step accordingly.
      */
     public void finishProgrammingPhase() {
+        try {
+            game.setTurnId(restController.getGame(gameSession.getGameId()).getTurnId());
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        for (Player player : board.getPlayers()) {
+            if(player.isLocalPlayer()) {
+                Move move = new Move();
+                move.setPlayerId((int) player.getPlayerID());
+                move.setGameId(gameSession.getGameId());
+                move.setTurnId(game.getTurnId());
+                move.setReg1(player.getProgramField(0).getCard().command);
+                move.setReg2(player.getProgramField(1).getCard().command);
+                move.setReg3(player.getProgramField(2).getCard().command);
+                move.setReg4(player.getProgramField(3).getCard().command);
+                move.setReg5(player.getProgramField(4).getCard().command);
+                try {
+                    restController.postMove(move);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        }
+        try {
+            Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
+            if(moves.length == board.getPlayers().length) {
+                for(Player player1 : board.getPlayers()) {
+                    if(!player1.isLocalPlayer()) {
+                        for(Move move : moves) {
+                            if(move.getPlayerId() == player1.getPlayerID()) {
+                                player1.setProgramField(move);
+                            }
+                        }
+                    }
+                }
+            }
+            else {
+                return;
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
         board.setPhase(Phase.ACTIVATION);
@@ -232,6 +302,24 @@ public class GameController {
      */
 
     public void startActivationPhase(int steps) { // start the activation phase
+        Game game;
+        Move[] moves;
+        try {
+            game = restController.getGame(gameSession.getGameId());
+            moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        for (int i = 0; i < board.getPlayersNumber(); i++) { // for each player
+            Player player = board.getPlayer(i);
+            if(!(player.isLocalPlayer())) {
+                for (Move move : moves) { // for each move
+                    if (move.getPlayerId() == player.getPlayerID()) { // if the move is for the player
+                        player.setProgramField(move); // set the program field
+                    }
+                }
+            }
+        }
         makeProgramFieldsInvisible(); // make the program fields invisible
         for (int i = 0; i <= steps; i++) { // for each step
             makeProgramFieldsVisible(i); // make the program fields visible
@@ -285,6 +373,19 @@ public class GameController {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
                     step++;
+                    // if the last player has executed the last step,
+                    // then update turn id to the server
+                    if(gameSession.isAdmin()) {
+                        game.setTurnId(game.getTurnId() + 1);
+                        try {
+                            restController.putGame(game);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    else {
+                        game.setTurnId(game.getTurnId() +1);
+                    }
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
                         board.setStep(step);
@@ -314,6 +415,7 @@ public class GameController {
      */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
+            //player.setLastCommand(player.getCurrentCommand());
             player.setCurrentCommand(command);
             switch (command) {
                 case FORWARD:
@@ -351,7 +453,6 @@ public class GameController {
                 default:
                     // DO NOTHING (for now)
             }
-            //player.getDiscardedPile().getPile().pile.add(command);
             player.setLastCommand(command);
             board.useCard();
         }
@@ -388,11 +489,11 @@ public class GameController {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
-        PlayerLocal player = null;
 
+        Player player = null;
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             if (board.getPlayer(i).isLocalPlayer()) {
-                player = (PlayerLocal) board.getPlayer(i);
+                player = board.getPlayer(i);
             }
         }
 
@@ -407,8 +508,8 @@ public class GameController {
                 currentDeck.shuffleDeck();
             }
 
-            for (int j = 0; j < PlayerLocal.NO_CARDS; j++) {
-                CommandCardHandField field = player.getCardField(j);
+            for (int j = 0; j < Player.NO_CARDS; j++) {
+                CommandCardField field = player.getCardField(j);
                 field.setCard(new CommandCard(currentDeck.initDeck.get(0)));
                 currentDeck.initDeck.remove(0);
                 field.setVisible(true);
@@ -419,7 +520,7 @@ public class GameController {
                 pile.setVisible(true);
             }
 
-            for (int j = 0; j < player.NO_CARDS; j++) {
+            for (int j = 0; j < Player.NO_CARDS; j++) {
                 if (player.getCardField(j) != null) {
                     player.getDiscardedPile().getPile().pile.add(player.getCardField(j).getCard().command);
                 }
@@ -427,10 +528,9 @@ public class GameController {
 
         }
 
-
         for (int i = 0; i < board.getPlayersNumber(); i++) {
 
-            if (board.getPlayer(i) != null) {
+            if (board.getPlayer(i) != null && board.getPlayer(i).isLocalPlayer()) {
                 for (int j = 0; j < Player.NO_REGISTERS; j++) {
                     CommandCardField field = board.getPlayer(i).getProgramField(j);
                     field.setCard(null);

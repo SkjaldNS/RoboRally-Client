@@ -14,7 +14,14 @@ public class Game {
     @Expose
     private int turnId;
     @Expose
-    private int numPlayers;
+    private int numberOfPlayers;
+
+    public Game(String gameName) {
+        this.gameName = gameName;
+        this.gameStatus = 0;
+        this.numberOfPlayers = 0;
+        this.turnId = 0;
+    }
 
     public int getGameID() {
         return gameId;
@@ -56,11 +63,11 @@ public class Game {
         this.turnId = turnID;
     }
 
-    public int getNumPlayers() {
-        return numPlayers;
+    public int getNumberOfPlayers() {
+        return numberOfPlayers;
     }
 
-    public void setNumPlayers(int numPlayers) {
-        this.numPlayers = numPlayers;
+    public void setNumberOfPlayers(int numPlayers) {
+        this.numberOfPlayers = numPlayers;
     }
 }

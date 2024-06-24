@@ -37,10 +37,9 @@ public class Player extends Subject {
     final public static int NO_REGISTERS = 5;
     public Board board;
     private Command lastCommand = null;
-    private Deck deck;
-    private int playerID;
-    private int gameID;
-    private String name;
+    private int playerId;
+    private int gameId;
+    private String playerName;
     private int robotId;
     private int powerUpCnt = 0;
     private Command currentCommand;
@@ -48,28 +47,78 @@ public class Player extends Subject {
     private Space space;
     private Heading heading = SOUTH;
     private CommandCardField[] program;
+    // Player Local
+    private DiscardPileField discardedPile;
+    private Deck deck;
+    private CommandCardField[] cards;
+    final public static int NO_CARDS = 8;
+    private boolean isLocalPlayer;
 
     public Player(){}
 
-    public Player(@NotNull Board board, int robotId, @NotNull String name) {
+    public Player(Board board, @NotNull String playerName, boolean isLocalPlayer) {
         this.board = board;
-        this.name = name;
-        this.robotId = robotId;
-
+        this.playerName = playerName;
+        this.isLocalPlayer = isLocalPlayer;
         this.space = null;
+    }
+    /*
+    public Player(Board board, int playerId) {
+        this.board = board;
+        this.playerId = playerId;
 
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
             program[i] = new CommandCardField(this);
         }
+    }
+*/
+    public void initPlayer(Player player) {
+        program = new CommandCardField[NO_REGISTERS];
+        for (int i = 0; i < program.length; i++) {
+            program[i] = new CommandCardField(this);
+        }
 
+        cards = new CommandCardField[NO_CARDS];
+        for (int i = 0; i < cards.length; i++) {
+            cards[i] = new CommandCardField(this);
+        }
+
+        discardedPile = new DiscardPileField(this);
+        deck = new Deck();
+        deck.shuffleDeck();
     }
 
-    public String getName() {return name;}
+    public Deck getDeck() {
+        if(!isLocalPlayer) return null;
+        return deck;
+    }
+
+    public DiscardPileField getDiscardedPile() {
+        if(!isLocalPlayer) return null;
+        return discardedPile;
+    }
+
+    public CommandCardField getCardField(int i) {
+        if(!isLocalPlayer) return null;
+        return cards[i];
+    }
+
+    public String getName() {return playerName;}
+
+    public void setName(String playerName) {this.playerName = playerName;}
 
     public Command getCurrentCommand() {return currentCommand;}
 
     public void setCurrentCommand(Command command){this.currentCommand = command;}
+
+    public void setProgramField(Move move) {
+        program[0].setCard(new CommandCard(move.getReg1()));
+        program[1].setCard(new CommandCard(move.getReg2()));
+        program[2].setCard(new CommandCard(move.getReg3()));
+        program[3].setCard(new CommandCard(move.getReg4()));
+        program[4].setCard(new CommandCard(move.getReg5()));
+    }
 
     public void oneUpPowerUpCnt() {this.powerUpCnt++;}
 
@@ -83,6 +132,10 @@ public class Player extends Subject {
     public Command getLastCommand() {return lastCommand;}
 
     public int getRobotId() {return robotId;}
+
+    public void setRobotId(int robotId) {this.robotId = robotId;}
+
+    public void setBoard(Board board) {this.board = board;}
 
     public Space getSpace() {return space;}
 
@@ -124,11 +177,17 @@ public class Player extends Subject {
 
     public CommandCardField getProgramField(int i) {return program[i];}
 
-    public long getPlayerID() {return playerID;}
+    public void setPlayerID(int playerID) {this.playerId = playerID;}
 
-    public long getGameID() {return gameID;}
+    public long getPlayerID() {return playerId;}
 
-    public void setGameID(int gameID) {this.gameID = gameID;}
+    public long getGameID() {return gameId;}
 
-    public boolean isLocalPlayer() {return false;}
+    public void setGameID(int gameID) {this.gameId = gameID;}
+
+    public void setLocalPlayer(boolean localPlayer) {
+        isLocalPlayer = localPlayer;
+    }
+
+    public boolean isLocalPlayer() {return isLocalPlayer;}
 }
