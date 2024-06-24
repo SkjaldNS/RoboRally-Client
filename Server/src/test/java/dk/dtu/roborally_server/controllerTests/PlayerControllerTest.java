@@ -16,7 +16,20 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+/**
+ * This class contains unit tests for the PlayerController class.
+ * It tests the functionality of getting, creating, updating, and deleting players for a specific game.
+ * Each test case is designed to test a specific functionality of the PlayerController.
+ *
+ * The class uses the MockMvc class from the Spring Test framework to perform HTTP requests to the PlayerController.
+ * The responses from the PlayerController are then checked for correctness.
+ *
+ * The PlayerRepository is mocked to isolate the tests from the database.
+ * This allows the tests to be run without any existing database setup and ensures that the tests do not affect the database.
+ *
+ * The setup method is run before each test to setup the test environment.
+ * It initializes the PlayerController and MockMvc objects and resets the PlayerRepository mock.
+ */
 public class PlayerControllerTest {
     private PlayerController playerController;
     private PlayerRepository playerRepository;
@@ -28,7 +41,13 @@ public class PlayerControllerTest {
         playerController = new PlayerController(playerRepository);
         mockMvc = MockMvcBuilders.standaloneSetup(playerController).build();
     }
-
+    /**
+     * This test checks the functionality of getting players for a specific game.
+     * It performs a GET request to the /games/{gameId}/players endpoint and checks that the status is OK.
+     *
+     * The PlayerRepository is mocked to return a list of players when the findPlayersByGameId method is called.
+     * This allows the test to check that the PlayerController correctly calls the PlayerRepository and handles the returned players.
+     */
     @Test
     public void testGetPlayers() throws Exception {
         // Create a list of players
@@ -47,6 +66,13 @@ public class PlayerControllerTest {
         // Verify that the findPlayersByGameId method was called once
         verify(playerRepository, times(1)).findPlayersByGameId(anyLong());
     }
+    /**
+     * This test checks the functionality of creating a player for a specific game.
+     * It performs a POST request to the /games/{gameId}/players endpoint with a plain text body containing the player name and checks that the status is OK.
+     *
+     * The PlayerRepository is mocked to return the same player object when the save method is called.
+     * This allows the test to check that the PlayerController correctly calls the PlayerRepository and handles the new player.
+     */
     @Test
     public void testCreatePlayer() throws Exception {
         // Create a new player object
@@ -67,6 +93,13 @@ public class PlayerControllerTest {
         // Verify that the save method was called once
         verify(playerRepository, times(1)).save(any(Player.class));
     }
+    /**
+     * This test checks the functionality of updating a player for a specific game.
+     * It performs a PUT request to the /games/{gameId}/players/{playerId} endpoint with a JSON body containing the updated player data and checks that the status is OK.
+     *
+     * The PlayerRepository is mocked to return the same player object when the findPlayerByIdAndGameId method is called.
+     * This allows the test to check that the PlayerController correctly calls the PlayerRepository and handles the existing player.
+     */
     @Test
     public void testUpdatePlayer() throws Exception {
         // Create a new player object
@@ -90,6 +123,13 @@ public class PlayerControllerTest {
         // Verify that the save method was called once
         verify(playerRepository, times(1)).save(any(Player.class));
     }
+    /**
+     * This test checks the functionality of deleting a player for a specific game.
+     * It performs a DELETE request to the /games/{gameId}/players/{playerId} endpoint and checks that the status is OK.
+     *
+     * The PlayerRepository is mocked to return the same player object when the findPlayerByIdAndGameId method is called.
+     * This allows the test to check that the PlayerController correctly calls the PlayerRepository and handles the existing player.
+     */
     @Test
     public void testDeletePlayer() throws Exception {
         // Create a new player object
@@ -108,6 +148,13 @@ public class PlayerControllerTest {
         // Verify that the delete method was called once
         verify(playerRepository, times(1)).delete(any(Player.class));
     }
+    /**
+     * This test checks the functionality of deleting all players for a specific game.
+     * It performs a DELETE request to the /games/{gameId}/players endpoint and checks that the status is OK.
+     *
+     * The PlayerRepository is mocked to return a list of players when the findPlayersByGameId method is called.
+     * This allows the test to check that the PlayerController correctly calls the PlayerRepository and handles the existing players.
+     */
     @Test
     public void testDeletePlayers() throws Exception {
         // Create a list of players

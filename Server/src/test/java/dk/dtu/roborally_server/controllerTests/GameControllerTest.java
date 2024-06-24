@@ -20,6 +20,20 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * This class contains unit tests for the GameController class.
+ * It tests the functionality of getting, creating, updating, and deleting games.
+ * Each test case is designed to test a specific functionality of the GameController.
+ *
+ * The class uses the MockMvc class from the Spring Test framework to perform HTTP requests to the GameController.
+ * The responses from the GameController are then checked for correctness.
+ *
+ * The GameRepository is mocked to isolate the tests from the database.
+ * This allows the tests to be run without any existing database setup and ensures that the tests do not affect the database.
+ *
+ * The setup method is run before each test to setup the test environment.
+ * It initializes the GameController and MockMvc objects and resets the GameRepository mock.
+ */
 public class GameControllerTest {
 
     private GameRepository gameRepository;
@@ -33,6 +47,13 @@ public class GameControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(gameController).build();
     }
 
+    /**
+     * This test checks the functionality of getting a game by its ID.
+     * It performs a GET request to the /games/{gameId} endpoint and checks that the status is OK.
+     *
+     * The GameRepository is mocked to return a specific game when the findGameByGameId method is called.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the returned game.
+     */
     @Test
     public void testGetGame() throws Exception {
         Game game = new Game();
@@ -44,7 +65,13 @@ public class GameControllerTest {
         verify(gameRepository, times(1)).findGameByGameId(anyLong());
     }
 
-
+    /**
+     * This test checks the functionality of creating a new game.
+     * It performs a POST request to the /games endpoint with a JSON body containing the game data and checks that the status is OK.
+     *
+     * The GameRepository is mocked to return null when the findGameByGameId method is called, indicating that the game does not exist.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the case where the game does not exist.
+     */
     @Test
     public void testCreateGame() throws Exception {
         // Create a new game object with no ID and a name
@@ -74,6 +101,13 @@ public class GameControllerTest {
         // Check that the gameId is 1
         assertEquals("1", result.getResponse().getContentAsString());
     }
+    /**
+     * This test checks the functionality of getting all games.
+     * It performs a GET request to the /games endpoint and checks that the status is OK and the returned list has the correct size.
+     *
+     * The GameRepository is mocked to return a list of games when the findAll method is called.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the returned list of games.
+     */
     @Test
     public void testGetGames() throws Exception {
         // Create a list of games
@@ -92,6 +126,13 @@ public class GameControllerTest {
         // Verify that the findAll method was called once
         verify(gameRepository, times(1)).findAll();
     }
+    /**
+     * This test checks the functionality of updating a game.
+     * It performs a PUT request to the /games endpoint with a JSON body containing the updated game data and checks that the status is OK.
+     *
+     * The GameRepository is mocked to return a specific game when the findGameByGameId method is called, indicating that the game exists.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the existing game.
+     */
     @Test
     public void testUpdateGame() throws Exception {
         // Create a new game object with an ID and a name
@@ -114,6 +155,13 @@ public class GameControllerTest {
         // Verify that the save method was called once
         verify(gameRepository, times(1)).save(any(Game.class));
     }
+    /**
+     * This test checks the functionality of deleting a game.
+     * It performs a DELETE request to the /games/{gameId} endpoint and checks that the status is OK.
+     *
+     * The GameRepository is mocked to return a specific game when the findGameByGameId method is called, indicating that the game exists.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the existing game.
+     */
     @Test
     public void testDeleteGame() throws Exception {
         // Create a new game object with an ID and a name
@@ -131,7 +179,13 @@ public class GameControllerTest {
         // Verify that the delete method was called once
         verify(gameRepository, times(1)).delete(any(Game.class));
     }
-
+    /**
+     * This test checks the functionality of deleting a game that does not exist.
+     * It performs a DELETE request to the /games/{gameId} endpoint and checks that the status is BadRequest.
+     *
+     * The GameRepository is mocked to return null when the findGameByGameId method is called, indicating that the game does not exist.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the case where the game does not exist.
+     */
     @Test
     public void testDeleteGameNotFound() throws Exception {
         // Mock the findGameByGameId method to return null, indicating that the game does not exist

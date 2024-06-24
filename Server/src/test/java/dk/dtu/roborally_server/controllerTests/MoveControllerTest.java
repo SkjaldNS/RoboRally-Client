@@ -17,6 +17,20 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * This class contains unit tests for the MoveController class.
+ * It tests the functionality of getting and creating moves for a specific game and turn.
+ * Each test case is designed to test a specific functionality of the MoveController.
+ *
+ * The class uses the MockMvc class from the Spring Test framework to perform HTTP requests to the MoveController.
+ * The responses from the MoveController are then checked for correctness.
+ *
+ * The MoveRepository is mocked to isolate the tests from the database.
+ * This allows the tests to be run without any existing database setup and ensures that the tests do not affect the database.
+ *
+ * The setup method is run before each test to setup the test environment.
+ * It initializes the MoveController and MockMvc objects and resets the MoveRepository mock.
+ */
 public class MoveControllerTest {
     private MoveController moveController;
     private MoveRepository moveRepository;
@@ -28,7 +42,13 @@ public class MoveControllerTest {
         moveController = new MoveController(moveRepository);
         mockMvc = MockMvcBuilders.standaloneSetup(moveController).build();
     }
-
+    /**
+     * This test checks the functionality of getting moves for a specific game and turn.
+     * It performs a GET request to the /games/{gameId}/moves/{turnId} endpoint and checks that the status is OK.
+     *
+     * The MoveRepository is mocked to return a list of moves when the findMoveByGameIdAndTurnId method is called.
+     * This allows the test to check that the MoveController correctly calls the MoveRepository and handles the returned moves.
+     */
     @Test
     public void testGetMoves() throws Exception {
         // Create a list of moves
@@ -47,7 +67,13 @@ public class MoveControllerTest {
         // Verify that the findMoveByGameIdAndTurnId method was called once
         verify(moveRepository, times(1)).findMoveByGameIdAndTurnId(anyLong(), anyLong());
     }
-
+    /**
+     * This test checks the functionality of creating a move for a specific game, turn and player.
+     * It performs a POST request to the /games/{gameId}/moves endpoint with a JSON body containing the move data and checks that the status is OK.
+     *
+     * The MoveRepository is mocked to return null when the findMoveByGameIdAndTurnIdAndPlayerId method is called, indicating that the move does not exist.
+     * This allows the test to check that the MoveController correctly calls the MoveRepository and handles the case where the move does not exist.
+     */
     @Test
     public void testCreateChoice() throws Exception {
         // Create a new move object
