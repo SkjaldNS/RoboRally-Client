@@ -3,15 +3,26 @@ package dk.dtu.roborally_server.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * This class is a controller for the API documentation.
+ */
 @RestController
 @RequestMapping("/api-docs")
 public class DocumentationController {
 
     String documentation;
+
+    /**
+     * Constructor for the DocumentationController.
+     */
     public DocumentationController() {
         this.documentation = s;
     }
 
+    /**
+     * This method returns the API documentation.
+     * @return The API documentation.
+     */
     @GetMapping
     @RequestMapping(value = "")
     public ResponseEntity<String> getDocumentation() {
