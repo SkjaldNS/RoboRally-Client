@@ -75,4 +75,37 @@ public class ChoiceControllerTest {
 
         verify(choiceRepository, times(1)).save(any(Choice.class));
     }
+
+    /**
+     * This test checks the functionality of creating a choice without providing a gameId.
+     * It performs a POST request to the /games/{gameId}/choices endpoint with a JSON body containing the choice data and checks that the status is BadRequest.
+     */
+    @Test
+    public void testCreateChoiceWithoutGameId() throws Exception {
+        mockMvc.perform(post("/games/1/choices")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"turnId\":1,\"playerId\":null,\"choiceType\":\"LEFT\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("GameId, TurnId, PlayerId and Choice must be provided"));
+    }
+
+    /**
+     * This test checks the functionality of creating a choice that already exists.
+     * It performs a POST request to the /games/{gameId}/choices endpoint with a JSON body containing the choice data and checks that the status is BadRequest.
+     *
+     * The ChoiceRepository is mocked to return a specific choice when the findChoiceByGameIdAndTurnIdAndPlayerId method is called, indicating that the choice already exists.
+     */
+    @Test
+    public void testCreateChoiceThatAlreadyExists() throws Exception {
+        Choice choice = new Choice();
+        when(choiceRepository.findChoiceByGameIdAndTurnIdAndPlayerId(anyLong(), anyLong(), anyLong())).thenReturn(choice);
+
+        mockMvc.perform(post("/games/1/choices")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"gameId\":1,\"turnId\":1,\"playerId\":1,\"choiceType\":\"LEFT\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Choice already exists"));
+
+        verify(choiceRepository, times(1)).findChoiceByGameIdAndTurnIdAndPlayerId(anyLong(), anyLong(), anyLong());
+    }
 }

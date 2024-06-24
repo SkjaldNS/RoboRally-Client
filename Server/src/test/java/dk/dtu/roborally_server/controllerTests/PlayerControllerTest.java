@@ -1,7 +1,9 @@
 package dk.dtu.roborally_server.controllerTests;
 
 import dk.dtu.roborally_server.controller.PlayerController;
+import dk.dtu.roborally_server.model.Choice;
 import dk.dtu.roborally_server.model.Player;
+import dk.dtu.roborally_server.repository.ChoiceRepository;
 import dk.dtu.roborally_server.repository.PlayerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -33,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class PlayerControllerTest {
     private PlayerController playerController;
     private PlayerRepository playerRepository;
+    private ChoiceRepository choiceRepository;
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -171,5 +175,55 @@ public class PlayerControllerTest {
 
         // Verify that the deletePlayersByGameId method was called once
         verify(playerRepository, times(1)).deletePlayersByGameId(anyLong());
+    }
+    /**
+     * This test checks the functionality of updating a player that does not exist.
+     * It mocks the findPlayerByIdAndGameId method to return null, indicating that the player does not exist.
+     * It then performs a PUT request to the updatePlayer method with a JSON body containing valid data for a player.
+     * It expects a BadRequest status in response with the message "Player does not exist".
+     */
+    @Test
+    public void testUpdatePlayerWithNonExistingPlayer() throws Exception {
+        when(playerRepository.findPlayerByIdAndGameId(anyLong(), anyLong())).thenReturn(null);
+
+        mockMvc.perform(put("/games/1/players/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"gameId\":1,\"playerName\":\"Updated Player\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Player does not exist"));
+
+        verify(playerRepository, times(1)).findPlayerByIdAndGameId(anyLong(), anyLong());
+    }
+    /**
+     * This test checks the functionality of deleting a player that does not exist.
+     * It mocks the findPlayerByIdAndGameId method to return null, indicating that the player does not exist.
+     * It then performs a DELETE request to the deletePlayer method.
+     * It expects a BadRequest status in response with the message "Player not found".
+     */
+    @Test
+    public void testDeletePlayerWithNonExistingPlayer() throws Exception {
+        when(playerRepository.findPlayerByIdAndGameId(anyLong(), anyLong())).thenReturn(null);
+
+        mockMvc.perform(delete("/games/1/players/1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Player not found"));
+
+        verify(playerRepository, times(1)).findPlayerByIdAndGameId(anyLong(), anyLong());
+    }
+    /**
+     * This test checks the functionality of deleting players for a game where no players exist.
+     * It mocks the findPlayersByGameId method to return an empty list, indicating that no players exist for the specified gameId.
+     * It then performs a DELETE request to the deletePlayers method.
+     * It expects a BadRequest status in response with the message "No players found with specified gameId".
+     */
+    @Test
+    public void testDeletePlayersWithNoPlayers() throws Exception {
+        when(playerRepository.findPlayersByGameId(anyLong())).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(delete("/games/1/players"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("No players found with specified gameId"));
+
+        verify(playerRepository, times(1)).findPlayersByGameId(anyLong());
     }
 }

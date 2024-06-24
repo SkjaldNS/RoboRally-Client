@@ -198,4 +198,102 @@ public class GameControllerTest {
         // Verify that the delete method was not called
         verify(gameRepository, times(0)).delete(any(Game.class));
     }
+    /**
+     * This test checks the functionality of getting a game with a null ID.
+     * It performs a GET request to the /games/null endpoint and checks that the status is BadRequest.
+     *
+     * The GameRepository is mocked to return a specific game when the findGameByGameId method is called.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the returned game.
+     */
+    @Test
+    public void testGetGameWithNullGameId() throws Exception {
+        mockMvc.perform(get("/games/null"))
+                .andExpect(status().isBadRequest());
+    }
+    /**
+     * This test checks the functionality of creating a new game with an existing game ID.
+     * It performs a POST request to the /games endpoint with a JSON body containing the game data and checks that the status is BadRequest.
+     *
+     * The GameRepository is mocked to return a specific game when the findGameByGameId method is called.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the returned game.
+     */
+    @Test
+    public void testCreateGameWithExistingGameId() throws Exception {
+        Game game = new Game();
+        game.setGameId(1L);
+        when(gameRepository.findGameByGameId(anyLong())).thenReturn(game);
+
+        mockMvc.perform(post("/games")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"gameId\":1,\"gameName\":\"Test Game\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Game already exists"));
+
+        verify(gameRepository, times(1)).findGameByGameId(anyLong());
+    }
+    /**
+     * This test checks the functionality of creating a new game without a game name.
+     * It performs a POST request to the /games endpoint with a JSON body containing the game data and checks that the status is BadRequest.
+     *
+     * The GameRepository is mocked to return a specific game when the findGameByGameId method is called.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the returned game.
+     */
+    @Test
+    public void testCreateGameWithoutGameName() throws Exception {
+        mockMvc.perform(post("/games")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"gameId\":1,\"gameName\":null}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Name must be provided"));
+    }
+    /**
+     * This test checks the functionality of updating a game with a null game ID.
+     * It performs a PUT request to the /games endpoint with a JSON body containing the game data and checks that the status is BadRequest.
+     *
+     * The GameRepository is mocked to return a specific game when the findGameByGameId method is called.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the returned game.
+     */
+    @Test
+    public void testUpdateGameWithNullGameId() throws Exception {
+        mockMvc.perform(put("/games")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"gameId\":null,\"gameName\":\"Test Game\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Game Id must be provided"));
+    }
+    /**
+     * This test checks the functionality of updating a game with a null game name.
+     * It performs a PUT request to the /games endpoint with a JSON body containing the game data and checks that the status is BadRequest.
+     *
+     * The GameRepository is mocked to return a specific game when the findGameByGameId method is called.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the returned game.
+     */
+    @Test
+    public void testUpdateGameWithNullGameName() throws Exception {
+        mockMvc.perform(put("/games")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"gameId\":1,\"gameName\":null}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Name must be provided"));
+    }
+    /**
+     * This test checks the functionality of updating a game that does not exist.
+     * It performs a PUT request to the /games endpoint with a JSON body containing the game data and checks that the status is BadRequest.
+     *
+     * The GameRepository is mocked to return null when the findGameByGameId method is called, indicating that the game does not exist.
+     * This allows the test to check that the GameController correctly calls the GameRepository and handles the case where the game does not exist.
+     */
+    @Test
+    public void testUpdateGameWithNonExistingGame() throws Exception {
+        when(gameRepository.findGameByGameId(anyLong())).thenReturn(null);
+
+        mockMvc.perform(put("/games")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"gameId\":1,\"gameName\":\"Test Game\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Game does not exist"));
+
+        verify(gameRepository, times(1)).findGameByGameId(anyLong());
+    }
+
 }

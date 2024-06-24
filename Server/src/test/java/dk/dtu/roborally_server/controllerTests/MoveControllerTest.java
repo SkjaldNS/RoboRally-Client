@@ -102,4 +102,36 @@ public class MoveControllerTest {
         // Verify that the save method was called once
         verify(moveRepository, times(1)).save(any(Move.class));
     }
+    /**
+     * This test checks the functionality of creating a move with missing fields.
+     * It performs a POST request to the /games/1/moves endpoint with a JSON body where all the required fields are null.
+     * It expects a BadRequest status in response with the message "GameId, TurnId, PlayerId, Reg1, Reg2, Reg3, Reg4 and Reg5 must be provided".
+     */
+    @Test
+    public void testCreateChoiceWithMissingFields() throws Exception {
+        mockMvc.perform(post("/games/1/moves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"turnId\":null,\"playerId\":null,\"reg1\":null,\"reg2\":null,\"reg3\":null,\"reg4\":null,\"reg5\":null}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("GameId, TurnId, PlayerId, Reg1, Reg2, Reg3, Reg4 and Reg5 must be provided"));
+    }
+    /**
+     * This test checks the functionality of creating a move that already exists.
+     * It mocks the findMoveByGameIdAndTurnIdAndPlayerId method to return a non-null value, indicating that the move already exists.
+     * It then performs a POST request to the /games/1/moves endpoint with a JSON body containing valid data for a move.
+     * It expects a BadRequest status in response with the message "Move already exists".
+     */
+    @Test
+    public void testCreateChoiceWithExistingMove() throws Exception {
+        when(moveRepository.findMoveByGameIdAndTurnIdAndPlayerId(anyLong(), anyLong(), anyLong())).thenReturn(new Move());
+
+        mockMvc.perform(post("/games/1/moves")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"turnId\":1,\"playerId\":1,\"reg1\":1,\"reg2\":1,\"reg3\":1,\"reg4\":1,\"reg5\":1}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Move already exists"));
+
+        verify(moveRepository, times(1)).findMoveByGameIdAndTurnIdAndPlayerId(anyLong(), anyLong(), anyLong());
+    }
+
 }
