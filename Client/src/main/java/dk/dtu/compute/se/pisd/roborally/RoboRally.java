@@ -52,9 +52,9 @@ import java.nio.channels.ClosedChannelException;
 import java.util.List;
 
 /**
- * ...
+ * The main class for the RoboRally application.
  *
- * @authork Ekkart Kindler, ekki@dtu.dk
+ * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
 public class RoboRally extends Application {
@@ -64,11 +64,19 @@ public class RoboRally extends Application {
     private BorderPane boardRoot;
     private GameSession gameSession = null;
 
+    /**
+     * Initialize the application.
+     * @throws Exception if something goes wrong during the initialization.
+     */
     @Override
     public void init() throws Exception {
         super.init();
     }
 
+    /**
+     * Start the application.
+     * @param primaryStage the primary stage for the application.
+     */
     @Override
     public void start(Stage primaryStage) {
         stage = primaryStage;
@@ -111,6 +119,10 @@ public class RoboRally extends Application {
         stage.show();
     }
 
+    /**
+     * Create the admin lobby view
+     * @return the admin lobby view
+     */
     private AdminLobbyView createAdminLobbyView(AppController appController, RestController restController){
         AdminLobbyBottom adminLobbyBottom = new AdminLobbyBottom();
         AdminLobbyMap adminLobbyMap = new AdminLobbyMap();
@@ -153,6 +165,10 @@ public class RoboRally extends Application {
         return adminLobbyView;
     }
 
+    /**
+     * Create the prelobby view
+     * @return the prelobby view
+     */
     private PreLobbyView createPreLobbyView(AppController appController, RestController restController) {
         GameItemListView gameItemListView = new GameItemListView();
         PreLobbyView preLobbyView = new PreLobbyView(gameItemListView);
@@ -288,6 +304,10 @@ public class RoboRally extends Application {
         return preLobbyView;
     }
 
+    /**
+     * Create the user lobby view
+     * @return the user lobby view
+     */
     private UserLobbyView createUserLobbyView(PreLobbyView preLobbyView, RestController restController) {
         UserLobbyMap userLobbyMap = new UserLobbyMap();
         PlayerListView playerListView = new PlayerListView();
@@ -308,6 +328,10 @@ public class RoboRally extends Application {
         return userLobbyView;
     }
 
+    /**
+     * Create the board view for the given game controller.
+     * @param gameController the game controller for which the board view should be created.
+     */
     public void createBoardView(GameController gameController) {
         // if present, remove old BoardView
         boardRoot.getChildren().clear();
@@ -321,7 +345,10 @@ public class RoboRally extends Application {
         stage.sizeToScene();
     }
 
-    @Override
+    /**
+     * Stop the application.
+     * @throws Exception if something goes wrong during the stopping.
+     */
     public void stop() throws Exception {
         super.stop();
 
@@ -331,6 +358,10 @@ public class RoboRally extends Application {
         //     so that the AppController can take care of that.
     }
 
+    /**
+     * The main method for the RoboRally application.
+     * @param args the command line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }

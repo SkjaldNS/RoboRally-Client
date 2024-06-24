@@ -40,7 +40,7 @@ import javafx.scene.text.FontWeight;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
+ * The view for a player in the game. This view shows the cards of the player.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -73,6 +73,9 @@ public class PlayerView extends Pane implements ViewObserver {
 
     private RestController restController;
 
+    /**
+     * The constructor for the view of a player in the game.
+     */
     public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
         //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
         this.restController = new ClientController();
@@ -162,6 +165,9 @@ public class PlayerView extends Pane implements ViewObserver {
 
     }
 
+    /**
+     * Update the view of the player.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == player.board) {
