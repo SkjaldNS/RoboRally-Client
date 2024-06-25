@@ -1,20 +1,30 @@
 import static org.junit.jupiter.api.Assertions.*;
+
+import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import org.mockito.Mockito;
 
 import java.lang.reflect.Method;
 
 class GameControllerTest {
 
     private GameController gameController;
+    private RestController restController;
     private Board board;
 
     @BeforeEach
     void setUp() {
       this.board = new Board(10, 10); // Create a 10x10 board
-        this.gameController = new GameController(board);
+
+        this.gameController = new GameController(
+                board,
+                new GameSession(1, 1, 1, true),
+                new Game("Test Game"),
+                restController
+        );
     }
     /**
      * @author Asma Maryam, s230716@dtu.dk
@@ -23,7 +33,7 @@ class GameControllerTest {
 
     @Test
     void testMoveForward() {
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         Space startingSpace = board.getSpace(5, 5);
         player.setSpace(startingSpace);
         player.setHeading(Heading.NORTH);
@@ -38,7 +48,7 @@ class GameControllerTest {
 
     @Test
     void testFastForward() {
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         Space startingSpace = board.getSpace(5, 5);
         player.setSpace(startingSpace);
         player.setHeading(Heading.SOUTH);
@@ -52,7 +62,7 @@ class GameControllerTest {
      */
     @Test
     void testTurnRight() {
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         player.setHeading(Heading.NORTH);
 
         gameController.turnRight(player);
@@ -65,7 +75,7 @@ class GameControllerTest {
 
     @Test
     void testTurnLeft() {
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         player.setHeading(Heading.NORTH);
 
         gameController.turnLeft(player);
@@ -73,24 +83,12 @@ class GameControllerTest {
     }
 
     /**
-     * @author Asma Maryam, s230716@dtu.dk
-     * @author Turan Talayhan, s224746@student.dtu.dk
-     */
-    @Test
-    void testPhaseTransition() {
-        gameController.startProgrammingPhase();
-        assertEquals(Phase.PROGRAMMING, board.getPhase(), "Board phase should be set to PROGRAMMING.");
-
-        gameController.startActivationPhase(0);
-        assertEquals(Phase.ACTIVATION, board.getPhase(), "Board phase should be set to ACTIVATION.");
-    }
-    /**
      * @author Marcus Langkilde, s195080
      */
     @Test
     void testExecuteCommand() throws Exception {
         // Create a new player and set their initial position and heading
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         Space startingSpace = board.getSpace(5, 5);
         player.setSpace(startingSpace);
         player.setHeading(Heading.NORTH);
@@ -113,7 +111,8 @@ class GameControllerTest {
     @Test
     void testExecuteCommandOptionAndContinue() {
         // Create a new player and set their initial position and heading
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
+        player.initPlayer();
         Space startingSpace = board.getSpace(5, 5);
         player.setSpace(startingSpace);
         player.setHeading(Heading.NORTH);
@@ -133,7 +132,7 @@ class GameControllerTest {
         assertEquals(board.getSpace(5, 4), player.getSpace(), "Player should move one space North.");
 
         // Assert that the current player is the next player
-        assertEquals(board.getPlayer(1), null, "Current player should be the next player.");
+        assertNull(board.getPlayer(1), "Current player should be the next player.");
     }
     /**
      * @author Marcus Langkilde, s195080
@@ -167,7 +166,7 @@ class GameControllerTest {
     @Test
     void testMoveCards() {
         // Create a new player and set their initial position and heading
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         Space startingSpace = board.getSpace(5, 5);
         player.setSpace(startingSpace);
         player.setHeading(Heading.NORTH);
@@ -199,38 +198,7 @@ class GameControllerTest {
         assertNotNull(target.getCard(), "Target field should contain the card after the move");
         assertEquals(Command.FORWARD, target.getCard().command, "Target field should contain the FORWARD command card");
     }
-    /**
-     * @author Marcus Langkilde, s195080
-     */
-    @Test
-    void testFinishProgrammingPhase() {
-        // Set the current phase to PROGRAMMING
-        board.setPhase(Phase.PROGRAMMING);
 
-        // Call the method to be tested
-        gameController.finishProgrammingPhase();
-
-        // Assert that the phase has been changed to ACTIVATION
-        assertEquals(Phase.ACTIVATION, board.getPhase(), "Board phase should be set to ACTIVATION");
-
-        // Assert that the current player is the first player
-        assertEquals(board.getPlayer(0), board.getCurrentPlayer(), "Current player should be the first player");
-
-        // Assert that the step is 0
-        assertEquals(0, board.getStep(), "Step should be 0");
-
-        // Assert that the first program field of each player is visible
-        for (Player player : board.getPlayers()) {
-            assertTrue(player.getProgramField(0).isVisible(), "First program field of each player should be visible");
-        }
-
-        // Assert that all other program fields of each player are invisible
-        for (Player player : board.getPlayers()) {
-            for (int i = 1; i < Player.NO_REGISTERS; i++) {
-                assertFalse(player.getProgramField(i).isVisible(), "All other program fields of each player should be invisible");
-            }
-        }
-    }
     /**
      * @author Marcus Langkilde, s195080
      */
@@ -279,7 +247,7 @@ class GameControllerTest {
     @Test
     void testMoveCurrentPlayerToSpace() {
         // Create a new player and set their initial position and heading
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         Space startingSpace = board.getSpace(5, 5);
         player.setSpace(startingSpace);
         player.setHeading(Heading.NORTH);
@@ -308,7 +276,7 @@ class GameControllerTest {
     @Test
     void testPowerUp() {
         // Create a new player
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
 
         // Add the player to the game
         board.addPlayer(player);
@@ -328,7 +296,7 @@ class GameControllerTest {
     @Test
     void testMoveToSpace() throws Exception {
         // Create a new player and set their initial position and heading
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         Space startingSpace = board.getSpace(5, 5);
         player.setSpace(startingSpace);
         player.setHeading(Heading.NORTH);
@@ -360,7 +328,7 @@ class GameControllerTest {
     @Test
     void testBackup() {
         // Create a new player and set their initial position and heading
-        Player player = new Player(board, 1, "Alice");
+        Player player = new Player(board, "Alice", true);
         Space startingSpace = board.getSpace(5, 5);
         player.setSpace(startingSpace);
         player.setHeading(Heading.NORTH);

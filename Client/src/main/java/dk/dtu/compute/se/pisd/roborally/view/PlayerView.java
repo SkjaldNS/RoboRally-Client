@@ -39,6 +39,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import org.jetbrains.annotations.NotNull;
 
+import java.net.http.HttpClient;
+
 /**
  * ...
  *
@@ -75,7 +77,7 @@ public class PlayerView extends Pane implements ViewObserver {
 
     public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
         //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
-        this.restController = new ClientController();
+        this.restController = new ClientController(HttpClient.newHttpClient());
         HBox robotBox = new HBox();
         robotImage = new ImageView();
         robotImage.setImage(new Image("robots/r" + player.getRobotId() + ".png"));

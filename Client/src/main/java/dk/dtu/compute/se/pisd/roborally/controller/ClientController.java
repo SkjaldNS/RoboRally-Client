@@ -21,8 +21,8 @@ public class ClientController implements RestController {
     private Gson gson = new GsonBuilder().create();
 
     private HttpClient httpClient;
-    public ClientController() {
-        httpClient = HttpClient.newHttpClient();
+    public ClientController(HttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 
     @Override
