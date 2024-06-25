@@ -106,6 +106,11 @@ public class CardFieldView extends GridPane implements ViewObserver {
         update(field);
     }
 
+    /**
+     *
+     * @param cardField
+     * @return
+     */
     private String cardFieldRepresentation(CommandCardField cardField) {
         if (cardField.player != null && cardField.player.isLocalPlayer()) {
 
@@ -158,6 +163,10 @@ public class CardFieldView extends GridPane implements ViewObserver {
         return null;
     }
 
+    /**
+     * Update the view according to the given card field.
+     * @param subject the card field to be displayed
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == field && subject != null) {
@@ -170,6 +179,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
         }
     }
 
+    /**
+     * OnDragDetectedHandler is an EventHandler that handles the drag detected event.
+     */
     private class OnDragDetectedHandler implements EventHandler<MouseEvent> {
 
         @Override
@@ -198,6 +210,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragOverHandler is an EventHandler that handles the drag over event.
+     */
     private class OnDragOverHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -219,6 +234,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragEnteredHandler is an EventHandler that handles the drag entered event.
+     */
     private class OnDragEnteredHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -242,6 +260,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragExitedHandler is an EventHandler that handles the drag exited event.
+     */
     private class OnDragExitedHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -265,6 +286,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragDroppedHandler is an EventHandler that handles the drag dropped event.
+     */
     private class OnDragDroppedHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -306,6 +330,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragDoneHandler is an EventHandler that handles the drag done event.
+     */
     private class OnDragDoneHandler implements EventHandler<DragEvent> {
 
         @Override
