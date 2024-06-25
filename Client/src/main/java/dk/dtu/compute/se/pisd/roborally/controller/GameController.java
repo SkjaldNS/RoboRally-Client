@@ -304,8 +304,8 @@ public class GameController {
     /**
      * Executes the programs of all players on the board.
      */
-
     public void startActivationPhase(int steps) { // start the activation phase
+        activateFieldActions();
         Game game;
         Move[] moves;
         try {
@@ -388,6 +388,7 @@ public class GameController {
                             throw new RuntimeException(e);
                         }
                     }
+                    activateFieldActions();
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
                         board.setStep(step);
@@ -540,7 +541,6 @@ public class GameController {
                 }
             }
         }
-        activateFieldActions();
     }
 
     /**
@@ -586,7 +586,7 @@ public class GameController {
     /**
      * Activates the field actions for all spaces on the board.
      */
-    private void activateFieldActions() {
+    public void activateFieldActions() {
         Space[][] spaces = board.getSpaces();
         for (int i = 0; i < spaces.length; i++) {
             for (int j = 0; j < spaces[0].length; j++) {

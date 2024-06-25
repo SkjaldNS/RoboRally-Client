@@ -64,11 +64,11 @@ public class PlayerView extends Pane implements ViewObserver {
     private CardFieldView[] cardViews;
 
     private VBox buttonPanel;
-
+    /*
     private Button finishButton;
     private Button executeButton;
     private Button stepButton;
-
+    */
     private VBox playerInteractionPanel;
 
     private GameController gameController;
@@ -118,7 +118,7 @@ public class PlayerView extends Pane implements ViewObserver {
         // XXX  the following buttons should actually not be on the tabs of the individual
         //      players, but on the PlayersView (view for all players). This should be
         //      refactored.
-
+        /*
         finishButton = new Button("Finish Programming");
         finishButton.setOnAction( e -> gameController.finishProgrammingPhase());
 
@@ -127,8 +127,8 @@ public class PlayerView extends Pane implements ViewObserver {
 
         stepButton = new Button("Execute Current Register");
         stepButton.setOnAction( e-> gameController.executeStep());
-
-        buttonPanel = new VBox(finishButton, executeButton, stepButton);
+        */
+        //buttonPanel = new VBox(finishButton, executeButton, stepButton);
         buttonPanel.setAlignment(Pos.CENTER_LEFT);
         buttonPanel.setSpacing(3.0);
         // programPane.add(buttonPanel, Player.NO_REGISTERS, 0); done in update now
@@ -197,29 +197,38 @@ public class PlayerView extends Pane implements ViewObserver {
                 }
                 switch (player.board.getPhase()) {
                     case INITIALISATION:
+                        /*
                         finishButton.setDisable(true);
                         // XXX just to make sure that there is a way for the player to get
                         //     from the initialization phase to the programming phase somehow!
                         executeButton.setDisable(false);
                         stepButton.setDisable(true);
+                         */
+
                         break;
 
                     case PROGRAMMING:
+                        /*
                         finishButton.setDisable(false);
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
+                         */
                         break;
 
                     case ACTIVATION:
+                        /*
                         finishButton.setDisable(true);
                         executeButton.setDisable(false);
                         stepButton.setDisable(false);
+                         */
                         break;
 
                     default:
+                        /*
                         finishButton.setDisable(true);
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
+                         */
                 }
 
 
