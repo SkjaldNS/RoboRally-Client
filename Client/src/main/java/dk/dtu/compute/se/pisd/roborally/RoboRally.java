@@ -21,10 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally;
 
-import dk.dtu.compute.se.pisd.roborally.controller.ClientController;
-import dk.dtu.compute.se.pisd.roborally.controller.RestController;
-import dk.dtu.compute.se.pisd.roborally.controller.AppController;
-import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.controller.*;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.view.*;
 import dk.dtu.compute.se.pisd.roborally.view.adminlobby.AdminLobbyBottom;
@@ -47,9 +44,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.http.HttpClient;
-import java.nio.channels.ClosedChannelException;
 import java.util.List;
 
 /**
@@ -139,13 +134,13 @@ public class RoboRally extends Application {
             } catch (Exception e) {
                 throw new RuntimeException("Player not found");
             }
-            DataUpdater.getInstance().stopLobbyPolling();
+            DataUpdateController.getInstance().stopLobbyPolling();
         });
 
 
         adminLobbyBottom.setStartGameButtonAction(() -> {
             try {
-                DataUpdater.getInstance().stopLobbyPolling();
+                DataUpdateController.getInstance().stopLobbyPolling();
                 Game game = restController.getGame(gameSession.getGameId());
                 game.setGameStatus(1);
                 restController.putGame(game);
@@ -198,7 +193,7 @@ public class RoboRally extends Application {
                         int gameId = gameItemView.getGame().getGameID();
                         int playerId = restController.postPlayer(playerName, gameId);
                         gameSession = new GameSession(gameId, playerId, false);
-                        DataUpdater.getInstance().startLobbyPolling(() -> {
+                        DataUpdateController.getInstance().startLobbyPolling(() -> {
                             try {
                                 List<PlayerItemView> playerItemViews = restController.getPlayers(gameId).stream().map(
                                         player -> new PlayerItemView(player.getPlayerID(), player.getName())).toList();
@@ -228,7 +223,7 @@ public class RoboRally extends Application {
                                             throw new RuntimeException(e);
                                         }
                                     });
-                                    DataUpdater.getInstance().stopLobbyPolling();
+                                    DataUpdateController.getInstance().stopLobbyPolling();
                                 }
                             } catch (Exception e) {
                                 // Go back to prelobby
@@ -241,7 +236,7 @@ public class RoboRally extends Application {
                                     alert.showAndWait();
                                     boardRoot.setCenter(preLobbyView);
                                 });
-                                DataUpdater.getInstance().stopLobbyPolling();
+                                DataUpdateController.getInstance().stopLobbyPolling();
                             }
                         });
                     } catch (Exception e) {
@@ -270,7 +265,7 @@ public class RoboRally extends Application {
                 game.setGameName("Game " + gameId);
                 int playerId = restController.postPlayer(playerName, gameId);
                 gameSession = new GameSession(gameId, playerId, true);
-                DataUpdater.getInstance().startLobbyPolling(() -> {
+                DataUpdateController.getInstance().startLobbyPolling(() -> {
                     try {
                         List<Player> playerList = restController.getPlayers(gameId);
                         int serverPlayerCount = restController.getGame(gameId).getNumberOfPlayers();
@@ -329,7 +324,7 @@ public class RoboRally extends Application {
             } catch (Exception e) {
                 throw new RuntimeException("Player not found");
             }
-            DataUpdater.getInstance().stopLobbyPolling();
+            DataUpdateController.getInstance().stopLobbyPolling();
         });
 
         return userLobbyView;

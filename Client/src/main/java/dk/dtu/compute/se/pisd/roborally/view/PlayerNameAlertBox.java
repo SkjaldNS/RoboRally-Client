@@ -12,6 +12,9 @@ public class PlayerNameAlertBox extends TextInputDialog {
      */
     public PlayerNameAlertBox() {
         super();
+        this.setTitle("Player Name");
+        this.setHeaderText("Enter your name");
+        this.setContentText("Name:");
     }
 
     /**

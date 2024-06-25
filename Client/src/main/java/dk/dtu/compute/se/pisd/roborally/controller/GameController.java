@@ -103,7 +103,7 @@ public class GameController {
         moveForward(player);
     }
 
-    public void startCountdown(int seconds, PlayerView playerView) {
+    public void startCountdown(int seconds, PlayerView playerView, Runnable task) {
         AtomicInteger atomicSeconds = new AtomicInteger(seconds);
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -114,7 +114,7 @@ public class GameController {
             } else {
                 timeline.stop();
                 playerView.getTimerLabel().setText("Time's up!");
-                finishProgrammingPhase();
+                task.run();
             }
         }));
         timeline.playFromStart();
@@ -295,33 +295,37 @@ public class GameController {
                     throw new RuntimeException(e);
                 }
             }
-
         }
-        try {
-            Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
-            if(moves.length == board.getPlayers().length) {
-                for(Player player1 : board.getPlayers()) {
-                    if(!player1.isLocalPlayer()) {
-                        for(Move move : moves) {
-                            if(move.getPlayerId() == player1.getPlayerID()) {
-                                player1.setProgramField(move);
+
+        DataUpdateController.getInstance().startMovePolling(() -> {
+            try {
+                Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
+                if(moves.length == board.getPlayers().length) {
+                    for(Player player1 : board.getPlayers()) {
+                        if(!player1.isLocalPlayer()) {
+                            for(Move move : moves) {
+                                if(move.getPlayerId() == player1.getPlayerID()) {
+                                    player1.setProgramField(move);
+                                }
                             }
+                            DataUpdateController.getInstance().stopMovePolling();
+                            completeFinishProgrammingPhase();
                         }
                     }
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            else {
-                return;
-            }
+        });
+    }
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private void completeFinishProgrammingPhase() {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
         board.setPhase(Phase.ACTIVATION);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
+        startActivationPhase(0);
     }
 
 
@@ -329,7 +333,7 @@ public class GameController {
      * Executes the programs of all players on the board.
      */
     public void startActivationPhase(int steps) { // start the activation phase
-        activateFieldActions();
+        //activateFieldActions();
         Game game;
         Move[] moves;
         try {
@@ -353,6 +357,7 @@ public class GameController {
             makeProgramFieldsVisible(i); // make the program fields visible
         }
         board.setPhase(Phase.ACTIVATION); // set the board's phase to "ACTIVATION"
+        DataUpdateController.getInstance().startProgramExecution(this::executeNextStep);
     }
 
 
@@ -412,12 +417,13 @@ public class GameController {
                             throw new RuntimeException(e);
                         }
                     }
-                    activateFieldActions();
+                    //activateFieldActions();
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
                         board.setStep(step);
                         board.setCurrentPlayer(board.getPlayer(0));
                     } else {
+                        DataUpdateController.getInstance().stopProgramExecution();
                         startProgrammingPhase();
                     }
                 }
@@ -565,7 +571,7 @@ public class GameController {
                 }
             }
         }
-        finishRegistersRandomly(board.getLocalPlayer());
+
     }
 
     private boolean hasMissingRegisters(Player player) {
@@ -597,7 +603,8 @@ public class GameController {
     private CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
-        return new CommandCard(commands[random]);
+        //return new CommandCard(commands[random]);
+        return new CommandCard(Command.FORWARD);
     }
 
     /**

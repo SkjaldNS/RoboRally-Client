@@ -1,7 +1,4 @@
-package dk.dtu.compute.se.pisd.roborally.model;
-
-import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.RestController;
+package dk.dtu.compute.se.pisd.roborally.controller;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -10,11 +7,12 @@ import java.util.concurrent.*;
  * The DataUpdater class is responsible for scheduling and managing various tasks that need to be run periodically.
  * It uses a ScheduledExecutorService to schedule tasks at fixed rate or after a certain delay.
  */
-public class DataUpdater {
+public class DataUpdateController {
 
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     private static final int POLLING_INTERVAL_SECONDS = 1;
+    private static final int PROGRAM_EXECUTION_SECONDS = 2;
 
     private ScheduledFuture<?> timer;
 
@@ -22,20 +20,21 @@ public class DataUpdater {
     private ScheduledFuture<?> gameStateFuture;
     private ScheduledFuture<?> moveFuture;
     private ScheduledFuture<?> choiceFuture;
+    private ScheduledFuture<?> programExecutionFuture;
 
-    private static DataUpdater instance = new DataUpdater();
+    private static DataUpdateController instance = new DataUpdateController();
 
-    private DataUpdater() {}
+    private DataUpdateController() {}
 
     /**
      * Returns the singleton instance of the DataUpdater class.
      *
      * @return the singleton instance of the DataUpdater class
      */
-    public static DataUpdater getInstance() {
-        synchronized (DataUpdater.class) {
+    public static DataUpdateController getInstance() {
+        synchronized (DataUpdateController.class) {
             if (instance == null) {
-                instance = new DataUpdater();
+                instance = new DataUpdateController();
             }
         }
         return instance;
@@ -161,5 +160,13 @@ public class DataUpdater {
      */
     public void stopExecutorService() {
         executorService.shutdown();
+    }
+
+    public void startProgramExecution(Runnable task) {
+        programExecutionFuture = executorService.scheduleAtFixedRate(task,0, PROGRAM_EXECUTION_SECONDS, TimeUnit.SECONDS);
+    }
+
+    public void stopProgramExecution() {
+        programExecutionFuture.cancel(false);
     }
 }

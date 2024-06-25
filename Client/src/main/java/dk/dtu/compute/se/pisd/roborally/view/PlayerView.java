@@ -23,10 +23,12 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.ClientController;
+import dk.dtu.compute.se.pisd.roborally.controller.DataUpdateController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.controller.RestController;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -38,12 +40,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import org.jetbrains.annotations.NotNull;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
-
-import javax.swing.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import java.net.http.HttpClient;
 
@@ -55,7 +51,7 @@ import java.net.http.HttpClient;
  */
 public class PlayerView extends Pane implements ViewObserver {
 
-    private Player player;
+    private Player localPlayer;
 
     private VBox top;
 
@@ -102,7 +98,7 @@ public class PlayerView extends Pane implements ViewObserver {
 
 
         this.gameController = gameController;
-        this.player = player;
+        this.localPlayer = player;
 
         playerLabel = new Label(player.getName());
         playerLabel.setAlignment(Pos.BOTTOM_RIGHT);
@@ -182,19 +178,19 @@ public class PlayerView extends Pane implements ViewObserver {
      */
     @Override
     public void updateView(Subject subject) {
-        if (subject == player.board) {
+        if (subject == localPlayer.board) {
             for (int i = 0; i < Player.NO_REGISTERS; i++) {
                 CardFieldView cardFieldView = programCardViews[i];
                 if (cardFieldView != null) {
-                    if (player.board.getPhase() == Phase.PROGRAMMING ) {
+                    if (localPlayer.board.getPhase() == Phase.PROGRAMMING ) {
                         cardFieldView.setBackground(CardFieldView.BG_DEFAULT);
                     } else {
-                        if (i < player.board.getStep()) {
+                        if (i < localPlayer.board.getStep()) {
                             cardFieldView.setBackground(CardFieldView.BG_DONE);
-                        } else if (i == player.board.getStep()) {
-                            if (player.board.getCurrentPlayer() == player) {
+                        } else if (i == localPlayer.board.getStep()) {
+                            if (localPlayer.board.getCurrentPlayer() == localPlayer) {
                                 cardFieldView.setBackground(CardFieldView.BG_ACTIVE);
-                            } else if (player.board.getPlayerNumber(player.board.getCurrentPlayer()) > player.board.getPlayerNumber(player)) {
+                            } else if (localPlayer.board.getPlayerNumber(localPlayer.board.getCurrentPlayer()) > localPlayer.board.getPlayerNumber(localPlayer)) {
                                 cardFieldView.setBackground(CardFieldView.BG_DONE);
                             } else {
                                 cardFieldView.setBackground(CardFieldView.BG_DEFAULT);
@@ -206,8 +202,8 @@ public class PlayerView extends Pane implements ViewObserver {
                 }
             }
 
-            if (player.board.getPhase() != Phase.PLAYER_INTERACTION) {
-                switch (player.board.getPhase()) {
+            if (localPlayer.board.getPhase() != Phase.PLAYER_INTERACTION) {
+                switch (localPlayer.board.getPhase()) {
                     case INITIALISATION:
                         /*
                         finishButton.setDisable(true);
@@ -225,7 +221,7 @@ public class PlayerView extends Pane implements ViewObserver {
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
                          */
-                        gameController.startCountdown(30, this);
+                        gameController.startCountdown(5, this, gameController::finishProgrammingPhase);
                         break;
 
                     case ACTIVATION:
@@ -246,27 +242,25 @@ public class PlayerView extends Pane implements ViewObserver {
 
 
             } else {
+                // PLAYER INTERACTION
                 if (!programPane.getChildren().contains(playerInteractionPanel)) {
                     programPane.add(playerInteractionPanel, Player.NO_REGISTERS, 0);
                 }
                 playerInteractionPanel.getChildren().clear();
 
-                if (player.board.getCurrentPlayer().isLocalPlayer()) {
-                    if(player.getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
-                        // TODO Assignment A3: these buttons should be shown only when there is
-                        //      an interactive command card, and the buttons should represent
-                        //      the player's choices of the interactive command card. The
-                        //      following is just a mockup showing two options
+                if (localPlayer.board.getCurrentPlayer().isLocalPlayer()) {
+                    if (localPlayer.getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
                         Button optionButton = new Button("Right");
                         optionButton.setOnAction(e -> {
                             try {
-                                Game game = restController.getGame(player.board.getGameId());
+                                Game game = restController.getGame(localPlayer.board.getGameId());
                                 Choice choice = new Choice(Choice.ChoiceType.RIGHT,
                                         game.getTurnId(),
-                                        (int) player.getPlayerID(),
-                                        player.board.getGameId());
+                                        (int) localPlayer.getPlayerID(),
+                                        localPlayer.board.getGameId());
                                 restController.postChoice(choice);
                                 gameController.executeCommandOptionAndContinue(Command.RIGHT);
+                                clearOptionButtons();
                             } catch (Exception ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -277,13 +271,14 @@ public class PlayerView extends Pane implements ViewObserver {
                         optionButton = new Button("Left");
                         optionButton.setOnAction(e -> {
                             try {
-                                Game game = restController.getGame(player.board.getGameId());
+                                Game game = restController.getGame(localPlayer.board.getGameId());
                                 Choice choice = new Choice(Choice.ChoiceType.LEFT,
                                         game.getTurnId(),
-                                        (int) player.getPlayerID(),
-                                        player.board.getGameId());
+                                        (int) localPlayer.getPlayerID(),
+                                        localPlayer.board.getGameId());
                                 restController.postChoice(choice);
                                 gameController.executeCommandOptionAndContinue(Command.LEFT);
+                                clearOptionButtons();
                             } catch (Exception ex) {
                                 throw new RuntimeException(ex);
                             }
@@ -291,11 +286,16 @@ public class PlayerView extends Pane implements ViewObserver {
                         optionButton.setDisable(false);
                         playerInteractionPanel.getChildren().add(optionButton);
                     }
-                } else if (player.board.getCurrentPlayer().getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
+                } else if (localPlayer.board.getCurrentPlayer().getCurrentCommand() == Command.OPTION_LEFT_RIGHT) {
                     try {
-                        int playerId = (int) player.board.getCurrentPlayer().getPlayerID();
-                        Game game = restController.getGame(player.board.getGameId());
-                        DataUpdater.getInstance().startChoicePolling(() -> {
+                        int playerId = (int) localPlayer.board.getCurrentPlayer().getPlayerID();
+                        Game game = restController.getGame(localPlayer.board.getGameId());
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Interactive Command Card");
+                        alert.setHeaderText("Player " + localPlayer.board.getCurrentPlayer().getName() + " is making a choice");
+                        alert.setContentText("Please wait for the player to make a choice");
+                        alert.show();
+                        DataUpdateController.getInstance().startChoicePolling(() -> {
                             Choice choice = null;
                             try {
                                 choice = restController.getChoice(game.getGameID(), playerId, game.getTurnId());
@@ -304,7 +304,7 @@ public class PlayerView extends Pane implements ViewObserver {
                             }
                             if (choice != null) {
                                 gameController.executeCommandOptionAndContinue(choice.getChoiceType() == Choice.ChoiceType.LEFT ? Command.LEFT : Command.RIGHT);
-                                DataUpdater.getInstance().stopChoicePolling();
+                                DataUpdateController.getInstance().stopChoicePolling();
                             }
                         });
                     } catch (Exception e) {
@@ -312,8 +312,11 @@ public class PlayerView extends Pane implements ViewObserver {
                     }
                 }
             }
-
         }
+    }
+
+    private void clearOptionButtons() {
+        playerInteractionPanel.getChildren().clear();
     }
 
     public Label getTimerLabel() {

@@ -34,16 +34,12 @@ import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ChoiceDialog;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.http.HttpClient;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -249,7 +245,7 @@ public class AppController implements Observer {
             if (result.isEmpty() || result.get() != ButtonType.OK) {
                 return; // return without exiting the application
             }
-            DataUpdater.getInstance().stopExecutorService();
+            DataUpdateController.getInstance().stopExecutorService();
             Platform.exit();
         }
 
