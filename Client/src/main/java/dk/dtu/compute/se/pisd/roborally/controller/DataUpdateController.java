@@ -115,14 +115,14 @@ public class DataUpdateController {
      * @param task the task to run
      */
     public void startMovePolling(Runnable task) {
-        moveFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        moveFuture = executorService.scheduleWithFixedDelay(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
      * Stops the task that polls the move.
      */
     public void stopMovePolling() {
-        moveFuture.cancel(false);
+        moveFuture.cancel(true);
     }
 
     /**
@@ -131,7 +131,7 @@ public class DataUpdateController {
      * @param task the task to run
      */
     public void startChoicePolling(Runnable task) {
-        choiceFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        choiceFuture = executorService.scheduleWithFixedDelay(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
@@ -163,10 +163,10 @@ public class DataUpdateController {
     }
 
     public void startProgramExecution(Runnable task) {
-        programExecutionFuture = executorService.scheduleAtFixedRate(task,0, PROGRAM_EXECUTION_SECONDS, TimeUnit.SECONDS);
+        programExecutionFuture = executorService.scheduleWithFixedDelay(task,0, PROGRAM_EXECUTION_SECONDS, TimeUnit.SECONDS);
     }
 
     public void stopProgramExecution() {
-        programExecutionFuture.cancel(false);
+        programExecutionFuture.cancel(true);
     }
 }

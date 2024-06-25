@@ -55,10 +55,8 @@ public class Move {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(name = "GAMEID")
     private Long gameId;
-
     @Column(name = "TURNID")
     private Long turnId;
 

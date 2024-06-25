@@ -26,6 +26,8 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import dk.dtu.compute.se.pisd.roborally.view.PlayerView;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
@@ -272,12 +274,14 @@ public class GameController {
         if(hasMissingRegisters(board.getLocalPlayer())) {
             finishRegistersRandomly(board.getLocalPlayer());
         }
+        /*
         try {
             game.setTurnId(restController.getGame(gameSession.getGameId()).getTurnId());
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
+         */
         for (Player player : board.getPlayers()) {
             if(player.isLocalPlayer()) {
                 Move move = new Move();
@@ -298,6 +302,7 @@ public class GameController {
         }
 
         DataUpdateController.getInstance().startMovePolling(() -> {
+            if(board.getPhase() != Phase.PROGRAMMING) return;
             try {
                 Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
                 if(moves.length == board.getPlayers().length) {
@@ -308,10 +313,10 @@ public class GameController {
                                     player1.setProgramField(move);
                                 }
                             }
-                            DataUpdateController.getInstance().stopMovePolling();
-                            completeFinishProgrammingPhase();
                         }
                     }
+                    completeFinishProgrammingPhase();
+                    DataUpdateController.getInstance().stopMovePolling();
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -352,12 +357,17 @@ public class GameController {
                 }
             }
         }
+
         makeProgramFieldsInvisible(); // make the program fields invisible
+
         for (int i = 0; i <= steps; i++) { // for each step
             makeProgramFieldsVisible(i); // make the program fields visible
         }
+
         board.setPhase(Phase.ACTIVATION); // set the board's phase to "ACTIVATION"
-        DataUpdateController.getInstance().startProgramExecution(this::executeNextStep);
+        DataUpdateController.getInstance().startProgramExecution(() -> {
+            if(board.getPhase() == Phase.ACTIVATION) executeNextStep();
+        });
     }
 
 
@@ -390,7 +400,7 @@ public class GameController {
      * @author Marcus Langkilde, s195080@DTU.dk
      * @author Haleef Abu Talib, s224523@dtu.dk
      */
-    private void executeNextStep() {
+    private synchronized void executeNextStep() {
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -603,8 +613,7 @@ public class GameController {
     private CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
-        //return new CommandCard(commands[random]);
-        return new CommandCard(Command.FORWARD);
+        return new CommandCard(commands[random]);
     }
 
     /**

@@ -53,7 +53,7 @@ public class ClientController implements RestController {
 
         //Returns gameID
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("PostGame: " + response.body());
         return Integer.parseInt(response.body());
     }
 
@@ -73,7 +73,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("PutGame: " + response.body());
     }
 
     /**
@@ -89,7 +89,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("GetGames: " + response.body());
         Type listType = new TypeToken<List<Game>>() {}.getType();
         return gson.fromJson(response.body(), listType);
     }
@@ -108,7 +108,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("GetGame: " + response.body());
         return gson.fromJson(response.body(), Game.class);
     }
 
@@ -125,7 +125,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("DeleteGame: " + response.body());
     }
 
     /**
@@ -144,7 +144,7 @@ public class ClientController implements RestController {
                 .build();
         //Returns playerID
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("PostPlayer: " + response.body());
         return Integer.parseInt(response.body());
     }
 
@@ -163,7 +163,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("PutPlayer: " + response.body());
     }
 
     /**
@@ -180,7 +180,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("GetPlayers: " + response.body());
         Type listType = new TypeToken<List<Player>>() {}.getType();
         return gson.fromJson(response.body(), listType);
     }
@@ -199,7 +199,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("DeletePlayer: " + response.body());
     }
 
     /**
@@ -217,7 +217,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("DeletePlayers: " + response.body());
     }
 
     /**
@@ -235,7 +235,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("PostMove: " + response.body());
     }
 
     /**
@@ -253,7 +253,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("GetMoves: " + response.body());
         return gson.fromJson(response.body(), Move[].class);
     }
 
@@ -272,7 +272,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("PostChoice: " + response.body());
     }
 
     /**
@@ -291,7 +291,7 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println(response.body());
+        System.out.println("GetChoice: " + response.body());
         return gson.fromJson(response.body(),Choice.class);
     }
 
