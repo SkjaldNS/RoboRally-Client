@@ -21,11 +21,13 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import dk.dtu.compute.se.pisd.roborally.controller.field.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
 import java.net.http.HttpClient;
+import java.util.List;
 
 /**
  * Controls the game logic.
@@ -538,7 +540,7 @@ public class GameController {
                 }
             }
         }
-
+        activateFieldActions();
     }
 
     /**
@@ -577,6 +579,21 @@ public class GameController {
                 board.setCurrentPlayer(board.getPlayer(0));
             } else {
                 startProgrammingPhase();
+            }
+        }
+    }
+
+    /**
+     * Activates the field actions for all spaces on the board.
+     */
+    private void activateFieldActions() {
+        Space[][] spaces = board.getSpaces();
+        for (int i = 0; i < spaces.length; i++) {
+            for (int j = 0; j < spaces[0].length; j++) {
+                List<FieldAction> fieldActions = spaces[i][j].getActions();
+                for (FieldAction action : fieldActions) {
+                    action.doAction(this, spaces[i][j]);
+                }
             }
         }
     }

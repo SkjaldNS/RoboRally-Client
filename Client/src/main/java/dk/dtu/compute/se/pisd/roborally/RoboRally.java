@@ -172,11 +172,13 @@ public class RoboRally extends Application {
             for (GameItemView gameItemView : gameItemViews) {
                 gameItemView.setJoinGameButtonAction(() -> {
                     UserLobbyView userLobbyView = createUserLobbyView(preLobbyView, restController);
-
-                    boardRoot.setCenter(userLobbyView);
                     try {
                         PlayerNameAlertBox playerNameAlertBox = new PlayerNameAlertBox();
                         String playerName = playerNameAlertBox.getPlayerName();
+                        if(playerName == null || playerName.trim().isEmpty()) {
+                            return;
+                        }
+                        boardRoot.setCenter(userLobbyView);
                         int gameId = gameItemView.getGame().getGameID();
                         int playerId = restController.postPlayer(playerName, gameId);
                         gameSession = new GameSession(gameId, playerId, false);
@@ -240,6 +242,10 @@ public class RoboRally extends Application {
             adminLobbyView.getAdminLobbyBottom().getStartGameButton().setDisable(true);
             PlayerNameAlertBox playerNameAlertBox = new PlayerNameAlertBox();
             String playerName = playerNameAlertBox.getPlayerName();
+            // Prevent the user from creating a game without a name
+            if(playerName == null || playerName.trim().isEmpty()) {
+                return;
+            }
             boardRoot.setCenter(adminLobbyView);
             Game game = new Game("Game");
             try {
