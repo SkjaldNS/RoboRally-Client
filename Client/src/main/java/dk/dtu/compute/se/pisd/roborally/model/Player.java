@@ -73,7 +73,7 @@ public class Player extends Subject {
         }
     }
 */
-    public void initPlayer(Player player) {
+    public void initPlayer() {
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
             program[i] = new CommandCardField(this);

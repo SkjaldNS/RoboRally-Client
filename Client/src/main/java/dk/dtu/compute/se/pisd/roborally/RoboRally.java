@@ -48,6 +48,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.http.HttpClient;
 import java.nio.channels.ClosedChannelException;
 import java.util.List;
 
@@ -83,7 +84,7 @@ public class RoboRally extends Application {
         vbox.setMinWidth(MIN_APP_WIDTH);
         Scene primaryScene = new Scene(vbox);
 
-        RestController restController = new ClientController();
+        RestController restController = new ClientController(HttpClient.newHttpClient());
         PreLobbyView preLobbyView = createPreLobbyView(appController, restController);
         boardRoot.setCenter(preLobbyView);
 
@@ -119,7 +120,7 @@ public class RoboRally extends Application {
         AdminLobbyView adminLobbyView = new AdminLobbyView(playerListView, adminLobbyMap, adminLobbyBottom);
 
         adminLobbyBottom.setCloseButtonAction( () -> {
-            boardRoot.setCenter(createPreLobbyView(appController, new ClientController()));
+            boardRoot.setCenter(createPreLobbyView(appController, new ClientController(HttpClient.newHttpClient())));
             try {
                 restController.deletePlayers(gameSession.getGameId());
                 restController.deleteGame(gameSession.getGameId());
@@ -296,7 +297,7 @@ public class RoboRally extends Application {
         UserLobbyView userLobbyView = new UserLobbyView(userLobbyBottom, userLobbyMap, playerListView);
 
         userLobbyBottom.setCloseButtonAction(() -> {
-            boardRoot.setCenter(createPreLobbyView(new AppController(this), new ClientController()));
+            boardRoot.setCenter(createPreLobbyView(new AppController(this), new ClientController(HttpClient.newHttpClient())));
             try {
                 restController.deletePlayer(gameSession.getGameId(), gameSession.getPlayerId());
             } catch (Exception e) {

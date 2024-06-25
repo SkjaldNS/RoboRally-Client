@@ -1,5 +1,6 @@
 
 
+import dk.dtu.compute.se.pisd.roborally.controller.ClientController;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.controller.field.Antenna;
 import dk.dtu.compute.se.pisd.roborally.model.*;
@@ -21,14 +22,18 @@ class AntennaTest {
     @BeforeEach
     void setUp() {
         board = new Board(10, 10);
-        gameController = new GameController(board);
+        gameController = new GameController(board,
+                new GameSession(1, 1, 1, true),
+                new Game("Test Game"),
+                new ClientController(null)
+                );
 
         antenna = new Antenna();
         antenna.setHeading(Heading.NORTH);
 
-        player1 = new Player(board, 1, "Alice");
-        player2 = new Player(board, 2, "Bob");
-        player3 = new Player(board, 3, "Charlie");
+        player1 = new Player(board, "Alice", true);
+        player2 = new Player(board, "Bob", false);
+        player3 = new Player(board, "Charlie", true);
 
         // Ensure each player has a valid space
         board.getSpace(5, 4).setPlayer(player1); // North of antenna

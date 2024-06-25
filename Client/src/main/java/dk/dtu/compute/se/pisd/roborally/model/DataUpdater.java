@@ -19,11 +19,15 @@ public class DataUpdater {
     private ScheduledFuture<?> moveFuture;
     private ScheduledFuture<?> choiceFuture;
 
-    private static DataUpdater instance;
+    private static DataUpdater instance = new DataUpdater();
+
+    private DataUpdater() {}
 
     public static DataUpdater getInstance() {
-        if (instance == null) {
-            instance = new DataUpdater();
+        synchronized (DataUpdater.class) {
+            if (instance == null) {
+                instance = new DataUpdater();
+            }
         }
         return instance;
     }
