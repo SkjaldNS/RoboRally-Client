@@ -35,7 +35,10 @@ import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
+ * A view for a card field in the RoboRally game. This view is used to display
+ * a card field in the game board. The view is a JavaFX {@link GridPane} and
+ * implements the {@link ViewObserver} interface to be able to observe the
+ * corresponding {@link CommandCardField} object.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -64,6 +67,12 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     private GameController gameController;
 
+    /**
+     * Create a view for the given card field.
+     *
+     * @param gameController the game controller to be used
+     * @param field the card field to be displayed
+     */
     public CardFieldView(@NotNull GameController gameController, /*@NotNull*/ CommandCardField field) {
         this.gameController = gameController;
         this.field = field;
@@ -97,6 +106,11 @@ public class CardFieldView extends GridPane implements ViewObserver {
         update(field);
     }
 
+    /**
+     *
+     * @param cardField
+     * @return
+     */
     private String cardFieldRepresentation(CommandCardField cardField) {
         if (cardField.player != null && cardField.player.isLocalPlayer()) {
 
@@ -137,6 +151,10 @@ public class CardFieldView extends GridPane implements ViewObserver {
         return null;
     }
 
+    /**
+     * Update the view according to the given card field.
+     * @param subject the card field to be displayed
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == field && subject != null) {
@@ -149,6 +167,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
         }
     }
 
+    /**
+     * OnDragDetectedHandler is an EventHandler that handles the drag detected event.
+     */
     private class OnDragDetectedHandler implements EventHandler<MouseEvent> {
 
         @Override
@@ -177,6 +198,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragOverHandler is an EventHandler that handles the drag over event.
+     */
     private class OnDragOverHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -198,6 +222,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragEnteredHandler is an EventHandler that handles the drag entered event.
+     */
     private class OnDragEnteredHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -221,6 +248,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragExitedHandler is an EventHandler that handles the drag exited event.
+     */
     private class OnDragExitedHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -244,6 +274,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragDroppedHandler is an EventHandler that handles the drag dropped event.
+     */
     private class OnDragDroppedHandler implements EventHandler<DragEvent> {
 
         @Override
@@ -285,6 +318,9 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     }
 
+    /**
+     * OnDragDoneHandler is an EventHandler that handles the drag done event.
+     */
     private class OnDragDoneHandler implements EventHandler<DragEvent> {
 
         @Override

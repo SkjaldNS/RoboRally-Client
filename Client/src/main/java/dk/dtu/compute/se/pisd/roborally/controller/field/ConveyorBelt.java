@@ -21,14 +21,15 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller.field;
 
-import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
+ * The ConveyorBelt class represents a conveyor belt in the game.
+ * When a player lands on a conveyor belt, a specific action occurs.
+ * The specific action needs to be implemented in the doAction method.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -44,11 +45,8 @@ public class ConveyorBelt extends FieldAction {
         CORNER,
         JUNCTION
     }
-    @Expose
     private Color color;
 
-    //private Type type;
-    @Expose
     private Heading[] heading;
 
     /**
@@ -92,22 +90,30 @@ public class ConveyorBelt extends FieldAction {
         return true;
     }
 
+    /**
+     * Returns the color of the conveyor belt.
+     * @return the color of the conveyor belt
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Sets the color of the conveyor belt.
+     * @param color the color to set
+     */
     public void setColor(Color color) {
         this.color = color;
     }
-    /*
-    public Type getType() {
-        return type;
-    }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
-*/
+    /**
+     * Performs the action of the conveyor belt on a given space in the game.
+     * The specific action needs to be implemented.
+     *
+     * @param gameController the game controller
+     * @param space the space on which the action is performed
+     * @return true if the action was successful, false otherwise
+     */
     @Override
     public boolean doAction(@NotNull GameController gameController, @NotNull Space space) {
         // TODO needs to be implemented

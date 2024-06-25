@@ -20,6 +20,10 @@ public class PlayerListView extends ScrollPane {
 
     private List<PlayerItemView> playerItemViews;
     private final VBox playerListContainer;
+
+    /**
+     * Constructor for the PlayerListView class.
+     */
     public PlayerListView() {
         playerItemViews = new ArrayList<>();
         playerListContainer = new VBox();
@@ -30,11 +34,18 @@ public class PlayerListView extends ScrollPane {
         setContent(playerListContainer);
     }
 
+    /**
+     * Sets the player item views.
+     * @param playerItemViews The player item views to set.
+     */
     public void setPlayerItemViews(List<PlayerItemView> playerItemViews) {
         this.playerItemViews = playerItemViews;
         updatePlayerList();
     }
 
+    /**
+     * Updates the player list.
+     */
     private void updatePlayerList() {
         playerListContainer.getChildren().clear();
         playerListContainer.getChildren().addAll(playerItemViews);

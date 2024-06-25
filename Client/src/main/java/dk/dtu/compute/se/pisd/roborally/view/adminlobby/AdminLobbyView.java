@@ -21,6 +21,10 @@ public class AdminLobbyView extends VBox {
     private AdminLobbyBottom adminLobbyBottom;
 
     //call player Item View and Player List View.
+
+    /**
+     * Constructor for the AdminLobbyView
+     */
     public AdminLobbyView(PlayerListView playerListView, AdminLobbyMap adminLobbyMap, AdminLobbyBottom adminLobbyBottom) {
         this.adminLobbyBottom = adminLobbyBottom;
         this.playerListView = playerListView;
@@ -36,14 +40,23 @@ public class AdminLobbyView extends VBox {
         getChildren().addAll(content, adminLobbyBottom);
     }
 
+    /**
+     * @return the player list view
+     */
     public PlayerListView getPlayerListView() {
         return playerListView;
     }
 
+    /**
+     * @return the admin lobby map
+     */
     public AdminLobbyMap getAdminLobbyMap() {
         return adminLobbyMap;
     }
 
+    /**
+     * @return the admin lobby bottom
+     */
     public AdminLobbyBottom getAdminLobbyBottom() {
         return adminLobbyBottom;
     }

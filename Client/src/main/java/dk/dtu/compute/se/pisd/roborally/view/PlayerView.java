@@ -38,11 +38,17 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import org.jetbrains.annotations.NotNull;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
+import javax.swing.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import java.net.http.HttpClient;
 
 /**
- * ...
+ * The view for a player in the game. This view shows the cards of the player.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -59,6 +65,7 @@ public class PlayerView extends Pane implements ViewObserver {
     private Label cardsLabel;
     private GridPane cardsPane;
     private ImageView robotImage;
+    private Label timerLabel;
 
     private CardFieldView[] programCardViews;
     private CardFieldView[] cardViews;
@@ -75,6 +82,9 @@ public class PlayerView extends Pane implements ViewObserver {
 
     private RestController restController;
 
+    /**
+     * The constructor for the view of a player in the game.
+     */
     public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
         //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
         this.restController = new ClientController(HttpClient.newHttpClient());
@@ -152,6 +162,8 @@ public class PlayerView extends Pane implements ViewObserver {
         }
 
         cardsPane.add(robotImage, Player.NO_REGISTERS + 6, 0);
+        timerLabel = new Label();
+        top.getChildren().add(timerLabel);
 
         top.getChildren().add(programLabel);
         top.getChildren().add(programPane);
@@ -165,6 +177,9 @@ public class PlayerView extends Pane implements ViewObserver {
 
     }
 
+    /**
+     * Update the view of the player.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == player.board) {
@@ -210,6 +225,7 @@ public class PlayerView extends Pane implements ViewObserver {
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
                          */
+                        gameController.startCountdown(30, this);
                         break;
 
                     case ACTIVATION:
@@ -300,4 +316,7 @@ public class PlayerView extends Pane implements ViewObserver {
         }
     }
 
+    public Label getTimerLabel() {
+        return timerLabel;
+    }
 }

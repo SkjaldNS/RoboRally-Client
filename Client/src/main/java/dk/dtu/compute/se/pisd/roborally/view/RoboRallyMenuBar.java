@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * ...
+ * The menu bar for the RoboRally application.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
@@ -49,6 +49,9 @@ public class RoboRallyMenuBar extends MenuBar {
 
     private MenuItem exitApp;
 
+    /**
+     * The constructor for the menu bar.
+     */
     public RoboRallyMenuBar(AppController appController) {
         this.appController = appController;
 
@@ -108,6 +111,9 @@ public class RoboRallyMenuBar extends MenuBar {
         update();
     }
 
+    /**
+     * Updates the menu items according to the current state of the application.
+     */
     public void update() {
         // DO nothing
     }

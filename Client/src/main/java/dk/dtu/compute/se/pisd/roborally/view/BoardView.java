@@ -35,7 +35,7 @@ import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
+ * The view of the board of the game. The board is displayed as a grid of spaces.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -53,6 +53,9 @@ public class BoardView extends VBox implements ViewObserver {
 
     //private SpaceEventHandler spaceEventHandler;
 
+    /**
+     * The constructor of the board view. It creates the view of the board and the player view.
+     */
     public BoardView(@NotNull GameController gameController) {
         board = gameController.board;
 
@@ -93,6 +96,12 @@ public class BoardView extends VBox implements ViewObserver {
         update(board);
     }
 
+    /**
+     * Update the view of the board. This includes updating the view of the spaces and the player
+     * view.
+     *
+     * @param subject the subject that has changed.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == board) {

@@ -44,6 +44,9 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     public final Space space;
 
+    /**
+     * Constructor for the SpaceView class..
+     */
     public SpaceView(@NotNull Space space) {
         this.space = space;
 
@@ -176,6 +179,10 @@ public class SpaceView extends StackPane implements ViewObserver {
         }
     }
 
+    /**
+     * Updates the space view based on the space's content.
+     * @param subject The subject to update the view from.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == this.space) {

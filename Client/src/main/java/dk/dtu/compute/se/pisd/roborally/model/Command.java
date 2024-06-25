@@ -48,7 +48,6 @@ public enum Command {
     BACK_UP("Back Up"),
     OPTION_LEFT_RIGHT("Left OR Right", LEFT, RIGHT);
 
-    @Expose
     final public String displayName;
 
     final private List<Command> options;

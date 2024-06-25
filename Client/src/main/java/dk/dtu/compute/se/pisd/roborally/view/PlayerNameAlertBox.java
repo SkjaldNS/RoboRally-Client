@@ -7,13 +7,17 @@ import java.util.Optional;
 
 public class PlayerNameAlertBox extends TextInputDialog {
 
+    /**
+     * Constructor for the PlayerNameAlertBox
+     */
     public PlayerNameAlertBox() {
         super();
-        this.setTitle("Player Name");
-        this.setHeaderText("Enter your name:");
-        this.setContentText("Name:");
     }
 
+    /**
+     * Method to get the player name
+     * @return the player name
+     */
     public String getPlayerName() {
         String playerName = null;
         while (playerName == null || playerName.trim().isEmpty()) {

@@ -1,6 +1,5 @@
 package dk.dtu.compute.se.pisd.roborally.controller.field;
 
-import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
@@ -10,15 +9,29 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * The Antenna class represents an antenna in the game.
+ * When a player lands on an antenna, a specific action occurs.
+ * The specific action is implemented in the doAction method.
+ */
 public class  Antenna extends FieldAction {
 
-    @Expose
     private Heading heading;
 
+    /**
+     * Returns the heading of the antenna.
+     *
+     * @return the heading of the antenna
+     */
     public Heading getHeading() {
         return heading;
     }
 
+    /**
+     * Sets the heading of the antenna.
+     *
+     * @param heading the new heading of the antenna
+     */
     public void setHeading(Heading heading) {
         this.heading = heading;
     }

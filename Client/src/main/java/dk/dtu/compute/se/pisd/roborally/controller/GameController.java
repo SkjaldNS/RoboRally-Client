@@ -23,6 +23,10 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.controller.field.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.view.PlayerView;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
@@ -30,7 +34,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Controls the game logic.
+ * The GameController class is responsible for controlling the game logic.
+ * It handles player movements, command execution, and phase transitions.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
@@ -42,7 +47,6 @@ public class GameController {
     private Game game;
 
 
-    //private DiscardPile discardPile = new DiscardPile();
 
     public GameController(Board board, GameSession gameSession, Game game, RestController restController) {
         this.board = board;
@@ -97,6 +101,23 @@ public class GameController {
     public void fastForward(@NotNull Player player) {
         moveForward(player);
         moveForward(player);
+    }
+
+    public void startCountdown(int seconds, PlayerView playerView) {
+        AtomicInteger atomicSeconds = new AtomicInteger(seconds);
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), event -> {
+            if (atomicSeconds.get() > 0) {
+                atomicSeconds.decrementAndGet();
+                playerView.getTimerLabel().setText("Time remaining: " + atomicSeconds + " seconds");
+            } else {
+                timeline.stop();
+                playerView.getTimerLabel().setText("Time's up!");
+                finishProgrammingPhase();
+            }
+        }));
+        timeline.playFromStart();
     }
 
     /**
