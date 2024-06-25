@@ -33,7 +33,7 @@ public class ClientController implements RestController {
      * Initializes the HttpClient.
      */
     public ClientController(HttpClient httpClient) {
-        this.httpClient = httpClient
+        this.httpClient = httpClient;
     }  
 
     /**
