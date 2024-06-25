@@ -26,8 +26,8 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
-import java.net.http.HttpClient;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Controls the game logic.
@@ -248,6 +248,9 @@ public class GameController {
      * and setting the phase, current player, and step accordingly.
      */
     public void finishProgrammingPhase() {
+        if(hasMissingRegisters(board.getLocalPlayer())) {
+            finishRegistersRandomly(board.getLocalPlayer());
+        }
         try {
             game.setTurnId(restController.getGame(gameSession.getGameId()).getTurnId());
         }
@@ -539,6 +542,28 @@ public class GameController {
                     field.setCard(null);
                     field.setVisible(true);
                 }
+            }
+        }
+        finishRegistersRandomly(board.getLocalPlayer());
+    }
+
+    private boolean hasMissingRegisters(Player player) {
+        for (int i = 0; i < Player.NO_REGISTERS; i++) {
+            if (player.getProgramField(i).getCard() == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Finishes the registers of the local player by adding random command cards to empty fields.
+     */
+    private void finishRegistersRandomly(Player player) {
+        for (int i = 0; i < Player.NO_REGISTERS; i++) {
+            CommandCardField field = player.getProgramField(i);
+            if (field.getCard() == null) {
+                field.setCard(generateRandomCommandCard());
             }
         }
     }

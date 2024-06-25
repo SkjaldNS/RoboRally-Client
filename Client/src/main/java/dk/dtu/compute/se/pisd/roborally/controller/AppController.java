@@ -85,6 +85,9 @@ public class AppController implements Observer {
             playersList.get(i).initPlayer();
             board.addPlayer(playersList.get(i));
             playersList.get(i).setSpace(board.getStartSpaces().get(i));
+            if(playersList.get(i).getPlayerID() == gameSession.getPlayerId()) {
+                board.setLocalPlayer(playersList.get(i));
+            }
         }
 
 

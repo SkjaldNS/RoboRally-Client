@@ -62,9 +62,9 @@ public class PlayerView extends Pane implements ViewObserver {
 
     private CardFieldView[] programCardViews;
     private CardFieldView[] cardViews;
-
-    private VBox buttonPanel;
     /*
+    private VBox buttonPanel;
+
     private Button finishButton;
     private Button executeButton;
     private Button stepButton;
@@ -127,10 +127,11 @@ public class PlayerView extends Pane implements ViewObserver {
 
         stepButton = new Button("Execute Current Register");
         stepButton.setOnAction( e-> gameController.executeStep());
-        */
+
         //buttonPanel = new VBox(finishButton, executeButton, stepButton);
         buttonPanel.setAlignment(Pos.CENTER_LEFT);
         buttonPanel.setSpacing(3.0);
+         */
         // programPane.add(buttonPanel, Player.NO_REGISTERS, 0); done in update now
 
         playerInteractionPanel = new VBox();
@@ -191,10 +192,6 @@ public class PlayerView extends Pane implements ViewObserver {
             }
 
             if (player.board.getPhase() != Phase.PLAYER_INTERACTION) {
-                if (!programPane.getChildren().contains(buttonPanel)) {
-                    programPane.getChildren().remove(playerInteractionPanel);
-                    programPane.add(buttonPanel, Player.NO_REGISTERS, 0);
-                }
                 switch (player.board.getPhase()) {
                     case INITIALISATION:
                         /*
@@ -234,7 +231,6 @@ public class PlayerView extends Pane implements ViewObserver {
 
             } else {
                 if (!programPane.getChildren().contains(playerInteractionPanel)) {
-                    programPane.getChildren().remove(buttonPanel);
                     programPane.add(playerInteractionPanel, Player.NO_REGISTERS, 0);
                 }
                 playerInteractionPanel.getChildren().clear();
@@ -284,7 +280,6 @@ public class PlayerView extends Pane implements ViewObserver {
                         int playerId = (int) player.board.getCurrentPlayer().getPlayerID();
                         Game game = restController.getGame(player.board.getGameId());
                         DataUpdater.getInstance().startChoicePolling(() -> {
-                            System.out.println("CHOICE MOFO");
                             Choice choice = null;
                             try {
                                 choice = restController.getChoice(game.getGameID(), playerId, game.getTurnId());
