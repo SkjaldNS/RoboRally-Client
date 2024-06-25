@@ -25,6 +25,8 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
+import java.net.http.HttpClient;
+
 /**
  * The GameController class is responsible for controlling the game logic.
  * It handles player movements, command execution, and phase transitions.
@@ -38,11 +40,13 @@ public class GameController {
     private final RestController restController;
     private Game game;
 
-    public GameController(Board board, GameSession gameSession, Game game) {
+
+
+    public GameController(Board board, GameSession gameSession, Game game, RestController restController) {
         this.board = board;
         this.gameSession = gameSession;
         this.game = game;
-        this.restController = new ClientController();
+        this.restController = restController;
     }
 
 
@@ -373,16 +377,14 @@ public class GameController {
                     step++;
                     // if the last player has executed the last step,
                     // then update turn id to the server
+                    game.setTurnId(game.getTurnId() + 1);
                     if(gameSession.isAdmin()) {
-                        game.setTurnId(game.getTurnId() + 1);
+
                         try {
                             restController.putGame(game);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
-                    }
-                    else {
-                        game.setTurnId(game.getTurnId() +1);
                     }
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);

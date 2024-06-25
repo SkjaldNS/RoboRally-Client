@@ -11,7 +11,17 @@ class PlayerTest {
     @BeforeEach
     void setUp() {
         board = new Board(10, 10);
-        player = new Player(board, 1, "Alice");
+        player = new Player(board, "Alice", true);
+        player.setPlayerID(1);
+        player.setRobotId(1);
+        player.initPlayer();
+        Move move = new Move();
+        move.setReg1(Command.AGAIN);
+        move.setReg2(Command.FORWARD);
+        move.setReg3(Command.FAST_FORWARD);
+        move.setReg4(Command.OPTION_LEFT_RIGHT);
+        move.setReg5(Command.U_TURN);
+        player.setProgramField(move);
     }
     /**
      * @author Asma Maryam, s230716@dtu.dk
@@ -24,7 +34,6 @@ class PlayerTest {
         assertNull(player.getSpace(), "Player space should initially be null.");
         assertEquals(Heading.SOUTH, player.getHeading(), "Player heading should initially be SOUTH.");
         assertNotNull(player.getProgram(), "Program should not be null.");
-        assertNotNull(player.getCards(), "Cards should not be null.");
     }
     /**
      * @author Asma Maryam, s230716@dtu.dk
@@ -46,19 +55,24 @@ class PlayerTest {
         player.setHeading(Heading.NORTH);
         assertEquals(Heading.NORTH, player.getHeading(), "Player heading should be updated to NORTH.");
     }
-    /**
-     * @author Asma Maryam, s230716@dtu.dk
-     * @author Turan Talayhan, s224746@student.dtu.dk
-     */
+
     @Test
-    void testCardAndProgramManagement() {
-        CommandCardField programField = new CommandCardField(player);
-        CommandCardField cardField = new CommandCardField(player);
+    void setProgramField() {
+        Player player = new Player(board, "Alice", true);
+        player.initPlayer();
+        Move move = new Move();
+        move.setReg1(Command.AGAIN);
+        move.setReg2(Command.FORWARD);
+        move.setReg3(Command.FAST_FORWARD);
+        move.setReg4(Command.OPTION_LEFT_RIGHT);
+        move.setReg5(Command.U_TURN);
 
-        player.getProgram()[0] = programField;
-        player.getCards()[0] = cardField;
+        player.setProgramField(move);
 
-        assertEquals(programField, player.getProgramField(0), "Program field should be retrievable.");
-        assertEquals(cardField, player.getCardField(0), "Card field should be retrievable.");
+        assertEquals(Command.AGAIN, player.getProgramField(0).getCard().command, "Program field 0 should be set to AGAIN.");
+        assertEquals(Command.FORWARD, player.getProgramField(1).getCard().command, "Program field 1 should be set to FORWARD.");
+        assertEquals(Command.FAST_FORWARD, player.getProgramField(2).getCard().command, "Program field 2 should be set to FAST_FORWARD.");
+        assertEquals(Command.OPTION_LEFT_RIGHT, player.getProgramField(3).getCard().command, "Program field 3 should be set to OPTION_LEFT_RIGHT.");
+        assertEquals(Command.U_TURN, player.getProgramField(4).getCard().command, "Program field 4 should be set to U_TURN.");
     }
 }

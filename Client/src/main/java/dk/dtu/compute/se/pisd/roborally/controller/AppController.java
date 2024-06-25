@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -87,7 +88,7 @@ public class AppController implements Observer {
             board = new Board(8, 8);
         }
         board.setGameId(game.getGameID());
-        gameController = new GameController(board, gameSession, game);
+        gameController = new GameController(board, gameSession, game, new ClientController(HttpClient.newHttpClient()));
         List<Player> playersList = new ArrayList<>();
         for (int i = 0; i < players.size(); i++) {
             // FIXME - Use the player contructor for each player in the list
@@ -96,7 +97,7 @@ public class AppController implements Observer {
             playersList.get(i).setBoard(board);
             playersList.get(i).setPlayerID((int) players.get(i).getPlayerID());
             playersList.get(i).setGameID(game.getGameID());
-            playersList.get(i).initPlayer(players.get(i));
+            playersList.get(i).initPlayer();
             board.addPlayer(playersList.get(i));
             playersList.get(i).setSpace(board.getStartSpaces().get(i));
         }

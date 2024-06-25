@@ -83,11 +83,15 @@ public class Player extends Subject {
         }
     }
 */
+
     /**
      * Method to initialize the player
      * @param player the player to be initialized
      */
-    public void initPlayer(Player player) {
+    
+
+    public void initPlayer() {
+
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
             program[i] = new CommandCardField(this);

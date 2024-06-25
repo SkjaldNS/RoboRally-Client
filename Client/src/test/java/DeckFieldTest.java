@@ -12,7 +12,7 @@ class DeckFieldTest {
     @BeforeEach
     void setUp() {
         Board board = new Board(10, 10); // Create a 10x10 board
-        this.player = new Player(board, 1, "Alice");
+        this.player = new Player(board, "Alice", true);
         this.deckField = new DeckField(player);
     }
     /**

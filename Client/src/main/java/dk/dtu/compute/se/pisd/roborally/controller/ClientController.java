@@ -27,13 +27,14 @@ public class ClientController implements RestController {
 
     private HttpClient httpClient;
 
+
     /**
      * Constructor for the ClientController class.
      * Initializes the HttpClient.
      */
-    public ClientController() {
-        httpClient = HttpClient.newHttpClient();
-    }
+    public ClientController(HttpClient httpClient) {
+        this.httpClient = httpClient
+    }  
 
     /**
      * Posts a new game to the server.
