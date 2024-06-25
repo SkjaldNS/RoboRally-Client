@@ -16,6 +16,9 @@ public class UserLobbyMap extends VBox {
 
     private ImageView mapPreview;
 
+    /**
+     * Constructor for the UserLobbyMap class.
+     */
     public UserLobbyMap() {
         // Placeholder for map preview
         mapPreview = new ImageView();
@@ -25,6 +28,10 @@ public class UserLobbyMap extends VBox {
         this.alignmentProperty().set(Pos.CENTER_RIGHT);
     }
 
+    /**
+     * Updates the map preview based on the board id.
+     * @param boardId The id of the board to display.
+     */
     public void updateMap(int boardId) {
         switch (boardId) {
             case 0:
@@ -39,6 +46,10 @@ public class UserLobbyMap extends VBox {
         }
     }
 
+    /**
+     * Updates the map preview based on the image path.
+     * @param imagePath The path of the image to display.
+     */
     private void updateMapPreview(String imagePath) {
         try {
             // Correctly load the image from the resources folder

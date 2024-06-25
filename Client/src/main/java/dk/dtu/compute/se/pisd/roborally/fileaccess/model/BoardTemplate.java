@@ -26,7 +26,10 @@ import java.util.List;
 
 
 /**
- * ...
+ * The BoardTemplate class represents a template for a game board.
+ * It contains the width and height of the board, as well as a list of space templates.
+ * Each space template represents a space on the board, including its position and any fields it contains.
+ *
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *

@@ -15,6 +15,10 @@ import javafx.scene.layout.Priority;
 public class UserLobbyBottom extends HBox {
 
     private final Button closeButton;
+
+    /**
+     * Constructor for the UserLobbyBottom class
+     */
     public UserLobbyBottom(PreLobbyView preLobbyView) {
         closeButton = new Button("Close");
         HBox filler = new HBox();
@@ -23,6 +27,10 @@ public class UserLobbyBottom extends HBox {
         getChildren().addAll(closeButton, filler);
     }
 
+    /**
+     * Sets the action of the close button
+     * @param action the action to be set
+     */
     public void setCloseButtonAction(Runnable action) {
         this.closeButton.setOnAction(e -> action.run());
     }

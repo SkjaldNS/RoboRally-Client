@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ...
+    * A template for a space in a board. A space template is used to create a space
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *

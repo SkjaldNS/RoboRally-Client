@@ -9,14 +9,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * This class is a controller that handles the HTTP requests from the client related to the moves of the game.
+ * It is a RESTful controller that handles GET and POST requests.
+ * The class is used to get the moves of a specific turn of a game and to create a move in a game.
+ */
 @RestController
 @RequestMapping("games/{gameId}/moves")
 public class MoveController {
 
     private MoveRepository moveRepository;
 
+    /**
+     * Constructor that initializes the MoveController object.
+     * @param moveRepository Repository that handles the operations of the moves in the database.
+     */
     public MoveController(MoveRepository moveRepository) {this.moveRepository = moveRepository;}
 
+    /**
+     * Method that handles the GET request to get the moves of a specific turn of a game.
+     * @param gameId Id of the game.
+     * @param turnId Id of the turn.
+     * @return ResponseEntity with the list of moves of the turn.
+     */
     @GetMapping
     @RequestMapping("/{turnId}")
     public ResponseEntity<List<Move>> getMoves(@PathVariable("gameId") Long gameId, @PathVariable("turnId") Long turnId){
@@ -24,6 +39,12 @@ public class MoveController {
         return ResponseEntity.ok(listMove);
     }
 
+    /**
+     * Method that handles the POST request to create a move in a game.
+     * @param move Move object that contains the information of the move.
+     * @param gameId Id of the game.
+     * @return ResponseEntity with the status of the operation.
+     */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "")
     public ResponseEntity<String> createChoice(@RequestBody Move move, @PathVariable("gameId") Long gameId){

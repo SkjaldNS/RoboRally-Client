@@ -22,31 +22,36 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 /**
- * ...
+ * Enumeration of the possible headings of a robot. The headings are
+ * SOUTH, WEST, NORTH, and EAST. The enumeration provides methods to
+ * get the next and previous heading in the enumeration.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
- *
  */
 public enum Heading {
 
     SOUTH, WEST, NORTH, EAST;
 
+    /**
+     * @return the next heading in the enumeration
+     */
     public Heading next() {
         return values()[(this.ordinal() + 1) % values().length];
     }
 
+    /**
+     * @return the previous heading in the enumeration
+     */
     public Heading prev() {
         return values()[(this.ordinal() + values().length - 1) % values().length];
     }
 
 
     /**
-     * Returns the opposite heading.
      * @return the opposite heading
      * @author Daniel Overballe Lerche, s235095@dtu.dk
      * @author Nikolaj Schæbel, s220471@dtu.dk
      */
-
     public Heading opposite() {
         return values()[(this.ordinal() + 2) % values().length];
     }

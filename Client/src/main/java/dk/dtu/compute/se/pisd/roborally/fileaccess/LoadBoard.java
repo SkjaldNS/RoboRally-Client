@@ -40,7 +40,7 @@ import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
- * ...
+ * A class to load and save boards from and to files.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
@@ -126,6 +126,12 @@ public class LoadBoard {
 		return null;
     }
 
+    /**
+     * Save a board to a file with the given name.
+     *
+     * @param board the board to be saved
+     * @param name the name of the file to which the board is saved
+     */
     public static void saveBoard(Board board, String name) {
         BoardTemplate template = new BoardTemplate();
         template.width = board.width;

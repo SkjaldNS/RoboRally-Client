@@ -47,7 +47,9 @@ import java.nio.file.Path;
 import java.util.*;
 
 /**
- * ...
+ * The AppController class is responsible for controlling the application.
+ * It handles the creation of new games, saving and loading games, and stopping the current game.
+ * It also handles the exit of the application.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
@@ -59,10 +61,23 @@ public class AppController implements Observer {
 
     private GameController gameController;
 
+    /**
+     * Constructor for the AppController class.
+     *
+     * @param roboRally the RoboRally instance
+     */
     public AppController(@NotNull RoboRally roboRally) {
         this.roboRally = roboRally;
     }
 
+    /**
+     * Creates a new game with the given game, players, and game session.
+     *
+     * @param game the game to be created
+     * @param players the players of the game
+     * @param gameSession the game session
+     * @throws IOException if an I/O error occurs while loading the board
+     */
     public void newGame(Game game, List<Player> players, GameSession gameSession) throws IOException {
 
 
@@ -218,6 +233,9 @@ public class AppController implements Observer {
         return false;
     }
 
+    /**
+     * Exits the application.
+     */
     public void exit() {
 
         if (gameController != null) {
@@ -244,6 +262,11 @@ public class AppController implements Observer {
     }
 
 
+    /**
+     * Updates the observer.
+     *
+     * @param subject the subject to be updated
+     */
     @Override
     public void update(Subject subject) {
         // XXX do nothing for now

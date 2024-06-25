@@ -21,7 +21,6 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
-import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.field.FieldAction;
 
@@ -29,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ...
+ * This class represents a space on the board of the game. A space can have a
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -38,20 +37,24 @@ public class Space extends Subject {
 
     private Player player;
 
-    @Expose
     private List<Heading> walls = new ArrayList<>();
-    @Expose
+
     private List<FieldAction> actions = new ArrayList<>();
 
     public Board board;
 
-    @Expose
     public int x;
-    @Expose
+
     public int y;
 
     public Space(){}
 
+    /**
+     * The constructor for a space on the board.
+     * @param board the board to which the space belongs
+     * @param x the x-coordinate of the space
+     * @param y the y-coordinate of the space
+     */
     public Space(Board board, int x, int y) {
         this.board = board;
         this.x = x;
@@ -59,10 +62,18 @@ public class Space extends Subject {
         player = null;
     }
 
+    /**
+     * @return the board to which this space belongs
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Sets the player on this space.
+     *
+     * @param player the player to be set on this space
+     */
     public void setPlayer(Player player) {
         Player oldPlayer = this.player;
         if (player != oldPlayer &&
@@ -79,14 +90,23 @@ public class Space extends Subject {
         }
     }
 
+    /**
+     * @return the walls of this space
+     */
     public List<Heading> getWalls() {
         return walls;
     }
 
+    /**
+     * @return the actions of this space
+     */
     public List<FieldAction> getActions() {
         return actions;
     }
 
+    /**
+     * Notify the space that the player has changed.
+     */
     void playerChanged() {
         // This is a minor hack; since some views that are registered with the space
         // also need to update when some player attributes change, the player can

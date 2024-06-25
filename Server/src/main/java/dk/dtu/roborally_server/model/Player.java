@@ -23,6 +23,11 @@ public class Player {
     private String playerName;
     @Column(name = "ROBOTID")
     private int robotId;
+
+    /**
+     * The constructor for the Player class.
+     * @param playerId the id of the player
+     */
     public void setId(Long playerId) {
         this.playerId = playerId;
     }

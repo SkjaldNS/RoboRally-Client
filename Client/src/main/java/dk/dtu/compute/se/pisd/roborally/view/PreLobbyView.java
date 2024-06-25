@@ -27,6 +27,9 @@ public class PreLobbyView extends HBox {
     private final Button refreshGameListButton;
     private final Text gameItemListTitle;
 
+    /**
+     * Constructor for the PreLobbyView
+     */
     public PreLobbyView(GameItemListView gameItemListView) {
         this.gameItemListView = gameItemListView;
         // Title for the game item list
@@ -50,10 +53,18 @@ public class PreLobbyView extends HBox {
         this.getChildren().addAll(gameItemListViewContainer, filler, createGameButton);
     }
 
+    /**
+     * Sets the action for the create game button.
+     * @param action The action to be performed when the button is clicked.
+     */
     public void setCreateGameButtonAction(Runnable action) {
         this.createGameButton.setOnAction(e -> action.run());
     }
 
+    /**
+     * Sets the action for the refresh game list button.
+     * @param action The action to be performed when the button is clicked.
+     */
     public void setRefreshGameListButtonAction(Runnable action) {
         this.refreshGameListButton.setOnAction(e -> action.run());
     }

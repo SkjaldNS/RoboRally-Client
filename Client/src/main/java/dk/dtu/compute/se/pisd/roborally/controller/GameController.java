@@ -28,7 +28,8 @@ import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import java.net.http.HttpClient;
 
 /**
- * Controls the game logic.
+ * The GameController class is responsible for controlling the game logic.
+ * It handles player movements, command execution, and phase transitions.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
@@ -40,7 +41,6 @@ public class GameController {
     private Game game;
 
 
-    //private DiscardPile discardPile = new DiscardPile();
 
     public GameController(Board board, GameSession gameSession, Game game, RestController restController) {
         this.board = board;

@@ -84,6 +84,11 @@ public class PlayerController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Handles DELETE requests to delete all players with the given gameId.
+     * @param gameId the gameId of the players to delete
+     * @return a ResponseEntity containing an HTTP status code
+     */
     @Transactional // Apparently needed to delete players by gameId to not give errors
     @DeleteMapping(value = "")
     public ResponseEntity<String> deletePlayers(@PathVariable Long gameId) {

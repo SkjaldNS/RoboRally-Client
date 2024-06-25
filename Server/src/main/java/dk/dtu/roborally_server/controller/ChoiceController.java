@@ -6,14 +6,26 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * ChoiceController is a RestController that handles the HTTP requests related to the Choice model.
+ */
 @RestController
 @RequestMapping("games/{gameId}/choices")
 public class ChoiceController {
 
     private ChoiceRepository choiceRepository;
 
+    /**
+     * Constructor for the ChoiceController.
+     * @param choiceRepository The repository that the controller should use.
+     */
     public ChoiceController(ChoiceRepository choiceRepository) {this.choiceRepository = choiceRepository;}
 
+    /**
+     * GetMapping for getting all choices in a game.
+     * @param gameId The id of the game.
+     * @return ResponseEntity with a list of choices.
+     */
     @GetMapping
     @RequestMapping( "/{turnId}/{playerId}")
     public ResponseEntity<Choice> getChoices(@PathVariable("gameId") Long gameId, @PathVariable("turnId") Long turnId, @PathVariable("playerId") Long playerId){
@@ -21,6 +33,12 @@ public class ChoiceController {
         return ResponseEntity.ok(choice);
     }
 
+    /**
+     * PostMapping for creating a choice.
+     * @param choice The choice to be created.
+     * @param gameId The id of the game.
+     * @return ResponseEntity with a message.
+     */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @RequestMapping(value = "")
     public ResponseEntity<String> createChoice(@RequestBody Choice choice, @PathVariable("gameId") Long gameId) {

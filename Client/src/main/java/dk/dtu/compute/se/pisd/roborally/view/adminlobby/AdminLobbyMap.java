@@ -20,6 +20,10 @@ public class AdminLobbyMap extends VBox {
 
     private final ImageView mapPreview;
     private final ComboBox<String> mapSelection;
+
+    /**
+     * Constructor for AdminLobbyMap
+     */
     public AdminLobbyMap() {
         mapSelection = new ComboBox<>();
         mapSelection.getItems().addAll("Risky Crossing", "Fractionation");
@@ -45,6 +49,9 @@ public class AdminLobbyMap extends VBox {
         });
     }
 
+    /**
+     * @return the selected map id
+     */
     public int getSelectedMapId() {
         String selectedMap = mapSelection.getValue();
         if ("Risky Crossing".equals(selectedMap)) {
@@ -55,6 +62,10 @@ public class AdminLobbyMap extends VBox {
         return -1;
     }
 
+    /**
+     * Updates the map preview image based on the selected map
+     * @param imagePath the path to the image
+     */
     private void updateMapPreview(String imagePath) {
         try {
             // Correctly load the image from the resources folder
@@ -71,6 +82,9 @@ public class AdminLobbyMap extends VBox {
         }
     }
 
+    /**
+     * @return the map preview image view
+     */
     public ImageView getMapPreview() {
         return mapPreview;
     }

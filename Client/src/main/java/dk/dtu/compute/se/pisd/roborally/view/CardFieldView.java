@@ -35,7 +35,10 @@ import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
+ * A view for a card field in the RoboRally game. This view is used to display
+ * a card field in the game board. The view is a JavaFX {@link GridPane} and
+ * implements the {@link ViewObserver} interface to be able to observe the
+ * corresponding {@link CommandCardField} object.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -64,6 +67,12 @@ public class CardFieldView extends GridPane implements ViewObserver {
 
     private GameController gameController;
 
+    /**
+     * Create a view for the given card field.
+     *
+     * @param gameController the game controller to be used
+     * @param field the card field to be displayed
+     */
     public CardFieldView(@NotNull GameController gameController, /*@NotNull*/ CommandCardField field) {
         this.gameController = gameController;
         this.field = field;
