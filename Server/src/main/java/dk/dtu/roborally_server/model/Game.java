@@ -18,11 +18,17 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long gameId;
+
+    @Column(name = "GAMENAME")
     private String gameName;
+    @Column(name = "BOARDID")
     private Long boardId;
-    private String gameStatus;
-    private Long TurnID;
-    private Long maxPlayers;
+    @Column(name = "GAMESTATUS")
+    private int gameStatus;
+    @Column(name = "TURNID")
+    private Long turnId;
+    @Column(name = "NUMBEROFPLAYERS")
+    private Long numberOfPlayers;
 
 
 }

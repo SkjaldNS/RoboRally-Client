@@ -44,6 +44,9 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     public final Space space;
 
+    /**
+     * Constructor for the SpaceView class..
+     */
     public SpaceView(@NotNull Space space) {
         this.space = space;
 
@@ -51,12 +54,9 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setPrefWidth(SPACE_WIDTH);
         this.setMinWidth(SPACE_WIDTH);
         this.setMaxWidth(SPACE_WIDTH);
-
         this.setPrefHeight(SPACE_HEIGHT);
         this.setMinHeight(SPACE_HEIGHT);
         this.setMaxHeight(SPACE_HEIGHT);
-
-        // updatePlayer();
         // This space view should listen to changes of the space
         space.attach(this);
         update(space);
@@ -176,6 +176,10 @@ public class SpaceView extends StackPane implements ViewObserver {
         }
     }
 
+    /**
+     * Updates the space view based on the space's content.
+     * @param subject The subject to update the view from.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == this.space) {

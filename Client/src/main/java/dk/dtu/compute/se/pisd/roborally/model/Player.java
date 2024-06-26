@@ -21,70 +21,62 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
-import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
 /**
- * ...
+ * Class representing a player in the game. A player has a name, a robot, a
+ * set of commands, and a current space on the board.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
 public class Player extends Subject {
 
-    @Expose
     final public static int NO_REGISTERS = 5;
-    @Expose
-    final public static int NO_CARDS = 8;
-
     public Board board;
-
-    @Expose
-    private DiscardPileField discardedPile;
-
-    @Expose
     private Command lastCommand = null;
-
-    @Expose
-    private Deck deck;
-
-    @Expose
-    private String name;
-
-    @Expose
+    private int playerId;
+    private int gameId;
+    private String playerName;
     private int robotId;
-
-    @Expose
     private int powerUpCnt = 0;
-
-    @Expose
     private Command currentCommand;
-
-    @Expose
     private int checkpointCollected = 0;
-
-    @Expose
     private Space space;
-    @Expose
     private Heading heading = SOUTH;
-
-
-    @Expose
     private CommandCardField[] program;
-    @Expose
+    // Player Local
+    private DiscardPileField discardedPile;
+    private Deck deck;
     private CommandCardField[] cards;
+    final public static int NO_CARDS = 8;
+    private boolean isLocalPlayer;
 
+    /**
+     * Default constructor for the player class
+     */
     public Player(){}
 
-    public Player(@NotNull Board board, int robotId, @NotNull String name) {
+    /**
+     * Constructor for the player class
+     * @param board the board on which the player is placed
+     * @param playerName the name of the player
+     * @param isLocalPlayer boolean to check if player is local
+     */
+    public Player(Board board, @NotNull String playerName, boolean isLocalPlayer) {
         this.board = board;
-        this.name = name;
-        this.robotId = robotId;
-
+        this.playerName = playerName;
+        this.isLocalPlayer = isLocalPlayer;
         this.space = null;
+    }
+
+    /**
+     * Method to initialize the player
+     */
+    public void initPlayer() {
 
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
@@ -97,47 +89,125 @@ public class Player extends Subject {
         }
 
         discardedPile = new DiscardPileField(this);
-
-        this.deck = new Deck();
+        deck = new Deck();
         deck.shuffleDeck();
-
     }
 
-    public String getName() {
-        return name;
-    }
-
+    /**
+     * Method to get the deck of the player
+     * @return the deck of the player
+     */
     public Deck getDeck() {
+        if(!isLocalPlayer) return null;
         return deck;
     }
-    public Command getCurrentCommand() {
-        return currentCommand;
+
+    /**
+     * Method to get the discarded pile of the player
+     * @return the discarded pile of the player
+     */
+    public DiscardPileField getDiscardedPile() {
+        if(!isLocalPlayer) return null;
+        return discardedPile;
     }
-    public void setCurrentCommand(Command command){
-        this.currentCommand = command;
+
+    /**
+     * Method to get the cards of the player
+     * @return the cards of the player
+     */
+    public CommandCardField getCardField(int i) {
+        if(!isLocalPlayer) return null;
+        return cards[i];
     }
-    public void oneUpPowerUpCnt() {
-        this.powerUpCnt++;
+
+    /**
+     * Method to get the cards of the player
+     * @return the cards of the player
+     */
+    public String getName() {return playerName;}
+
+    /**
+     * Method to set the name of the player
+     * @param playerName the name of the player
+     */
+    public void setName(String playerName) {this.playerName = playerName;}
+
+    /**
+     * Method to get the current command of the player
+     * @return the current command of the player
+     */
+    public Command getCurrentCommand() {return currentCommand;}
+
+    /**
+     * Method to set the current command of the player
+     * @param command the command to be set
+     */
+    public void setCurrentCommand(Command command){this.currentCommand = command;}
+
+    /**
+     * Method to get the program of the player
+     */
+    public void setProgramField(Move move) {
+        program[0].setCard(new CommandCard(move.getReg1()));
+        program[1].setCard(new CommandCard(move.getReg2()));
+        program[2].setCard(new CommandCard(move.getReg3()));
+        program[3].setCard(new CommandCard(move.getReg4()));
+        program[4].setCard(new CommandCard(move.getReg5()));
     }
-    public int getPowerUpCnt() {
-        return powerUpCnt;
-    }
+
+    /**
+     * Increment the power up count of the player
+     */
+    public void oneUpPowerUpCnt() {this.powerUpCnt++;}
+
+    /**
+     * @return the power up count of the player
+     */
+    public int getPowerUpCnt() {return powerUpCnt;}
+
+    /**
+     * Method to set last command of the player
+     * @param lastCommand the last command of the player
+     */
     public void setLastCommand(Command lastCommand) {
         if(lastCommand != Command.AGAIN){
             this.lastCommand = lastCommand;}
     }
-    public Command getLastCommand() {
-        return lastCommand;
-    }
 
-    public int getRobotId() {
-        return robotId;
-    }
+    /**
+     * Method to get the last command of the player
+     * @return the last command of the player
+     */
+    public Command getLastCommand() {return lastCommand;}
 
-    public Space getSpace() {
-        return space;
-    }
+    /**
+     * Method to get the robotId of the player
+     * @return the robotId of the player
+     */
+    public int getRobotId() {return robotId;}
 
+    /**
+     * Method to set the robotId of the player
+     * @param robotId the robotId of the player
+     */
+    public void setRobotId(int robotId) {this.robotId = robotId;}
+
+    /**
+     * Method to get the board of the player
+     * @param board the board of the player
+     */
+    public void setBoard(Board board) {this.board = board;}
+
+    /**
+     * Method to get the space of the player
+     * @return the space of the player
+     */
+    public Space getSpace() {return space;}
+
+    /**
+     * Method to set the space of the player
+     * @param space the space of the player
+     */
     public void setSpace(Space space) {
         Space oldSpace = this.space;
         if (space != oldSpace &&
@@ -153,10 +223,16 @@ public class Player extends Subject {
         }
     }
 
-    public Heading getHeading() {
-        return heading;
-    }
+    /**
+     * Method to get the heading of the player
+     * @return the heading of the player
+     */
+    public Heading getHeading() {return heading;}
 
+    /**
+     * Method to set the heading of the player
+     * @param heading the heading of the player
+     */
     public void setHeading(@NotNull Heading heading) {
         if (heading != this.heading) {
             this.heading = heading;
@@ -167,32 +243,69 @@ public class Player extends Subject {
         }
     }
 
+    /**
+     * Method to get the checkpoint of the player
+     */
     public void setCheckpoint(int checkpointCollected) {
         this.checkpointCollected = checkpointCollected;
         notifyChange();
     }
 
-    public int getCheckpointCollected() {
-        return checkpointCollected;
+    /**
+     * Method to get the amount of checkpoints collected by the player
+     * @return the amount of checkpoints collected by the player
+     */
+    public int getCheckpointCollected() {return checkpointCollected;}
+
+    /**
+     * Method to get the programmed command card fields of the player
+     * @return the programmed command card fields of the player
+     */
+    public CommandCardField[] getProgram() {return program;}
+
+
+    /**
+     * Method to get one specific programmed command card field of the player
+     * @param i the index of the command card field
+     * @return the programmed command card field of the player
+     */
+    public CommandCardField getProgramField(int i) {return program[i];}
+
+    /**
+     * Method to get the player ID
+     * @param playerID the player ID
+     */
+    public void setPlayerID(int playerID) {this.playerId = playerID;}
+
+    /**
+     * Method to get the player ID
+     * @return the player ID
+     */
+    public long getPlayerID() {return playerId;}
+
+    /**
+     * Method to get the game ID
+     * @return the game ID
+     */
+    public long getGameID() {return gameId;}
+
+    /**
+     * Method to set the game ID
+     * @param gameID the game ID
+     */
+    public void setGameID(int gameID) {this.gameId = gameID;}
+
+    /**
+     * Method to set the local player
+     * @param localPlayer boolean to check if player is local
+     */
+    public void setLocalPlayer(boolean localPlayer) {
+        isLocalPlayer = localPlayer;
     }
 
-    public CommandCardField[] getProgram() {
-        return program;
-    }
-
-    public CommandCardField[] getCards() {
-        return cards;
-    }
-
-    public CommandCardField getProgramField(int i) {
-        return program[i];
-    }
-
-    public CommandCardField getCardField(int i) {
-        return cards[i];
-    }
-
-    public DiscardPileField getDiscardedPile() {
-        return discardedPile;
-    }
+    /**
+     * Method to check if player is local
+     * @return boolean to check if player is local
+     */
+    public boolean isLocalPlayer() {return isLocalPlayer;}
 }

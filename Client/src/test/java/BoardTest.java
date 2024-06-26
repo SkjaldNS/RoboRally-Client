@@ -13,7 +13,7 @@ class BoardTest {
     @BeforeEach
     void setUp() {
         board = new Board(8, 8);
-        player = new Player(board, 1, "Alice");
+        player = new Player(board, "Alice", true);
         board.addPlayer(player);
     }
 
@@ -72,8 +72,8 @@ class BoardTest {
     void testSetPlayers() {
         // Create a list of players
         List<Player> players = new ArrayList<>();
-        Player player1 = new Player(board, 1, "Alice");
-        Player player2 = new Player(board, 2, "Bob");
+        Player player1 = new Player(board, "Alice", true);
+        Player player2 = new Player(board, "Bob", false);
         players.add(player1);
         players.add(player2);
 

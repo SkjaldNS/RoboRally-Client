@@ -35,12 +35,12 @@ class SpaceTest {
      */
     @Test
     void testSetAndGetPlayer() {
-        Player player = new Player(board, 1, "Test Player");
+        Player player = new Player(board, "Test Player", true);
         space.setPlayer(player);
         assertSame(player, space.getPlayer(), "The player should be set and retrieved correctly.");
 
         // Verify that setting a new player updates correctly
-        Player newPlayer = new Player(board, 2, "New Test Player");
+        Player newPlayer = new Player(board, "New Test Player", true);
         space.setPlayer(newPlayer);
         assertSame(newPlayer, space.getPlayer(), "New player should replace the old one.");
         assertNull(player.getSpace(), "The old player's space should be null after moving out.");

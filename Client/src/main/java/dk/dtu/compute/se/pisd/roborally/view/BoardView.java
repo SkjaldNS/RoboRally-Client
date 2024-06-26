@@ -35,7 +35,7 @@ import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * ...
+ * The view of the board of the game. The board is displayed as a grid of spaces.
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *
@@ -47,26 +47,36 @@ public class BoardView extends VBox implements ViewObserver {
     private GridPane mainBoardPane;
     private SpaceView[][] spaces;
 
-    private PlayersView playersView;
+    private PlayerView playerView;
 
     private Label statusLabel;
 
-    private SpaceEventHandler spaceEventHandler;
-
+    /**
+     * The constructor of the board view. It creates the view of the board and the player view.
+     */
     public BoardView(@NotNull GameController gameController) {
         board = gameController.board;
 
         mainBoardPane = new GridPane();
-        playersView = new PlayersView(gameController);
+        Player player = null;
+        for (int i = 0; i < board.getPlayers().length; i++) {
+            Player player1 = board.getPlayers()[i];
+            if (player1.isLocalPlayer()) {
+                player = player1;
+                break;
+            }
+        }
+        if(player == null) {
+            throw new IllegalArgumentException("No local player found");
+        }
+        playerView = new PlayerView(gameController, player);
         statusLabel = new Label("<no status>");
 
         this.getChildren().add(mainBoardPane);
-        this.getChildren().add(playersView);
+        this.getChildren().add(playerView);
         this.getChildren().add(statusLabel);
 
         spaces = new SpaceView[board.width][board.height];
-
-        spaceEventHandler = new SpaceEventHandler(gameController);
 
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
@@ -74,7 +84,6 @@ public class BoardView extends VBox implements ViewObserver {
                 SpaceView spaceView = new SpaceView(space);
                 spaces[x][y] = spaceView;
                 mainBoardPane.add(spaceView, x, y);
-                spaceView.setOnMouseClicked(spaceEventHandler);
             }
         }
 
@@ -82,39 +91,18 @@ public class BoardView extends VBox implements ViewObserver {
         update(board);
     }
 
+    /**
+     * Update the view of the board. This includes updating the view of the spaces and the player
+     * view.
+     *
+     * @param subject the subject that has changed.
+     */
     @Override
     public void updateView(Subject subject) {
         if (subject == board) {
             Phase phase = board.getPhase();
             statusLabel.setText(board.getStatusMessage());
         }
-    }
-
-    // XXX this handler and its uses should eventually be deleted! This is just to help test the
-    //     behaviour of the game by being able to explicitly move the players on the board!
-    private class SpaceEventHandler implements EventHandler<MouseEvent> {
-
-        final public GameController gameController;
-
-        public SpaceEventHandler(@NotNull GameController gameController) {
-            this.gameController = gameController;
-        }
-
-        @Override
-        public void handle(MouseEvent event) {
-            Object source = event.getSource();
-            if (source instanceof SpaceView) {
-                SpaceView spaceView = (SpaceView) source;
-                Space space = spaceView.space;
-                Board board = space.board;
-
-                if (board == gameController.board) {
-                    gameController.moveCurrentPlayerToSpace(space);
-                    event.consume();
-                }
-            }
-        }
-
     }
 
 }

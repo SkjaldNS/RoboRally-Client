@@ -12,7 +12,6 @@ import java.util.Collections;
  * @author Haleef Abu Talib, s224523@dtu.dk
  */
 public class Deck {
-    @Expose
     public ArrayList<Command> initDeck;
     /**
      * Constructs a new deck with the initial set of command cards.
@@ -33,13 +32,6 @@ public class Deck {
     public void shuffleDeck() {
         Collections.shuffle(this.initDeck);
     }
-
-    //Add cards to deck
-    //Add a shuffle method
-    //Make a constructor
-    //Give it to the player
-    //Draw card
-    //Add discard pile to deck
 
 
 }
