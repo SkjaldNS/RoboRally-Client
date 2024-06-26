@@ -111,4 +111,8 @@ public class Game {
     public void setNumberOfPlayers(int numPlayers) {
         this.numberOfPlayers = numPlayers;
     }
+
+    public boolean isGameInPreLobby() {
+        return gameStatus == 0;
+    }
 }

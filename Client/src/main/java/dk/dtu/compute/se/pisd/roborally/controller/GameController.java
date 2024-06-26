@@ -21,11 +21,19 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import dk.dtu.compute.se.pisd.roborally.controller.field.FieldAction;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import dk.dtu.compute.se.pisd.roborally.view.PlayerView;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import javafx.util.Duration;
 import org.jetbrains.annotations.NotNull;
 import dk.dtu.compute.se.pisd.roborally.model.Phase;
 
-import java.net.http.HttpClient;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * The GameController class is responsible for controlling the game logic.
@@ -39,6 +47,7 @@ public class GameController {
     private GameSession gameSession;
     private final RestController restController;
     private Game game;
+    private boolean hasTimerStarted = false;
 
 
 
@@ -49,6 +58,9 @@ public class GameController {
         this.restController = restController;
     }
 
+    public boolean isHasTimerStarted() {
+        return hasTimerStarted;
+    }
 
     /**
      * Moves the given player forward one space on the board, if possible.
@@ -95,6 +107,25 @@ public class GameController {
     public void fastForward(@NotNull Player player) {
         moveForward(player);
         moveForward(player);
+    }
+
+    public void startCountdown(int seconds, PlayerView playerView, Runnable task) {
+        hasTimerStarted = true;
+        AtomicInteger atomicSeconds = new AtomicInteger(seconds);
+        Timeline timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(1), event -> {
+            if (atomicSeconds.get() > 0) {
+                atomicSeconds.decrementAndGet();
+                playerView.getTimerLabel().setText("Time remaining: " + atomicSeconds + " seconds");
+            } else {
+                timeline.stop();
+                playerView.getTimerLabel().setText("Time's up!");
+                task.run();
+                hasTimerStarted = false;
+            }
+        }));
+        timeline.playFromStart();
     }
 
     /**
@@ -246,12 +277,10 @@ public class GameController {
      * and setting the phase, current player, and step accordingly.
      */
     public void finishProgrammingPhase() {
-        try {
-            game.setTurnId(restController.getGame(gameSession.getGameId()).getTurnId());
+        if(hasMissingRegisters(board.getLocalPlayer())) {
+            finishRegistersRandomly(board.getLocalPlayer());
         }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+
         for (Player player : board.getPlayers()) {
             if(player.isLocalPlayer()) {
                 Move move = new Move();
@@ -269,41 +298,46 @@ public class GameController {
                     throw new RuntimeException(e);
                 }
             }
-
         }
-        try {
-            Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
-            if(moves.length == board.getPlayers().length) {
-                for(Player player1 : board.getPlayers()) {
-                    if(!player1.isLocalPlayer()) {
-                        for(Move move : moves) {
-                            if(move.getPlayerId() == player1.getPlayerID()) {
-                                player1.setProgramField(move);
+
+        DataUpdateController.getInstance().startMovePolling(() -> {
+            if(board.getPhase() != Phase.PROGRAMMING) return;
+            try {
+                Move[] moves = restController.getMoves(gameSession.getGameId(), game.getTurnId());
+                if(moves.length == board.getPlayers().length) {
+                    for(Player player1 : board.getPlayers()) {
+                        if(!player1.isLocalPlayer()) {
+                            for(Move move : moves) {
+                                if(move.getPlayerId() == player1.getPlayerID()) {
+                                    player1.setProgramField(move);
+                                }
                             }
                         }
                     }
+                    completeFinishProgrammingPhase();
+                    DataUpdateController.getInstance().stopMovePolling();
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
-            else {
-                return;
-            }
+        });
+    }
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    private void completeFinishProgrammingPhase() {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
         board.setPhase(Phase.ACTIVATION);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
+        startActivationPhase(0);
     }
 
 
     /**
      * Executes the programs of all players on the board.
      */
-
     public void startActivationPhase(int steps) { // start the activation phase
+        activateFieldActions();
         Game game;
         Move[] moves;
         try {
@@ -322,35 +356,17 @@ public class GameController {
                 }
             }
         }
+
         makeProgramFieldsInvisible(); // make the program fields invisible
+
         for (int i = 0; i <= steps; i++) { // for each step
             makeProgramFieldsVisible(i); // make the program fields visible
         }
+
         board.setPhase(Phase.ACTIVATION); // set the board's phase to "ACTIVATION"
-    }
-
-
-    public void executePrograms() {
-        board.setStepMode(false);
-        continuePrograms();
-    }
-
-    /**
-     * Executes a single step of the programs of all players on the board.
-     */
-    public void executeStep() {
-        board.setStepMode(true);
-        continuePrograms();
-    }
-
-    /**
-     * Continues executing the programs of all players on the board
-     * until the activation phase ends or step mode is enabled.
-     */
-    private void continuePrograms() {
-        do {
-            executeNextStep();
-        } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
+        DataUpdateController.getInstance().startProgramExecution(() -> {
+            if(board.getPhase() == Phase.ACTIVATION) executeNextStep();
+        });
     }
 
     /**
@@ -386,11 +402,13 @@ public class GameController {
                             throw new RuntimeException(e);
                         }
                     }
+                    activateFieldActions();
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
                         board.setStep(step);
                         board.setCurrentPlayer(board.getPlayer(0));
                     } else {
+                        DataUpdateController.getInstance().stopProgramExecution();
                         startProgrammingPhase();
                     }
                 }
@@ -541,6 +559,27 @@ public class GameController {
 
     }
 
+    private boolean hasMissingRegisters(Player player) {
+        for (int i = 0; i < Player.NO_REGISTERS; i++) {
+            if (player.getProgramField(i).getCard() == null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Finishes the registers of the local player by adding random command cards to empty fields.
+     */
+    private void finishRegistersRandomly(Player player) {
+        for (int i = 0; i < Player.NO_REGISTERS; i++) {
+            CommandCardField field = player.getProgramField(i);
+            if (field.getCard() == null) {
+                field.setCard(generateRandomCommandCard());
+            }
+        }
+    }
+
     /**
      * Generates a random command card.
      *
@@ -577,6 +616,21 @@ public class GameController {
                 board.setCurrentPlayer(board.getPlayer(0));
             } else {
                 startProgrammingPhase();
+            }
+        }
+    }
+
+    /**
+     * Activates the field actions for all spaces on the board.
+     */
+    public void activateFieldActions() {
+        Space[][] spaces = board.getSpaces();
+        for (int i = 0; i < spaces.length; i++) {
+            for (int j = 0; j < spaces[0].length; j++) {
+                List<FieldAction> fieldActions = spaces[i][j].getActions();
+                for (FieldAction action : fieldActions) {
+                    action.doAction(this, spaces[i][j]);
+                }
             }
         }
     }

@@ -109,11 +109,3 @@ public class GameController {
         return ResponseEntity.ok().build();
     }
 }
-// Create json for game
-// {
-//     "gameName": "game1",
-//     "boardId": 1,
-//     "gameStatus": "WAITING",
-//     "turnID": 1,
-//     "maxPlayers": 4
-// }

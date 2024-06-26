@@ -9,31 +9,29 @@ import java.util.List;
 
 public interface RestController {
 
-    List<Player> getPlayers(int gameID) throws Exception;
+    List<Player> getPlayers(int gameID) ;
 
-    void deletePlayer(int gameID, int playerID) throws Exception;
+    void deletePlayer(int gameID, int playerID);
 
     List<Game> getGames() throws Exception;
 
-    Game getGame(int gameID) throws Exception;
+    Game getGame(int gameID);
 
-    int postGame(Game game) throws Exception;
+    int postGame(Game game);
 
-    void putGame(Game game) throws Exception;
+    void putGame(Game game);
 
-    void deleteGame(int gameID) throws Exception;
+    void deleteGame(int gameID);
 
-    int postPlayer(String playerName, int gameID) throws Exception;
+    int postPlayer(String playerName, int gameID);
 
-    void putPlayer(Player player) throws Exception;
+    void deletePlayers(int gameID);
 
-    void deletePlayers(int gameID) throws Exception;
+    void postMove(Move move);
 
-    void postMove(Move move) throws Exception;
+    Choice getChoice(int gameID, int playerID, int turnID);
 
-    Choice getChoice(int gameID, int playerID, int turnID) throws Exception;
+    Move[] getMoves(int gameID, int turnID);
 
-    Move[] getMoves(int gameID, int turnID) throws Exception;
-
-    void postChoice(Choice choice) throws Exception;
+    void postChoice(Choice choice);
 }

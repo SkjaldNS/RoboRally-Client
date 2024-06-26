@@ -1,9 +1,5 @@
 package dk.dtu.compute.se.pisd.roborally.view.playeritem;
 
-import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.RestController;
-import dk.dtu.compute.se.pisd.roborally.model.DataUpdater;
-import dk.dtu.compute.se.pisd.roborally.view.ViewObserver;
 import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;

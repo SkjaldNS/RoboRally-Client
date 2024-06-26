@@ -33,12 +33,5 @@ public class Deck {
         Collections.shuffle(this.initDeck);
     }
 
-    //Add cards to deck
-    //Add a shuffle method
-    //Make a constructor
-    //Give it to the player
-    //Draw card
-    //Add discard pile to deck
-
 
 }

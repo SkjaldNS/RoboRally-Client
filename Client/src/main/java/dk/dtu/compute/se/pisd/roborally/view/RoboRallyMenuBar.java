@@ -39,14 +39,6 @@ public class RoboRallyMenuBar extends MenuBar {
 
     private Menu controlMenu;
 
-    private MenuItem saveGame;
-
-    private MenuItem newGame;
-
-    private MenuItem loadGame;
-
-    private MenuItem stopGame;
-
     private MenuItem exitApp;
 
     /**
@@ -57,49 +49,6 @@ public class RoboRallyMenuBar extends MenuBar {
 
         controlMenu = new Menu("File");
         this.getMenus().add(controlMenu);
-
-        /* saveGame = new MenuItem("Save Game");
-        saveGame.setOnAction(e -> {
-            try {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                alert.setTitle("Game Saved");
-                alert.setHeaderText(null);
-                alert.setContentText("The game has been saved successfully!");
-
-                // Show the alert
-                alert.showAndWait();
-                this.appController.saveGame();
-
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        controlMenu.getItems().add(saveGame);
-
-        loadGame = new MenuItem("Load Game");
-        loadGame.setOnAction(e -> {
-            try {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Open Resource File");
-                fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-                fileChooser.getExtensionFilters().add(
-                        new FileChooser.ExtensionFilter("JSON Files", "*.json"));
-                this.appController.loadGame(fileChooser.showOpenDialog(null).getAbsolutePath());
-                if (this.appController.isGameRunning()) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Game Loaded");
-                    alert.setHeaderText(null);
-                    alert.setContentText("The game has been loaded successfully!");
-
-                    // Show the alert
-                    alert.showAndWait();
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
-        controlMenu.getItems().add(loadGame);
-*/
         exitApp = new MenuItem("Exit");
         exitApp.setOnAction(e -> {
                 this.appController.exit();

@@ -1,7 +1,4 @@
-package dk.dtu.compute.se.pisd.roborally.model;
-
-import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.RestController;
+package dk.dtu.compute.se.pisd.roborally.controller;
 
 import java.util.List;
 import java.util.concurrent.*;
@@ -10,54 +7,35 @@ import java.util.concurrent.*;
  * The DataUpdater class is responsible for scheduling and managing various tasks that need to be run periodically.
  * It uses a ScheduledExecutorService to schedule tasks at fixed rate or after a certain delay.
  */
-public class DataUpdater {
+public class DataUpdateController {
 
     private final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
 
     private static final int POLLING_INTERVAL_SECONDS = 1;
-
-    private ScheduledFuture<?> timer;
-
+    private static final int PROGRAM_EXECUTION_SECONDS = 2;
     private ScheduledFuture<?> playerListFuture;
     private ScheduledFuture<?> gameStateFuture;
     private ScheduledFuture<?> moveFuture;
     private ScheduledFuture<?> choiceFuture;
+    private ScheduledFuture<?> programExecutionFuture;
 
-    private static DataUpdater instance = new DataUpdater();
+    private static DataUpdateController instance = new DataUpdateController();
 
-    private DataUpdater() {}
+    private DataUpdateController() {}
 
     /**
      * Returns the singleton instance of the DataUpdater class.
      *
      * @return the singleton instance of the DataUpdater class
      */
-    public static DataUpdater getInstance() {
-        synchronized (DataUpdater.class) {
+    public static DataUpdateController getInstance() {
+        synchronized (DataUpdateController.class) {
             if (instance == null) {
-                instance = new DataUpdater();
+                instance = new DataUpdateController();
             }
         }
         return instance;
     }
-
-    /**
-     * Starts a timer that runs a task after a certain delay.
-     *
-     * @param seconds the delay before the task is run
-     * @param task the task to run
-     */
-    public void startTimer(int seconds, Runnable task) {
-        timer = executorService.schedule(task, seconds, TimeUnit.SECONDS);
-    }
-
-    /**
-     * Stops the timer.
-     */
-    public void stopTimer() {
-        timer.cancel(false);
-    }
-
     /**
      * Starts a task that polls the player list at a fixed rate.
      *
@@ -96,34 +74,19 @@ public class DataUpdater {
     }
 
     /**
-     * Starts tasks that poll a list of tasks at a fixed rate.
-     *
-     * @param tasks the list of tasks to poll
-     */
-    public void startTaskPolling(List<Runnable> tasks) {
-    }
-
-    /**
-     * Stops the tasks that poll a list of tasks.
-     */
-    public void stopTaskPolling() {
-
-    }
-
-    /**
      * Starts a task that polls the move at a fixed rate.
      *
      * @param task the task to run
      */
     public void startMovePolling(Runnable task) {
-        moveFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        moveFuture = executorService.scheduleWithFixedDelay(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
      * Stops the task that polls the move.
      */
     public void stopMovePolling() {
-        moveFuture.cancel(false);
+        moveFuture.cancel(true);
     }
 
     /**
@@ -132,7 +95,7 @@ public class DataUpdater {
      * @param task the task to run
      */
     public void startChoicePolling(Runnable task) {
-        choiceFuture = executorService.scheduleAtFixedRate(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
+        choiceFuture = executorService.scheduleWithFixedDelay(task, 0, POLLING_INTERVAL_SECONDS, TimeUnit.SECONDS);
     }
 
     /**
@@ -143,23 +106,17 @@ public class DataUpdater {
     }
 
     /**
-     * Stops the task that polls the player list.
-     */
-    public void stopPlayerListPolling() {
-        playerListFuture.cancel(false);
-    }
-
-    /**
-     * Stops the task that polls the game state.
-     */
-    private void stopGamePolling() {
-        gameStateFuture.cancel(false);
-    }
-
-    /**
      * Stops the executor service, effectively stopping all tasks.
      */
     public void stopExecutorService() {
         executorService.shutdown();
+    }
+
+    public void startProgramExecution(Runnable task) {
+        programExecutionFuture = executorService.scheduleWithFixedDelay(task,0, PROGRAM_EXECUTION_SECONDS, TimeUnit.SECONDS);
+    }
+
+    public void stopProgramExecution() {
+        programExecutionFuture.cancel(true);
     }
 }
