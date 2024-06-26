@@ -242,7 +242,7 @@ public class PlayerView extends Pane implements ViewObserver {
                         Game game = restController.getGame(localPlayer.board.getGameId());
                         Alert alert = new Alert(Alert.AlertType.INFORMATION);
                         alert.setTitle("Interactive Command Card");
-                        alert.setHeaderText("Player " + localPlayer.board.getCurrentPlayer().getName() + " is making a choice");
+                        alert.setHeaderText(localPlayer.board.getCurrentPlayer().getName() + " is making a choice");
                         alert.setContentText("Please wait for the player to make a choice");
                         alert.show();
                         DataUpdateController.getInstance().startChoicePolling(() -> {
