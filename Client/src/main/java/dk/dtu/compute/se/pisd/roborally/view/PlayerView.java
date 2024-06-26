@@ -221,7 +221,7 @@ public class PlayerView extends Pane implements ViewObserver {
                         executeButton.setDisable(true);
                         stepButton.setDisable(true);
                          */
-                        gameController.startCountdown(20, this, gameController::finishProgrammingPhase);
+                        if(!gameController.isHasTimerStarted()) gameController.startCountdown(20, this, gameController::finishProgrammingPhase);
                         break;
 
                     case ACTIVATION:

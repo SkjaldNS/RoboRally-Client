@@ -99,8 +99,7 @@ public class RoboRally extends Application {
                 e -> {
                     e.consume();
                     try {
-                        if(gameSession != null) {
-                            // TODO - Change to switch status
+                        if(gameSession != null && gameSession.isAdmin()) {
                             restController.deletePlayers(gameSession.getGameId());
                             restController.deleteGame(gameSession.getGameId());
                         }
@@ -183,65 +182,60 @@ public class RoboRally extends Application {
             for (GameItemView gameItemView : gameItemViews) {
                 gameItemView.setJoinGameButtonAction(() -> {
                     UserLobbyView userLobbyView = createUserLobbyView(preLobbyView, restController);
-                    try {
-                        PlayerNameAlertBox playerNameAlertBox = new PlayerNameAlertBox();
-                        String playerName = playerNameAlertBox.getPlayerName();
-                        if(playerName == null || playerName.trim().isEmpty()) {
-                            return;
-                        }
-                        boardRoot.setCenter(userLobbyView);
-                        int gameId = gameItemView.getGame().getGameID();
-                        int playerId = restController.postPlayer(playerName, gameId);
-                        gameSession = new GameSession(gameId, playerId, false);
-                        DataUpdateController.getInstance().startLobbyPolling(() -> {
-                            try {
-                                List<PlayerItemView> playerItemViews = restController.getPlayers(gameId).stream().map(
-                                        player -> new PlayerItemView(player.getPlayerID(), player.getName())).toList();
-                                int mapId = restController.getGame(gameId).getBoardId();
-                                Platform.runLater(() -> {
-                                    userLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews);
-                                    userLobbyView.getUserLobbyMap().updateMap(mapId);
-                                });
+                    PlayerNameAlertBox playerNameAlertBox = new PlayerNameAlertBox();
+                    String playerName = playerNameAlertBox.getPlayerName();
+                    if (playerName == null || playerName.trim().isEmpty()) {
+                        return;
+                    }
+                    boardRoot.setCenter(userLobbyView);
+                    int gameId = gameItemView.getGame().getGameID();
+                    int playerId = restController.postPlayer(playerName, gameId);
+                    gameSession = new GameSession(gameId, playerId, false);
+                    DataUpdateController.getInstance().startLobbyPolling(() -> {
+                        try {
+                            List<PlayerItemView> playerItemViews = restController.getPlayers(gameId).stream().map(
+                                    player -> new PlayerItemView(player.getPlayerID(), player.getName())).toList();
+                            int mapId = restController.getGame(gameId).getBoardId();
+                            Platform.runLater(() -> {
+                                userLobbyView.getPlayerListView().setPlayerItemViews(playerItemViews);
+                                userLobbyView.getUserLobbyMap().updateMap(mapId);
+                            });
 
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }, () -> {
-                            try {
-                                Game game = restController.getGame(gameId);
-                                if(game.getGameStatus() == 1) {
-                                    List<Player> players = restController.getPlayers(gameId);
-                                    for (Player player : players) {
-                                        if (player.getPlayerID() == gameSession.getPlayerId()) {
-                                            player.setLocalPlayer(true);
-                                        }
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }, () -> {
+                        try {
+                            Game game = restController.getGame(gameId);
+                            if (game.getGameStatus() == 1) {
+                                List<Player> players = restController.getPlayers(gameId);
+                                for (Player player : players) {
+                                    if (player.getPlayerID() == gameSession.getPlayerId()) {
+                                        player.setLocalPlayer(true);
                                     }
-                                    Platform.runLater(() -> {
-                                        try {
-                                            appController.newGame(game, players, gameSession);
-                                        } catch (IOException e) {
-                                            throw new RuntimeException(e);
-                                        }
-                                    });
-                                    DataUpdateController.getInstance().stopLobbyPolling();
                                 }
-                            } catch (Exception e) {
-                                // Go back to prelobby
-                                System.out.println("Game deleted!");
                                 Platform.runLater(() -> {
-                                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                                    alert.setTitle("Error");
-                                    alert.setHeaderText("Game has been deleted");
-                                    alert.setContentText("The game you were in has been deleted. You will be redirected to the prelobby.");
-                                    alert.showAndWait();
-                                    boardRoot.setCenter(preLobbyView);
+                                    try {
+                                        appController.newGame(game, players, gameSession);
+                                    } catch (IOException e) {
+                                        throw new RuntimeException(e);
+                                    }
                                 });
                                 DataUpdateController.getInstance().stopLobbyPolling();
                             }
-                        });
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                        } catch (Exception e) {
+                            // Go back to prelobby
+                            Platform.runLater(() -> {
+                                Alert alert = new Alert(Alert.AlertType.ERROR);
+                                alert.setTitle("Error");
+                                alert.setHeaderText("Game has been deleted");
+                                alert.setContentText("The game you were in has been deleted. You will be redirected to the prelobby.");
+                                alert.showAndWait();
+                                boardRoot.setCenter(preLobbyView);
+                            });
+                            DataUpdateController.getInstance().stopLobbyPolling();
+                        }
+                    });
                 });
             }
 

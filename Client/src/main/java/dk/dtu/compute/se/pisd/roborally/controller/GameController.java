@@ -47,6 +47,7 @@ public class GameController {
     private GameSession gameSession;
     private final RestController restController;
     private Game game;
+    private boolean hasTimerStarted = false;
 
 
 
@@ -57,6 +58,9 @@ public class GameController {
         this.restController = restController;
     }
 
+    public boolean isHasTimerStarted() {
+        return hasTimerStarted;
+    }
 
     /**
      * Moves the given player forward one space on the board, if possible.
@@ -106,6 +110,7 @@ public class GameController {
     }
 
     public void startCountdown(int seconds, PlayerView playerView, Runnable task) {
+        hasTimerStarted = true;
         AtomicInteger atomicSeconds = new AtomicInteger(seconds);
         Timeline timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -117,6 +122,7 @@ public class GameController {
                 timeline.stop();
                 playerView.getTimerLabel().setText("Time's up!");
                 task.run();
+                hasTimerStarted = false;
             }
         }));
         timeline.playFromStart();
@@ -271,6 +277,7 @@ public class GameController {
      * and setting the phase, current player, and step accordingly.
      */
     public void finishProgrammingPhase() {
+        System.out.println("Finish Programming Phase");
         if(hasMissingRegisters(board.getLocalPlayer())) {
             finishRegistersRandomly(board.getLocalPlayer());
         }
@@ -338,7 +345,7 @@ public class GameController {
      * Executes the programs of all players on the board.
      */
     public void startActivationPhase(int steps) { // start the activation phase
-        //activateFieldActions();
+        activateFieldActions();
         Game game;
         Move[] moves;
         try {
@@ -400,7 +407,7 @@ public class GameController {
      * @author Marcus Langkilde, s195080@DTU.dk
      * @author Haleef Abu Talib, s224523@dtu.dk
      */
-    private synchronized void executeNextStep() {
+    private void executeNextStep() {
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -427,7 +434,7 @@ public class GameController {
                             throw new RuntimeException(e);
                         }
                     }
-                    //activateFieldActions();
+                    activateFieldActions();
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
                         board.setStep(step);
