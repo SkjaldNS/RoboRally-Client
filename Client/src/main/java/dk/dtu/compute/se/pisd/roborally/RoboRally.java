@@ -181,6 +181,24 @@ public class RoboRally extends Application {
 
             for (GameItemView gameItemView : gameItemViews) {
                 gameItemView.setJoinGameButtonAction(() -> {
+                    Game game1 = restController.getGame(gameItemView.getGame().getGameID());
+                    List<Player> joinedPlayers = restController.getPlayers(gameItemView.getGame().getGameID());
+                    if(joinedPlayers.size() >= 6) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Game is full");
+                        alert.setContentText("The game you are trying to join is full. Please choose another game.");
+                        alert.showAndWait();
+                        return;
+                    } else if (!game1.isGameInPreLobby()) {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText("Game has already started or has been deleted");
+                        alert.setContentText("The game you are trying to join has already started or has been deleted. Please select another game.");
+                        alert.showAndWait();
+                        return;
+                    }
+
                     UserLobbyView userLobbyView = createUserLobbyView(preLobbyView, restController);
                     PlayerNameAlertBox playerNameAlertBox = new PlayerNameAlertBox();
                     String playerName = playerNameAlertBox.getPlayerName();
