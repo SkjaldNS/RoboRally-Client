@@ -77,7 +77,6 @@ public class AdminLobbyMap extends VBox {
             }
             mapPreview.setImage(mapImage);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             System.err.println("Could not load image: " + imagePath);
         }
     }

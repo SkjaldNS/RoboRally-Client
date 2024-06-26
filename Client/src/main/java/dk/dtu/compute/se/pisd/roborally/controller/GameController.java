@@ -277,18 +277,10 @@ public class GameController {
      * and setting the phase, current player, and step accordingly.
      */
     public void finishProgrammingPhase() {
-        System.out.println("Finish Programming Phase");
         if(hasMissingRegisters(board.getLocalPlayer())) {
             finishRegistersRandomly(board.getLocalPlayer());
         }
-        /*
-        try {
-            game.setTurnId(restController.getGame(gameSession.getGameId()).getTurnId());
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-         */
+
         for (Player player : board.getPlayers()) {
             if(player.isLocalPlayer()) {
                 Move move = new Move();
@@ -375,30 +367,6 @@ public class GameController {
         DataUpdateController.getInstance().startProgramExecution(() -> {
             if(board.getPhase() == Phase.ACTIVATION) executeNextStep();
         });
-    }
-
-
-    public void executePrograms() {
-        board.setStepMode(false);
-        continuePrograms();
-    }
-
-    /**
-     * Executes a single step of the programs of all players on the board.
-     */
-    public void executeStep() {
-        board.setStepMode(true);
-        continuePrograms();
-    }
-
-    /**
-     * Continues executing the programs of all players on the board
-     * until the activation phase ends or step mode is enabled.
-     */
-    private void continuePrograms() {
-        do {
-            executeNextStep();
-        } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
     }
 
     /**

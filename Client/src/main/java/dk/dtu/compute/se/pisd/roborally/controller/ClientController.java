@@ -54,7 +54,6 @@ public class ClientController implements RestController {
 
             //Returns gameID
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("PostGame: " + response.body());
             return Integer.parseInt(response.body());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -78,7 +77,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("PutGame: " + response.body());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -97,7 +95,6 @@ public class ClientController implements RestController {
                 .build();
 
         HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-        System.out.println("GetGames: " + response.body());
         Type listType = new TypeToken<List<Game>>() {}.getType();
         return gson.fromJson(response.body(), listType);
     }
@@ -117,7 +114,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("GetGame: " + response.body());
             return gson.fromJson(response.body(), Game.class);
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -138,7 +134,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("DeleteGame: " + response.body());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -161,30 +156,7 @@ public class ClientController implements RestController {
                     .build();
             //Returns playerID
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("PostPlayer: " + response.body());
             return Integer.parseInt(response.body());
-        } catch (URISyntaxException | IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Updates an existing player in a specific game on the server.
-     * @param player The player to be updated.
-     * @throws Exception if an error occurs while updating the player.
-     */
-    @Override
-    public void putPlayer(Player player)  {
-        try {
-            String playerJson = gson.toJson(player);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(BASE_URL + "/games/" + player.getGameID() + "/players/" + player.getPlayerID()))
-                    .PUT(HttpRequest.BodyPublishers.ofString(playerJson))
-                    .header("Content-Type", "application/json")
-                    .build();
-
-            HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("PutPlayer: " + response.body());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -205,7 +177,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("GetPlayers: " + response.body());
             Type listType = new TypeToken<List<Player>>() {}.getType();
             return gson.fromJson(response.body(), listType);
         } catch (URISyntaxException | IOException | InterruptedException e) {
@@ -228,7 +199,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("DeletePlayer: " + response.body());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -250,7 +220,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("DeletePlayers: " + response.body());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -272,7 +241,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request,HttpResponse.BodyHandlers.ofString());
-            System.out.println("PostMove: " + response.body());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -294,7 +262,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("GetMoves: " + response.body());
             return gson.fromJson(response.body(), Move[].class);
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
@@ -317,7 +284,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("PostChoice: " + response.body());
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -340,7 +306,6 @@ public class ClientController implements RestController {
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("GetChoice: " + response.body());
             return gson.fromJson(response.body(),Choice.class);
         } catch (URISyntaxException | IOException | InterruptedException e) {
             throw new RuntimeException(e);

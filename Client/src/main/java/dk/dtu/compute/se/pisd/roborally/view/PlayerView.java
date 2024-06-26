@@ -65,13 +65,6 @@ public class PlayerView extends Pane implements ViewObserver {
 
     private CardFieldView[] programCardViews;
     private CardFieldView[] cardViews;
-    /*
-    private VBox buttonPanel;
-
-    private Button finishButton;
-    private Button executeButton;
-    private Button stepButton;
-    */
     private VBox playerInteractionPanel;
 
     private GameController gameController;
@@ -82,7 +75,6 @@ public class PlayerView extends Pane implements ViewObserver {
      * The constructor for the view of a player in the game.
      */
     public PlayerView(@NotNull GameController gameController, @NotNull Player player) {
-        //this.setStyle("-fx-text-base-color: " + player.getRobotId() + ";");
         this.restController = new ClientController(HttpClient.newHttpClient());
         HBox robotBox = new HBox();
         robotImage = new ImageView();
@@ -120,26 +112,6 @@ public class PlayerView extends Pane implements ViewObserver {
             }
         }
         programPane.add(playerLabel, 32, 6);
-
-        // XXX  the following buttons should actually not be on the tabs of the individual
-        //      players, but on the PlayersView (view for all players). This should be
-        //      refactored.
-        /*
-        finishButton = new Button("Finish Programming");
-        finishButton.setOnAction( e -> gameController.finishProgrammingPhase());
-
-        executeButton = new Button("Execute Program");
-        executeButton.setOnAction( e-> gameController.executePrograms());
-
-        stepButton = new Button("Execute Current Register");
-        stepButton.setOnAction( e-> gameController.executeStep());
-
-        //buttonPanel = new VBox(finishButton, executeButton, stepButton);
-        buttonPanel.setAlignment(Pos.CENTER_LEFT);
-        buttonPanel.setSpacing(3.0);
-         */
-        // programPane.add(buttonPanel, Player.NO_REGISTERS, 0); done in update now
-
         playerInteractionPanel = new VBox();
         playerInteractionPanel.setAlignment(Pos.CENTER_LEFT);
         playerInteractionPanel.setSpacing(3.0);
@@ -205,39 +177,17 @@ public class PlayerView extends Pane implements ViewObserver {
             if (localPlayer.board.getPhase() != Phase.PLAYER_INTERACTION) {
                 switch (localPlayer.board.getPhase()) {
                     case INITIALISATION:
-                        /*
-                        finishButton.setDisable(true);
-                        // XXX just to make sure that there is a way for the player to get
-                        //     from the initialization phase to the programming phase somehow!
-                        executeButton.setDisable(false);
-                        stepButton.setDisable(true);
-                         */
-
                         break;
 
                     case PROGRAMMING:
-                        /*
-                        finishButton.setDisable(false);
-                        executeButton.setDisable(true);
-                        stepButton.setDisable(true);
-                         */
                         if(!gameController.isHasTimerStarted()) gameController.startCountdown(20, this, gameController::finishProgrammingPhase);
                         break;
 
                     case ACTIVATION:
-                        /*
-                        finishButton.setDisable(true);
-                        executeButton.setDisable(false);
-                        stepButton.setDisable(false);
-                         */
                         break;
 
                     default:
-                        /*
-                        finishButton.setDisable(true);
-                        executeButton.setDisable(true);
-                        stepButton.setDisable(true);
-                         */
+                        break;
                 }
 
 

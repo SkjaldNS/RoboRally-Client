@@ -142,33 +142,4 @@ public class Move {
         this.turnId = turnId;
     }
 
-    /**
-     * Checks if the command in the given register is interactive.
-     *
-     * @param register the command to check
-     * @return true if the command is interactive, false otherwise
-     */
-    public boolean isChoice(Command register){
-        return register.isInteractive();
-    }
-
-    /**
-     * Sets the command in the register that is interactive.
-     *
-     * @param register the command to set
-     */
-    public void setChoice(Command register){
-        if(isChoice(getReg1())){
-            this.reg1 = register;
-        } else if(isChoice(getReg2())){
-            this.reg2 = register;
-        } else if(isChoice(getReg3())){
-            this.reg3 = register;
-        } else if(isChoice(getReg4())){
-            this.reg4 = register;
-        } else if(isChoice(getReg5())){
-            this.reg5 = register;
-        }
-    }
-
 }

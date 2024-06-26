@@ -25,8 +25,6 @@ public interface RestController {
 
     int postPlayer(String playerName, int gameID);
 
-    void putPlayer(Player player);
-
     void deletePlayers(int gameID);
 
     void postMove(Move move);

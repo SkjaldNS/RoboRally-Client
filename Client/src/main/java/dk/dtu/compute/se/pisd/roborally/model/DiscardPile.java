@@ -14,7 +14,5 @@ public class DiscardPile {
     @Expose
     public ArrayList<Command> pile = new ArrayList<>();
 
-    //Add card to discard pile
-
 
 }

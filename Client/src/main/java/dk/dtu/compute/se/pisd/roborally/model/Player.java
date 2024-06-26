@@ -72,24 +72,10 @@ public class Player extends Subject {
         this.isLocalPlayer = isLocalPlayer;
         this.space = null;
     }
-    /*
-    public Player(Board board, int playerId) {
-        this.board = board;
-        this.playerId = playerId;
-
-        program = new CommandCardField[NO_REGISTERS];
-        for (int i = 0; i < program.length; i++) {
-            program[i] = new CommandCardField(this);
-        }
-    }
-*/
 
     /**
      * Method to initialize the player
-     * @param player the player to be initialized
      */
-    
-
     public void initPlayer() {
 
         program = new CommandCardField[NO_REGISTERS];

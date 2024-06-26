@@ -13,9 +13,6 @@ public class DataUpdateController {
 
     private static final int POLLING_INTERVAL_SECONDS = 1;
     private static final int PROGRAM_EXECUTION_SECONDS = 2;
-
-    private ScheduledFuture<?> timer;
-
     private ScheduledFuture<?> playerListFuture;
     private ScheduledFuture<?> gameStateFuture;
     private ScheduledFuture<?> moveFuture;
@@ -39,24 +36,6 @@ public class DataUpdateController {
         }
         return instance;
     }
-
-    /**
-     * Starts a timer that runs a task after a certain delay.
-     *
-     * @param seconds the delay before the task is run
-     * @param task the task to run
-     */
-    public void startTimer(int seconds, Runnable task) {
-        timer = executorService.schedule(task, seconds, TimeUnit.SECONDS);
-    }
-
-    /**
-     * Stops the timer.
-     */
-    public void stopTimer() {
-        timer.cancel(false);
-    }
-
     /**
      * Starts a task that polls the player list at a fixed rate.
      *
@@ -95,21 +74,6 @@ public class DataUpdateController {
     }
 
     /**
-     * Starts tasks that poll a list of tasks at a fixed rate.
-     *
-     * @param tasks the list of tasks to poll
-     */
-    public void startTaskPolling(List<Runnable> tasks) {
-    }
-
-    /**
-     * Stops the tasks that poll a list of tasks.
-     */
-    public void stopTaskPolling() {
-
-    }
-
-    /**
      * Starts a task that polls the move at a fixed rate.
      *
      * @param task the task to run
@@ -139,20 +103,6 @@ public class DataUpdateController {
      */
     public void stopChoicePolling() {
         choiceFuture.cancel(false);
-    }
-
-    /**
-     * Stops the task that polls the player list.
-     */
-    public void stopPlayerListPolling() {
-        playerListFuture.cancel(false);
-    }
-
-    /**
-     * Stops the task that polls the game state.
-     */
-    private void stopGamePolling() {
-        gameStateFuture.cancel(false);
     }
 
     /**

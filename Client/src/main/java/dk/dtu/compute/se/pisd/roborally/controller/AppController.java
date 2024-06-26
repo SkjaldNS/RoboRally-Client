@@ -76,9 +76,6 @@ public class AppController implements Observer {
      */
     public void newGame(Game game, List<Player> players, GameSession gameSession) throws IOException {
 
-
-        // XXX the board should eventually be created programmatically or loaded from a file
-        //     here we just create an empty board with the required number of players.
         Board board = LoadBoard.loadBoard(game.getBoardId());
         if(board == null) {
             board = new Board(8, 8);
@@ -101,9 +98,6 @@ public class AppController implements Observer {
             }
         }
 
-
-        // XXX: V2
-        //board.setCurrentPlayer(board.getPlayer(0));
         gameController.startProgrammingPhase();
         gameController.activateFieldActions();
         roboRally.createBoardView(gameController);
@@ -143,96 +137,6 @@ public class AppController implements Observer {
     }
 
     /**
-     * Load a game state from a file, given the file path. The method deserializes the JSON file and
-     * turns it into a board object. The method iterates through the board and player components,
-     * linking them together and setting up the game state. It also determines the current phase of the game and
-     * initiates the appropriate game phase through GameController.
-     * @author Asma Maryam, s230716@dtu.dk
-     * @author Turan Talayhan, s224746@student.dtu.dk
-     * @param path The file path of the game state to be loaded.
-     * @throws IOException if an I/O error occurs while reading from the file or if a malformed or unmappable byte
-     * sequence is read from the file.
-     * @see Gson
-     */
-    /*public void loadGame(String path) throws IOException {
-        Gson gson = new GsonBuilder()
-                .registerTypeAdapter(FieldAction.class, new Adapter<FieldAction>())
-                .excludeFieldsWithoutExposeAnnotation()
-                .create();
-        Path data = Path.of(path);
-        Board board = gson.fromJson(Files.readString(data), Board.class);
-        // Set the current player to whatever the name there is on loaded board's current player
-        // This is done to avoid the issue of having a new player object created when loading the game
-        for (Player player : board.getPlayers()) {
-            if(player.getName().equals(board.getCurrentPlayer().getName())) {
-                board.setCurrentPlayer(player);
-            }
-        }
-
-        // set the board's players' discarded piles, spaces, programmed cards, cards the player has in hand and their boards.
-        for (Player player : board.getPlayers()) {
-            // set the player's discarded pile.
-            player.getDiscardedPile().player = player;
-            for (Space[] space: board.getSpaces()) {
-                for (Space s : space) {
-                    if (player.getSpace() != null && player.getSpace().x == s.x && player.getSpace().y == s.y){ // if the player's space is not null and the player's space x and y are equal to the space's x and y
-                        // set the player's space.
-                        player.setSpace(s);
-                    }
-                }
-            }
-            // set the player's programmed cards
-            for (CommandCardField card : player.getProgram()) {
-                card.player = player;
-            }
-            // set the player's cards in hand
-            for (CommandCardField card : player.getCards()){
-                card.player = player;
-            }
-            // set player's board
-            player.board = board;
-        }
-
-
-        // set the board's spaces' boards
-        for (Space[] space : board.getSpaces()) {
-             for (Space s : space) {
-                 s.board = board;
-            }
-        }
-
-        Player currentPlayer = board.getCurrentPlayer();
-
-        // set currentPlayer's board
-        currentPlayer.board = board;
-
-        gameController = new GameController(board);
-        roboRally.createBoardView(gameController);
-    }*/
-
-    /**
-     * Stop playing the current game, giving the user the option to save
-     * the game or to cancel stopping the game. The method returns true
-     * if the game was successfully stopped (with or without saving the
-     * game); returns false, if the current game was not stopped. In case
-     * there is no current game, false is returned.
-     *
-     * @return true if the current game was stopped, false otherwise
-     */
-    public boolean stopGame() throws IOException {
-        if (gameController != null) {
-
-            // here we save the game (without asking the user).
-            saveGame();
-
-            gameController = null;
-            roboRally.createBoardView(null);
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Exits the application.
      */
     public void exit() {
@@ -255,11 +159,6 @@ public class AppController implements Observer {
             Platform.exit();
         }
     }
-
-    public boolean isGameRunning() {
-        return gameController != null;
-    }
-
 
     /**
      * Updates the observer.
